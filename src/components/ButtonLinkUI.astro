@@ -1,0 +1,39 @@
+---
+interface Props {
+    id ?: string,
+    ariaLabel ?: string,
+    isLeftIcon ?: boolean,
+    iconClass ?: string,
+    isBgColored ?: boolean
+    isButton ?: boolean
+    action ?: string,
+}
+
+const {isLeftIcon=false, iconClass, isBgColored, action, ariaLabel, id, isButton=false} = Astro.props
+---
+
+{
+    isButton && 
+    <button {id} aria-label={ariaLabel} onclick={action} class="ButtonUI flex gap-2 items-center cursor-pointer rounded-full p-7 py-3 text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300" class:list={[
+        !isBgColored ? "border-2 border-white" : "bg-lite-green"
+    ]}>
+        {(iconClass && isLeftIcon) && <i class={"text-lg leading-5 "+ iconClass}></i>}
+        <span>
+            <slot />
+        </span>
+        {(iconClass && !isLeftIcon) && <i class={"text-lg leading-5 "+ iconClass}></i>}    
+    </button>
+}
+
+{
+    !isButton && 
+    <a {id} href={action} class="ButtonUI flex gap-2 items-center cursor-pointer rounded-full p-7 py-3 text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300" class:list={[
+        !isBgColored ? "border-2 border-white" : "bg-lite-green"
+    ]}>
+        {(iconClass && isLeftIcon) && <i class={"text-lg leading-5 "+ iconClass}></i>}
+        <span>
+            <slot />
+        </span>
+        {(iconClass && !isLeftIcon) && <i class={"text-lg leading-5 "+ iconClass}></i>}    
+    </a>
+}

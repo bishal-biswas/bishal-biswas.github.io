@@ -1,0 +1,32 @@
+---
+interface Props {
+    navigationSide :string,
+    urlToArticle :string,
+    titleofArticle :string,
+}
+
+const { navigationSide, urlToArticle, titleofArticle}
+= Astro.props;
+---
+
+<a href={urlToArticle} class="w-fit flex items-center gap-3 group" 
+class:list={[ "text-"+ navigationSide, 
+    {"justify-normal" : navigationSide == "left"},
+    {"justify-end" : navigationSide == "right"},
+    ]}>
+    {
+        navigationSide == "left" && 
+        <span class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 group-hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
+            <i class={"fa-solid fa-arrow-" + navigationSide}></i>
+        </span>
+    }
+    <span class="lg:w-auto group-hover:text-[#70ba65] whitespace-nowrap overflow-hidden text-ellipsis">
+        {titleofArticle}
+    </span>
+    {
+        navigationSide == "right" && 
+        <span class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 group-hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
+            <i class={"fa-solid fa-arrow-" + navigationSide}></i>
+        </span>
+    }
+</a>

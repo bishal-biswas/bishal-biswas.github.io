@@ -1,0 +1,84 @@
+---
+import "../global.css"
+
+import Navbar from '../components/Navbar.astro';
+import HeroSection from '../components/HeroSection.astro';
+import LeftProfileBio from '../components/LeftProfileBio.astro';
+import Footer from '../components/Footer.astro';
+import BreadcrumbsHolder from '../components/BreadcrumbsHolder.astro';
+import HeadTag from '../components/HeadTag.astro';
+import Modal from '../components/Modal.astro';
+import Notify from '../components/Notify.astro';
+
+interface Props {
+    title ?: string,
+    metaDescription ?: string
+    pageSmallText : string,
+    isMainHeadingDoubleLined ?: boolean,
+    isBreadcrumbShown ?: boolean,
+    isSwiperRequired ?: boolean,
+    pageHeadingText : string
+    pageMainHeadingtagType : string,
+    backgroundImg ?: string
+}
+
+const {title = "Page Title", 
+metaDescription="Some Page Description", 
+pageSmallText, pageHeadingText, pageMainHeadingtagType="p", 
+isMainHeadingDoubleLined = false,
+isSwiperRequired = false,
+isBreadcrumbShown, backgroundImg
+} = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <HeadTag {title} {metaDescription}>
+        {
+            isSwiperRequired &&
+            <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+        }
+    </HeadTag>
+<body class="bg-body-bg lg:p-3 transition-colors duration-300 ease-in-out">
+    <Modal />
+    <Notify />
+
+    <span class="scrollUp"></span>
+    <div class="dark:bg-body-bg-2 bg-body-bg-2 w-full flex flex-col items-center min-h-[90vh] rounded-md overflow-hidden ">
+        <Navbar />
+
+        <main class="flex flex-col justify-center items-center lg:w-[1240px] w-full z-[1] overflow-hidden rounded-md">
+            <HeroSection 
+
+                smallText={pageSmallText}
+                mainHeadingText ={pageHeadingText}
+                MainHeadingtagType={pageMainHeadingtagType}
+                mainHeadingSize="large" 
+                imgFile={backgroundImg}
+                {isMainHeadingDoubleLined}>
+                {
+                    isBreadcrumbShown && <BreadcrumbsHolder />
+                }
+                <slot name="heroSection" />
+
+            </HeroSection>
+
+            <div class="content-wrapper px-5 flex lg:flex-row flex-col gap-8 w-full z-[2] lg:px-12 dark:text-teal-white dark:text-font-white">
+
+				<LeftProfileBio />
+
+                <div class="right-contents top-0 rounded-xl mb-16 lg:w-[700px] w-full">
+                    <slot/>
+
+                    <Footer />
+                </div>
+
+			</div>
+        </main>
+
+    </div>
+    <div id="gradient-follow"></div>
+
+    <script is:inline src="/assets/scripts/main.js" data-astro-rerun></script>
+</body>
+</html>

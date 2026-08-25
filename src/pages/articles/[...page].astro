@@ -1,0 +1,83 @@
+---
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import BlogArticleCards from "../../components/BlogArticleCards.astro";
+import HeadingText from "../../components/headingText.astro";
+import ArticlePagination from "../../components/ArticlePagination.astro";
+import SectionDivider from "../../components/SectionDivider.astro";
+import ArticleBottomAllCategories from "../../components/ArticleBottomAllCategories.astro";
+import { filterFuturePosts, getPaths } from "../../data/utils";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import { pageData } from "../../data/site-data/pageData";
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+let allBlogPosts = await getCollection("blog", ({ data }:{data:any}) => {
+        return data.isDraft === false;
+    });
+
+    allBlogPosts = filterFuturePosts(allBlogPosts);
+    allBlogPosts.sort(
+        (a:CollectionEntry<"blog">, b:CollectionEntry<"blog">) =>
+            new Date(b.data.publishDate).valueOf() -
+            new Date(a.data.publishDate).valueOf(),
+    );
+    
+    allBlogPosts = filterFuturePosts(allBlogPosts);
+
+    return paginate(allBlogPosts, { pageSize: 8 });
+}
+interface Props {
+    page : {
+        data : CollectionEntry<"blog">[],
+        start: number,
+        end: number,
+        size: number,
+        total: number,
+        currentPage: number,
+        lastPage: number,
+        url: {
+            current: string,
+            next: string,
+            prev: string,
+            first: string,
+            last: string
+        }
+    };
+}
+const { page } = Astro.props;
+const { data , ...paginationData} = page;
+
+const pageContent = pageData.filter(page => page.pageTitle == "Articles")[0];
+
+---
+
+<PlainLayout 
+    isBreadcrumbShown={true} 
+    pageMainHeadingtagType="h1" 
+    isMainHeadingDoubleLined={true} 
+    pageSmallText={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    title="Articles" 
+    backgroundImg={getPaths("Asset Images") + "bg2.webp"}
+    >
+
+    <!-- Article Container -->
+    <div class="articlesContainer lg:mt-24 mt-20 w-full">
+       <HeadingText headText="Recently Published" TagType="span" />
+       <div class="blog-container flex flex-wrap justify-between items-center w-full my-10 gap-5">
+           {
+               page.data.map((post : any, index: any) => (
+                   <BlogArticleCards {post} {index} />
+               ))
+           }
+       </div>
+    </div>  
+
+    <SectionDivider />  
+
+    <ArticlePagination
+        {paginationData}
+    />  
+
+    <ArticleBottomAllCategories />
+</PlainLayout>

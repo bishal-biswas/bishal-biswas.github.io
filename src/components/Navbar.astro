@@ -1,0 +1,207 @@
+---
+import { navbarMenus } from "../data/site-data/navigation"
+import { getPaths } from "../data/utils";
+const navLinks = navbarMenus;
+---
+<style>
+    @media (min-width: 1024px){
+        nav li.hasSubmenu:hover .submenu, nav li.hasSubmenu:focus-within .submenu{
+            visibility: visible;
+            opacity: 1; /* Fully visible */
+            transform: translateY(0); /* Slide it up */
+        }
+    }
+    .rightSide{
+        @media (max-width: 1024px) {
+            clip-path: circle(100px at 100% -20%);       
+            -webkit-clip-path: circle(100px at 100% -20%);       
+            transition: clip-path 1s;
+        }
+    }
+    .rightSide.open{
+        @media (max-width: 1024px) {
+            clip-path: circle(1100px at 100% -20%);       
+            -webkit-clip-path: circle(1100px at 100% -20%);       
+        }
+    }
+</style>
+
+<!-- header -->
+<header class="fixed lg:px-3 left-0 top-0 w-full z-[3] lg:border-t-8 border-body-bg lg:h-auto h-[10vh]">
+    <div class="wrapper p-4 h-full lg:px-20 flex justify-center items-center dark:bg-dark-teal bg-dark-teal shadow-md shadow-[#000] lg:rounded-xl uppercase lg:text-xs text-sm dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white">
+        
+        <div class="holder w-full lg:max-w-[1210px] flex justify-between items-center">
+
+            <div class="left-sec my-auto lg:w-[30%]">
+                <a href="/" class="logo block w-fit" aria-label="Home" tabindex="0">
+                    <img src={getPaths("Asset Images")+`logo.png`} class="h-10 dark:invert-0 invert" alt="Logo" />
+                </a>
+            </div>
+            <div class="rightSide lg:w-[70%] gap-8 lg:gap-0 w-full lg:h-auto h-[90vh] lg:py-0 py-5 left-0 lg:top-0 top-[10vh] lg:flex justify-between lg:relative absolute lg:backdrop-blur-none backdrop-blur lg:bg-transparent lg:dark:bg-transparent dark:bg-[#00283ac3] bg-[#fcfcfec3]">
+    
+                <div class="middle-sec lg:my-auto">
+                    <nav>
+                        <ul class="flex lg:gap-14 font-semibold md lg:flex-row flex-col lg:text-left text-center text-base md:text-xs">
+                            
+                            {
+                                navLinks.map((link)=>(
+                                <li class="p-3 lg:p-0 navbarLinks" class:list={[
+                                    link.hasSubMenu && "hasSubmenu relative"
+                                ]}>
+                                    {
+                                        link.menuURL != "javascript:void(0)" 
+                                        ?
+                                        <a tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer" href={link.menuURL}>{link.menuTitle}</a>
+                                        :
+                                        <span tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer">{link.menuTitle}</span>
+                                    }
+                                    {
+                                        link.hasSubMenu && 
+                                        <i class="fa-solid fa-angle-down text-xs"></i>
+                                        <span class="submenu absolute z-[1] pt-8 left-0 invisible lg:opacity-0 lg:translate-y-4 lg:transition-all lg:delay-300 lg:ease-in-out">
+                                            <ul class="lg:dark:bg-dark-teal lg:bg-dark-teal lg:w-max h-max lg:shadow-2xl shadow-[#000] rounded-md" >
+                                                {
+                                                    link.subMenuList.map((submenu)=>(
+                                                        <li>
+                                                            <a tabindex="0" class="block p-3 lg:py-5 py-3 hover:text-lite-green" href={submenu.menuURL}>{submenu.menuTitle}</a>
+                                                        </li>
+                                                    ))
+                                                }
+                                            </ul>
+                                        </span>
+                                    }
+                                </li>
+                                ))
+                            }
+                            
+                        </ul>
+                    </nav>
+                </div>
+                <div class="right-sec lg:my-auto my-5">
+                    <nav>
+                        <ul class="flex items-center lg:justify-normal justify-center lg:gap-4 gap-7 lg:border-l lg:border-gray-500 pl-4 font-semibold">
+                            <li>
+                                <span class="darkmodeToggle block lg:scale-100 scale-125">
+                                    <input tabindex="-1" type="checkbox" class="checkbox absolute opacity-0" id="themeToggleCheckbox" aria-label="Toggle theme (Dark/Light)"/>
+                                    <label tabindex="0" for="themeToggleCheckbox" class="tabClick checkbox-label dark:bg-body-bg bg-body-bg-2 w-[60px] h-[26px] rounded-full relative p-1 cursor-pointer flex justify-between items-center px-2" >
+                                        <i aria-hidden="true" class="fas fa-moon text-white"></i>
+                                        <i aria-hidden="true" class="fas fa-sun text-yellow-500"></i>
+                                        <span class="ball absolute bg-white size-5 left-[3px] top-[3px] rounded-full transition-transform duration-200 ease-linear" ></span>
+                                    </label>
+                                </span>
+                            </li>
+                            <li>
+                                <span tabindex="0" id="searchBtn" class="hidden lg:flex justify-center items-center size-7 cursor-pointer rounded-full relative dark:bg-body-bg bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300 lg:scale-100 scale-125">
+                                    <i class="fa-solid fa-magnifying-glass"></i>
+                                </span>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+    
+            </div>
+                
+            <span class="flex gap-3 items-center">
+                <span id="searchBtn2" class="flex lg:hidden justify-center items-center size-7 cursor-pointer rounded-full relative dark:bg-body-bg bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300 lg:scale-100 scale-125" >
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                </span>
+                
+                <button id="hamburger" aria-label="Mobile Navigation Menu Button" class="lg:hidden flex flex-col items-center justify-between w-5 h-4 focus:outline-none">
+                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
+                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
+                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
+                </button>
+            </span>
+
+        </div>
+    </div>
+</header>
+<span class="hidden mb-[3px] hover:text-dark-green -translate-y-[0.4rem] bg-gradient-to-r from-lite-green to-[#257d18] dark:bg-body-bg inline-block"></span>
+
+
+
+<script is:inline>
+    
+    //#region Dark Mode Toggle
+    const themeToggleCheckbox = document.getElementById('themeToggleCheckbox');
+    themeToggleCheckbox.addEventListener("click", ()=>{
+        if(themeToggleCheckbox.checked) {
+            document.querySelector("html").classList.add("dark");
+            localStorage.theme = 'dark'
+        }
+        else {
+            document.querySelector("html").classList.remove("dark");
+            localStorage.theme = 'light'
+        }
+    })
+
+    if(localStorage.theme === "dark") document.getElementById('themeToggleCheckbox').checked = true;
+    else document.getElementById('themeToggleCheckbox').checked= false;
+
+    //#endregion
+
+    //#region Menu Hamburger
+    const hamburger = document.getElementById('hamburger');
+    const lines = hamburger.querySelectorAll('span');
+
+    hamburger.addEventListener('click', () => {
+        document.querySelector(".rightSide").classList.toggle("open");
+        lines[0].classList.toggle('rotate-45');
+        lines[0].classList.toggle('translate-y-2');
+
+        lines[1].classList.toggle('opacity-0');
+
+        lines[2].classList.toggle('-rotate-45');
+        lines[2].classList.toggle('-translate-y-[0.4rem]');
+    });
+
+    const allSubmenuHolder = document.querySelectorAll(".hasSubmenu");
+    const windowWidth = window.innerWidth;
+
+    if(windowWidth < 1024){
+        allSubmenuHolder.forEach(subMenuHolder => {
+            subMenuHolder.addEventListener("click", ()=>{
+                subMenuHolder.querySelector(".submenu").classList.toggle("invisible");
+                subMenuHolder.querySelector(".submenu").classList.toggle("absolute");
+            })
+        });
+    }
+    //#endregion
+
+    //#region Nav Links Current Page detect
+    const allNavLinks = document.querySelectorAll(".middle-sec .navbarLinks");
+
+    allNavLinks.forEach((link) => {
+        if(window.location.href === link.querySelector('a').href){
+            link.querySelector('a').setAttribute("aria-current", "true");
+        }
+    });
+    //#endregion
+
+    //#region Trigger Search Modal
+    const searchBtn = document.querySelector("#searchBtn");
+    const searchBtn2 = document.querySelector("#searchBtn2");
+    
+    searchBtn2.addEventListener("click",()=>{
+        searchBtn.click();    
+    })
+    searchBtn.addEventListener("click",()=>{
+        clearModalContent();
+        addSearchFrmComponentIntoModal();
+        fadeOpenModal();
+        document.querySelector("#searchTxtBx").focus();
+    });
+
+    function addSearchFrmComponentIntoModal() {
+        let searchFrmComponentContent = `
+        <form action="/search" class="flex justify-center items-center text-white w-full">
+            <input type="text" required autocomplete="off" name="q" id="searchTxtBx" class="text-4xl w-[90%] outline-none border-0 bg-transparent" placeholder="Type to Search">
+            <button type="submit"><i class="fa-solid fa-magnifying-glass text-xl"></i></button>
+        </form>`
+
+        modalContent.insertAdjacentHTML("afterbegin", searchFrmComponentContent);
+    }
+
+    //#endregion
+
+</script>

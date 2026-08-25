@@ -1,0 +1,17 @@
+---
+// import LinksPlaceHolder from "../components/linksPlaceHolder.astro";
+import ButtonLinkUI from "../components/ButtonLinkUI.astro";
+import LinksPlaceHolder from "../components/linksPlaceHolder.astro";
+import { getPaths } from "../data/utils";
+import PlainLayout from "../layouts/PlainLayout.astro";
+---
+
+<PlainLayout backgroundImg={getPaths("Asset Images")+"404.avif"} pageMainHeadingtagType="h1" isMainHeadingDoubleLined={true} pageHeadingText="404 Not Found" pageSmallText="Looks like the page you landed on is gone..." title="Page not found">
+    
+    <p slot="heroSection">The page you are looking for does not exist or it may be deleted...</p>
+    
+      <LinksPlaceHolder position="center" Classes="gap-3 my-5 w-full">
+        <ButtonLinkUI isBgColored={true} iconClass="fa-solid fa-house" isLeftIcon={true} action="/">Home</ButtonLinkUI>
+      </LinksPlaceHolder>
+      
+</PlainLayout>

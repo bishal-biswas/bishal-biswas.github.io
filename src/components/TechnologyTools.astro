@@ -1,0 +1,40 @@
+---
+//Component Imports
+import HeadingText from "../components/headingText.astro";
+import { getPaths } from "../data/utils";
+interface Props {
+    HeadlineText: String;
+    technologyToolList: {
+        technologyTitle: string;
+        technologyLogoImage: string;
+        isTechStack: boolean;
+    }[];
+}
+
+const { HeadlineText, technologyToolList } = Astro.props;
+---
+
+<div class="technology-tools-wrapper flex flex-wrap gap-3 justify-evenly items-center mb-5 mt-14 animate-on-scroll"
+>
+    <HeadingText headText={HeadlineText} verticalMarginClass="mb-5" />
+    <div
+        class="skills-wrapper w-full flex lg:justify-center justify-around items-center flex-wrap md:gap-4"
+    >
+        {
+            technologyToolList.map((technology) => technology.isTechStack && (
+                <div class="skills group w-1/4 md:w-[17%] size-[17%] p-2 flex flex-col justify-center items-center rounded-lg dark:hover:bg-dark-teal hover:bg-dark-teal">
+                    <div class="imageHolder mb-2 size-14 lg:size-20 rounded-full bg-lite-green flex justify-center items-center shadow-lite-green shadow-2xl">
+                        <img
+                            src={getPaths("Skills") + technology.technologyLogoImage}
+                            alt={technology.technologyTitle}
+                            class="w-7/12"
+                        />
+                    </div>
+                    <span class="text-sm line-clamp-1 group-hover:font-semibold">
+                        {technology.technologyTitle}
+                    </span>
+                </div>
+            ))
+        }
+    </div>
+</div>

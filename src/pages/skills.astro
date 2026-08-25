@@ -1,0 +1,104 @@
+---
+import ColumnLayout from "../layouts/ColumnLayout.astro";
+import {
+    skillsStats,
+    employmentData,
+    educationData,
+    certificateData,
+    technologyData,
+} from "../data/site-data/skills";
+import PraiseCards from "../components/PraiseCards.astro";
+import TimeLine from "../components/TimeLine.astro";
+import CertificateSlider from "../components/CertificateSlider.astro"
+import TechnologyTools from "../components/TechnologyTools.astro"
+import { getPaths } from "../data/utils";
+import { pageData } from "../data/site-data/pageData";
+
+const pageContent = pageData.filter(page => page.pageTitle == "Skills")[0];
+
+---
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+<ColumnLayout
+    title="Skills"
+    pageSmallText = {pageContent.pageSmallText}
+    pageHeadingText = {pageContent.pageHeadingText}
+    pageMainHeadingtagType = "h1" 
+    isMainHeadingDoubleLined = {true} 
+    isBreadcrumbShown = {true}
+    isSwiperRequired = {true}
+    backgroundImg={getPaths("Asset Images") + "bg4.webp"}>
+    
+    <!-- Add Breadcrumbs here in "heroSection" Slot -->
+
+    <div class="praiseCards-holder w-full flex flex-wrap gap-3 justify-evenly items-center mb-5">
+        {
+            skillsStats.map((cards) =>
+                <PraiseCards 
+                    iconClass={cards.iconClass}
+                    value={cards.value}
+                    textData={cards.textData}>
+                </PraiseCards>
+            )
+        }
+    </div>
+
+    <TimeLine timeLineHeadlineText="Employment History" listData={employmentData}></TimeLine>
+
+    <TimeLine timeLineHeadlineText="Education History" listData={educationData}></TimeLine>
+
+    <CertificateSlider certificateHeadlineText="Certificates" certificateData={certificateData}></CertificateSlider>
+    
+    <TechnologyTools HeadlineText="I have been working with" technologyToolList={technologyData}></TechnologyTools>
+    
+</ColumnLayout>
+
+<script is:inline src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script is:inline>
+    // Function to decode HTML entities
+    function decodeHtmlEntities(str) {
+        const textArea = document.createElement("textarea");
+        textArea.innerHTML = str;
+        return textArea.value;
+    }
+
+    // Update captions for Fancybox
+    document.querySelectorAll("[data-fancybox]").forEach((element) => {
+        const encodedCaption = element.getAttribute("data-caption");
+        if (encodedCaption) {
+            const decodedCaption = decodeHtmlEntities(encodedCaption);
+            element.setAttribute("data-caption", decodedCaption); // Update the attribute
+        }
+    });
+
+    Fancybox.bind('[data-fancybox]', {
+      //
+    });    
+  </script>
+<script is:inline>
+    const accordionButtons = document.querySelectorAll('.accordian-toggleBtn');
+
+    accordionButtons.forEach(accordionBtn => {
+        accordionBtn.addEventListener("click", ()=>{
+            toggleAccordion(accordionBtn);
+        })
+    });
+
+    function toggleAccordion(accordionBtnClicked) {
+        accordionBtnClicked.querySelector("i").classList.toggle("-rotate-180");
+        accordionContent = accordionBtnClicked.parentElement.nextElementSibling;
+        if (accordionContent.classList.contains('h-0')) {
+            // Accordion is closed, so expand it
+
+            accordionContent.classList.remove('h-0', 'opacity-0', 'p-0');
+            accordionContent.classList.add('h-auto', 'p-2', 'opacity-100');
+        } else {
+            // Accordion is open, so collapse it
+
+            accordionContent.classList.remove('h-auto', 'p-2', 'opacity-100');
+            accordionContent.classList.add('h-0', 'opacity-0', 'p-0');
+        }
+    }
+</script>

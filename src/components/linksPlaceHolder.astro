@@ -1,0 +1,16 @@
+---
+interface Props{
+    position?:String, 
+    Classes: String
+}
+const { position = "center" , Classes} = Astro.props;
+---
+<div 
+    class:list={[
+        "CTA flex flex-wrap items-center",
+        `justify-${position}`,
+        Classes
+    ]}
+>
+    <slot/>
+</div>

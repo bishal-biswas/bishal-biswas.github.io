@@ -1,0 +1,43 @@
+@import "tailwindcss";
+@plugin '@tailwindcss/typography';
+
+/* re-create your old `darkMode: "class"` behavior */
+@custom-variant dark (&:is(.dark *));
+
+@layer base {
+  * {
+    @apply transition-colors duration-300 ease-in-out;
+  }
+}
+
+@theme {
+  --color-body-bg: var(--body-bg);
+  --color-body-bg-2: var(--body-bg-2);
+  --color-dark-teal: var(--dark-teal-color);
+  --color-font-white: var(--font-white-color);
+  --color-font-gray: var(--font-gray-color);
+
+  /* these aren't dark/light dependent, so just set them directly */
+  --color-lite-green: #5fb353;
+  --color-lite-green-2: #72eb6c;
+  --color-dark-green: #548f4a;
+}
+
+/* light values (your "light" keys) */
+:root {
+  --body-bg: ; /* you left this blank in the original too */
+  --body-bg-2: #dedede;
+  --dark-teal-color: #fcfcfe;
+  --font-white-color: #fcfcfe;
+  --font-teal-color: #00283a;
+  --font-gray-color: #565658;
+}
+
+/* dark values (your "dark" keys) */
+.dark {
+  --body-bg: #00151f;
+  --body-bg-2: #02162b;
+  --dark-teal-color: #00283a;
+  --font-white-color: #fcfcfe;
+  --font-gray-color: #a6b2b8;
+}

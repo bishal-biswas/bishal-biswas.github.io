@@ -1,0 +1,71 @@
+---
+import PlainLayout from "../layouts/PlainLayout.astro";
+import { getPaths } from "../data/utils";
+import { personaInfo } from "../data/site-data/profile";
+const personInfo = personaInfo;
+
+---
+
+<PlainLayout 
+title = {"About"}
+metaDescription = {"I'm Bishal Biswas - a Software and a web developer, blogger and Learner. Welcome to my corner of the internet!"}
+isMainHeadingDoubleLined = {}
+pageType = "project"
+pageHeadingText = {"I'm Bishal Biswas - a Software and a web developer."}
+pageMainHeadingtagType = {"h1"}
+backgroundImg = {"https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLkvc.png"}
+>
+    <div class="content-placeholder">
+        <article>
+            <div class="flex md:flex-row flex-col items-center gap-10 mb-10">
+                <span class="lg:h-[520px] lg:min-w-[434px] block animate-on-scroll">
+                    <img src="https://bishal-biswas.github.io/site/Assets/images/photo2.png" alt="Bishal Biswas" class="rounded-lg size-full border-lite-green border-4">
+                </span>
+                <span class="flex gap-3 flex-col animate-on-scroll">
+                    <h2 class="font-semibold text-2xl">Let me introduce myself.</h2>
+                    <p class="leading-7 text-xl">Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero quo voluptatem accusantium, sunt rem quod quas porro repellat nostrum nemo nesciunt sed omnis qui cum, consequuntur nam aliquam, expedita quaerat?
+                    Minus aliquid provident voluptatibus sed qui eum totam ducimus, nihil similique dolor cumque impedit reiciendis ratione nam consequuntur culpa optio neque! Velit est ducimus temporibus! Nemo beatae dicta est et!</p>
+    
+                    <p class="leading-7 text-xl">Temporibus repudiandae deserunt, cupiditate beatae quae, quasi quia ipsam omnis fuga molestias, laborum excepturi minus. Eveniet debitis repellendus quae ad, eaque cupiditate enim. Enim deleniti, ipsa rerum fugit maiores vitae.
+                        Necessitatibus neque ea corrupti ut voluptatem! Quasi officia error voluptatum, nihil quas impedit, minus optio fugit ut mollitia minima maiores harum non distinctio eum aperiam sunt obcaecati quos, voluptatibus sit.</p>
+                </span>
+            </div>
+    
+            <span class="flex gap-3 flex-col mb-10 animate-on-scroll">
+                <h2 class="font-semibold text-2xl">About this Site.</h2>
+                <p class="leading-7 text-xl">My Website (Blog) is a educational and computer technology related blogsite which aims to share different kinds of Content related to Web Designing, Web Development and programming. This site is very new and is working on producing more helpful content for its visitors. The owner aims to elaborate and explain the content by doing reserch on it so that viewers get better understanding. The content is produced by the sole owner of this Blog Bishal Biswas.</p>
+    
+                <p class="leading-7 text-xl">Interest of this blog is : <b>Web Designing</b>, <b>Web Development</b>, <b>Javascript Frameworks</b>, <b>Projects</b> and many more.</p>
+            </span>
+    
+            <div class="headshot_socials flex justify-center items-center animate-on-scroll">
+                <div class="wrapper w-fit gap-6 p-5 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]">
+                    
+                    <div class="profile-data flex flex-col justify-center items-center gap-3">
+                        <span class="relative flex justify-center items-center">
+                            <span class="size-[85px] lg:size-[105px] absolute shadow-lg shadow-lite-green bg-lite-green rounded-full block z-0"></span>
+                            <img
+                                src={getPaths("Asset Images")+"ProPic.jpg"}
+                                alt="profile photo"
+                                class="rounded-full relative size-20 lg:size-28 border-2 border-lite-green z-[1]"
+                            />
+                            
+                        </span>
+                    </div>
+        
+                    <div class="widget-container socialLinks flex flex-col justify-center items-center gap-3 w-fit">
+                        <span class="Name font-bold text-2xl">{personInfo.fullName}</span>
+                        <ul class="socials flex gap-5 flex-wrap text-3xl">
+                            <li><a href=""><i class="fab fa-facebook"></i></a></li>
+                            <li><a href=""><i class="fab fa-twitter"></i></a></li>
+                            <li><a href=""><i class="fab fa-linkedin"></i></a></li>
+                            <li><a href=""><i class="fab fa-github"></i></a></li>
+                        </ul>
+                    </div>
+    
+                </div>
+            </div>
+        </article>
+
+    </div>
+</PlainLayout>

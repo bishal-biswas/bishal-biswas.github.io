@@ -1,0 +1,56 @@
+---
+import ProductCard from "../components/ProductCard.astro";
+import PlainLayout from "../layouts/PlainLayout.astro";
+
+interface ProductSchema {
+    productTitle: string;
+    productDescription: string;
+    productImage: string;
+    productLink: string;
+    productCategory: string;
+}
+
+import { products } from "../data/site-data/content";
+import { pageData } from "../data/site-data/pageData";
+
+// Group products
+const groupedProducts: Record<string, ProductSchema[]> = products.reduce((acc:any, product:any) => {
+    if (!acc[product.productCategory]) {
+        acc[product.productCategory] = [];
+    }
+    acc[product.productCategory].push(product);
+    return acc;
+}, {} as Record<string, ProductSchema[]>);
+
+const pageContent = pageData.filter(page => page.pageTitle == "Products")[0];
+
+---
+
+<PlainLayout
+    pageType="website"
+    pageSmallTextBelow={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImgClass="object-fill"
+    backgroundImg="/assets/images/footer_rays.cafe5d09.png"
+>
+
+    <div class="wrapper">
+        
+        {
+            Object.entries(groupedProducts).map(([category, products]) => (
+                <h2 class="text-2xl my-4 underline animate-on-scroll">{category}</h2>
+                <div class="flexbox flex gap-4 flex-wrap mb-10">
+                    {products.map((product) => (
+                        <ProductCard 
+                            prdLink={product.productLink} 
+                            prdTitle={product.productTitle} 
+                            prdDescription={product.productDescription} 
+                            prdImageUrl={product.productImage} />
+                    ))}
+                </div>
+            ))
+        }
+        
+    </div>
+</PlainLayout>

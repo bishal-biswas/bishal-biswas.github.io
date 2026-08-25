@@ -1,0 +1,76 @@
+---
+//Component Imports
+import HeadingText from "../components/headingText.astro";
+import { getPaths } from "../data/utils";
+
+interface Props {
+    certificateHeadlineText: String;
+    certificateData: {
+        imageFilePath: string;
+        title: string;
+    }[];
+}
+getPaths
+
+const { certificateHeadlineText, certificateData } = Astro.props;
+---
+<div class="certificate-wrapper flex flex-wrap gap-3 justify-evenly items-center mb-5 relative w-full mt-14 animate-on-scroll">
+    <HeadingText
+        headText={certificateHeadlineText}
+        verticalMarginClass="mb-5"
+    />
+
+    <div class="certificate-wrapper w-full ">
+        <swiper-container
+            class="mySwiper" init="false"
+            class="w-full" >
+            {
+                certificateData.map((certificate) => (
+                    <swiper-slide>
+                        <div class="article-card rounded-lg shadow-2xl h-full">
+                            <a
+                                href={getPaths("Certificate")+certificate.imageFilePath}
+                                class="article-thumbnail h-full block"
+                                data-fancybox="certificate"
+                                data-caption={certificate.title} >
+                                <img
+                                    src={getPaths("Certificate")+certificate.imageFilePath}
+                                    alt={certificate.title}
+                                    class="rounded-lg w-full object-fill lg:h-[140px] h-[200px]"
+                                />
+                            </a>
+                        </div>
+                    </swiper-slide>
+                ))
+            }
+        </swiper-container>
+    </div>
+</div>
+
+<script is:inline>
+    const swiperEl2 = document.querySelector(".certificate-wrapper swiper-container");
+    Object.assign(swiperEl2, {
+        slidesPerView: 2.7,
+        spaceBetween: 30,
+        breakpoints: {
+            "@0.00": {
+                slidesPerView: 1.1,
+                spaceBetween: 10,
+            },
+            "@0.75": {
+                slidesPerView: 2.1,
+                spaceBetween: 20,
+            },
+            "@1.00": {
+                slidesPerView: 1.6,
+                spaceBetween: 40,
+            },
+            "@1.50": {
+                slidesPerView: 2.7,
+                spaceBetween: 30,
+            },
+        },
+    });
+
+    swiperEl2.initialize();
+</script>

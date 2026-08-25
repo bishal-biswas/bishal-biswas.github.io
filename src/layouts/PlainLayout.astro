@@ -1,0 +1,110 @@
+---
+import "../global.css"
+import Navbar from '../components/Navbar.astro';
+import HeroSection from '../components/HeroSection.astro';
+import BreadcrumbsHolder from '../components/BreadcrumbsHolder.astro';
+import Footer from '../components/Footer.astro';
+import HeadTag from '../components/HeadTag.astro';
+import Modal from '../components/Modal.astro';
+import Notify from '../components/Notify.astro';
+
+interface Props {
+    title ?: string,
+    isHeroContentSectionShown ?: boolean,
+    metaDescription ?: string
+    pageSmallText ?: string,
+    pageSmallTextBelow ?: string,
+    isPageSmallTextDark ?: boolean
+    isMainHeadingDoubleLined ?: boolean,
+    isMainHeadinglarge ?: boolean,
+    isBreadcrumbShown ?: boolean,
+    isHeadContentAbove ?: boolean,
+    pageHeadingText : string
+    pageMainHeadingtagType : string,
+    pageType ?: string,
+    backgroundImg ?: string
+    backgroundImgClass ?: string
+    isLargeWidth ?: boolean
+    isSwiperRequired ?: boolean
+}
+
+const {title = "Page Title", 
+metaDescription="Some Page Description", 
+pageSmallText, pageSmallTextBelow, isPageSmallTextDark = false, 
+pageHeadingText, pageMainHeadingtagType="p", 
+isMainHeadingDoubleLined = false, isMainHeadinglarge = false, isBreadcrumbShown, pageType,
+isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isSwiperRequired = false
+} = Astro.props;
+
+let {backgroundImg, backgroundImgClass} = Astro.props;
+let isDarkImage;
+if(pageType == "blog"){
+    isDarkImage = true;
+}
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<HeadTag {title} {metaDescription}>
+    {
+        isSwiperRequired &&
+        <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+    }
+</HeadTag>
+<body class="bg-body-bg lg:p-3 ">
+    <Modal />
+    <Notify />
+    
+    <span class="scrollUp"></span>
+    <div class="dark:bg-body-bg-2 bg-body-bg-2 w-full flex flex-col items-center min-h-[90vh] rounded-md ">
+        <Navbar />
+
+        <main class="dark:bg-body-bg-2 bg-body-bg-2 flex flex-col justify-center items-center w-full z-[1] rounded-md" class:list={[
+            isLargeWidth ? "lg:max-w-[1280px]" : "lg:max-w-[1210px]"
+        ]}>
+            
+            <HeroSection 
+                {isHeroContentSectionShown}
+                imgFile={backgroundImg}
+                ImgClass={backgroundImgClass}
+                isPlainLayout={true}
+                smallText={pageSmallText || ""}
+                {isPageSmallTextDark}
+                descriptionText={pageSmallTextBelow}
+                mainHeadingText ={pageHeadingText}
+                MainHeadingtagType={pageMainHeadingtagType}
+                mainHeadingSize={isMainHeadinglarge ? "large" : ""}
+                isDarkImg = {isDarkImage}
+                {pageType}
+                {isMainHeadingDoubleLined}>
+                
+                {
+                    isHeadContentAbove &&
+                    <slot name="heroSection" />
+                }
+                
+                {
+                    isBreadcrumbShown && <BreadcrumbsHolder />
+                }
+                
+                {
+                    !isHeadContentAbove &&
+                    <slot name="heroSection" />
+                }
+            </HeroSection>
+            <div class="content-wrapper flex flex-col gap-8 w-full z-[2] dark:text-teal-white dark:text-font-white px-5 mb-12" class:list={[
+                pageType == "blog" ? "lg:pt-40 pt-20" : "lg:px-12 pt-6"
+                ]}>
+                <slot />
+
+                <Footer />
+            </div>
+
+        </main>
+    </div>
+
+    <div id="gradient-follow"></div>
+
+    <script is:inline src="/assets/scripts/main.js" data-astro-rerun></script>
+</body>
+</html>

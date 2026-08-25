@@ -1,0 +1,309 @@
+---
+// import LinksPlaceHolder from "../components/linksPlaceHolder.astro";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { getPaths } from "../../data/utils";
+import { technologyData } from "../../data/site-data/skills";
+import { pageData } from "../../data/site-data/pageData";
+
+const portfolioEntries = await getCollection('portfolio');
+
+portfolioEntries.sort(
+        (a:CollectionEntry<"portfolio">, b:CollectionEntry<"portfolio">) =>
+            new Date(b.data.publishDate).valueOf() -
+            new Date(a.data.publishDate).valueOf(),
+    );
+
+let portfolioData = portfolioEntries.map(({ id, data }) => ({ id, data }))
+
+const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
+
+---
+
+<PlainLayout
+    isBreadcrumbShown={true}
+    pageMainHeadingtagType="h1"
+    isMainHeadingDoubleLined={true}
+    pageSmallText={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    title="Portfolio"
+    backgroundImg={getPaths("Asset Images") + "bg6.webp"}
+>
+    <!-- Hero Content -->
+
+    <div class="project-usertools sticky top-[10vh] z-[2] flex justify-between items-center w-full lg:mt-8 p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be] animate-on-scroll">
+        <div id="categoryBox" class="project-Category relative flex justify-start items-center gap-4 flex-wrap w-11/12 font-semibold transition-all duration-500 ease-in-out"></div>
+        <span data-put-this-class="flex" class="hidden justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
+            <i class="fa-solid fa-table-layout"></i>
+        </span>
+    </div>
+    
+    <div id="masonry" class="masonry-layout flex justify-center gap-7"></div>
+    
+    <div class="btnHolder grid place-items-center">
+        <ButtonLinkUI isButton={true} id="loadMoreBtn" iconClass="fa-solid fa-ellipsis" isBgColored={true}>
+            Load More
+        </ButtonLinkUI>
+
+        <span id="loadProgressBtn" class="hidden p-1 rounded-full size-9 flex justify-center items-center bg-dark-teal text-white">
+            <i class="fa-solid fa-spinner text-xl animate-spin"></i>
+        </span>
+    </div>
+</PlainLayout>
+<script is:inline type="text/javascript" src="/assets/scripts/modernizr.custom.97074.js"></script>
+<script is:inline type="text/javascript" src="/assets/scripts/jquery.min.js"></script>
+<script is:inline type="text/javascript" src="/assets/scripts/jquery.hoverdir.js"></script>
+
+<script is:inline type="text/javascript" define:vars={
+    {
+        allPortfolioData : portfolioData, 
+        featureImgPath: getPaths("Portfolio"), 
+        skillImgPath: getPaths("Skills"),
+        siteData : { technologyData }
+    }}>
+
+    let displayedTill = 3;
+    const masonryContainer = document.getElementById('masonry');
+    const categoryBoxContainer = document.getElementById('categoryBox');
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+
+    // Function to get the number of columns based on window width
+    const getColumnCount = () => {
+        const width = window.innerWidth;
+        if (width >= 1700) return 4;
+        if (width >= 1000) return 3;
+        if (width >= 992) return 3;
+        if (width >= 768) return 2;
+        return 1;
+    };
+
+    // Function to clear the existing masonry columns
+    const clearMasonry = () => {
+        while (masonryContainer.firstChild) {
+            masonryContainer.removeChild(masonryContainer.firstChild);
+        }
+    };
+
+    const clearCategory = () => {
+        while (categoryBoxContainer.firstChild) {
+            categoryBoxContainer.removeChild(categoryBoxContainer.firstChild);
+        }
+    };
+
+    // Function to build the masonry layout
+    const buildMasonry = (itemsList, limit) => {
+        const columnCount = getColumnCount();
+        clearMasonry();
+
+        // Create column elements
+        const columns = [];
+        for (let i = 0; i < columnCount; i++) {
+            const column = document.createElement('div');
+            column.classList.add('column');
+            masonryContainer.appendChild(column);
+            columns.push(column);
+        }
+
+        // Distribute items into columns (basic column distribution)
+        for (let i = 0; i < limit; i++) {
+            const masonryItem = document.createElement('div');
+            masonryItem.classList.add('masonry-item', "projectHolder", "relative", "items", "rounded-xl", "break-inside-avoid", "overflow-hidden", "shadow-lg", "dark:shadow-[#2ea8d454]", "shadow-dark-green",  "hover:shadow-lite-green");
+            
+            let content = `
+                <div class="details z-[1] select-none overflow-hidden absolute w-full h-full flex flex-col justify-between p-4 gap-2 items-center bg-gradient-to-br from-[#70ba658d] to-[#00283a90]">
+                    <div class="top">
+                        <a href="/portfolio/${itemsList[i].id}" class="group hover:text-lite-green-2 font-semibold text-left w-fit cursor-pointer text-xl flex items-center gap-2">${itemsList[i].data.title}
+                            <span class="flex justify-center items-center">
+                                <span class="size-10 text-xl flex justify-center items-center rounded-full border-2 border-transparent group-hover:text-white group-hover:border-font-white group group-hover:bg-lite-green transition-all ease-in-out" ><i class="fa-solid fa-circle-arrow-up rotate-135 group-hover:rotate-90"></i></span>
+                            </span>    
+                        </a>
+                        <p class="line-clamp-4 text-sm pt-1">${itemsList[i].data.projectBriefDescription}</p>
+                    </div>
+                
+                    <div class="bottom w-full flex items-center gap-3 ">
+                    
+                        <div class="tools flex gap-2 overflow-x-auto overflow-hidden w-9/12 py-2">
+                            ${makeToolsUsedComponent(itemsList[i].data.techStack)}
+                        </div>
+                        
+                    </div>
+                </div>
+                `
+                if(itemsList[i].data.isStatus)
+                    content += `<span class="absolute rotate-45 bg-[#f97316] -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white">${itemsList[i].data.isStatus}</span>`
+                content += `<img class="w-full object-cover object-top min-h-[200px] max-h-[350px]" loading="lazy" src=${featureImgPath + itemsList[i].data.featuredImage}>`
+
+            masonryItem.insertAdjacentHTML("afterbegin", content)
+
+            // masonryItem.style.opacity = '0';
+            masonryItem.setAttribute("data-category", itemsList[i].data.projectType)
+            columns[i % columnCount].appendChild(masonryItem);
+
+            void masonryItem.offsetWidth;
+            masonryItem.style.animation = 'fadeIn 0.6s ease forwards';
+        }
+        enableHoverDirection();
+    };
+
+    // Call buildMasonry on page load
+    buildMasonry(allPortfolioData, displayedTill);
+
+    // Rebuild masonry layout when the window is resized
+    let previousWidth = window.innerWidth;
+
+    window.addEventListener('resize', () => {
+        const currentWidth = window.innerWidth;
+
+        // Check if the width has changed
+        if (currentWidth !== previousWidth) {
+            buildMasonry(allPortfolioData, displayedTill);
+            previousWidth = currentWidth; // Update the previous width
+        }
+    });
+    createCategoryButtons();
+
+    loadMoreBtn.addEventListener("click", ()=>{
+        const loadProgressBtn = document.querySelector("#loadProgressBtn");
+
+        loadProgressBtn.classList.remove("hidden")
+        loadMoreBtn.classList.add("hidden");
+        setTimeout(() => {
+            loadProgressBtn.classList.add("hidden")
+            loadMoreBtn.classList.remove("hidden");
+            incrementCardsLimit(allPortfolioData,3)
+        }, 1500);
+
+    })
+
+    //#region Utilities Functions
+    function createCategoryButtons() {
+        let categoryListArray = [];
+        const allObjects = document.querySelectorAll(".masonry-item");
+        allObjects.forEach(object => {
+            if (!categoryListArray.includes(object.dataset.category))
+                categoryListArray.push(object.dataset.category);
+        });
+
+        //Creating Category Buttons
+        clearCategory()
+        const categoryBtn = document.createElement('button');
+        categoryBtn.classList.add("categBtn", "active");
+        categoryBtn.classList.add("text-teal-white", "dark:text-font-white", "capitalize", "cursor-pointer", "px-3", "py-1", "bg-body-bg", "bg-gradient-to-r", "from-lite-green", "to-[#257d18]", "text-base", "rounded-full")
+        categoryBtn.type = "button";
+        categoryBtn.textContent = "All";
+        categoryBoxContainer.append(categoryBtn);
+
+        categoryListArray.forEach(category => {
+            const categoryBtn = document.createElement('button');
+            categoryBtn.classList.add("categBtn");
+            categoryBtn.classList.add("text-teal-white", "dark:text-font-white", "capitalize", "cursor-pointer", "px-3", "py-1", "bg-body-bg", "hover:bg-gradient-to-r", "from-lite-green", "to-[#257d18]", "text-base", "rounded-full")
+            categoryBtn.type = "button";
+            categoryBtn.textContent = category;
+            categoryBoxContainer.append(categoryBtn);
+        });
+
+        const allCategoryBtns = categoryBoxContainer.querySelectorAll("button");
+        allCategoryBtns.forEach(btns => {
+            btns.addEventListener("click", ()=>{
+                
+                allCategoryBtns.forEach(btn=>{
+                    btn.classList.add("hover:bg-gradient-to-r");
+                    btn.classList.remove("bg-gradient-to-r");
+                })
+                btns.classList.remove("hover:bg-gradient-to-r");
+                btns.classList.add("bg-gradient-to-r");
+                filterCards(btns.textContent);
+            })
+        });
+    }
+
+    function makeToolsUsedComponent(toolsList) {
+        let toolElement = "";
+        for (let i = 0; i < toolsList.length; i++) {
+            toolElement+= `<img class="size-9 rounded" src=${skillImgPath + getTechStackLogo(toolsList[i])} alt=${toolsList[i]} title=${toolsList[i]} />`
+        }
+        return toolElement
+    }
+
+    function filterCards(category) {
+        let cardsToShow = [];
+        
+        for (let i = 0; i < displayedTill; i++) {
+            if(category === "All")
+                cardsToShow.push(allPortfolioData[i]);
+            else if(allPortfolioData[i].data.projectType === category)
+                cardsToShow.push(allPortfolioData[i]);
+        }
+
+        buildMasonry(cardsToShow, cardsToShow.length);
+    }
+
+    function incrementCardsLimit(items, limit){
+        if(displayedTill < items.length){
+            if((displayedTill + limit) <= items.length)
+                displayedTill += limit;
+            else
+                displayedTill == items.length;
+        }
+        
+        buildMasonry(items, displayedTill);
+        const allCategoryBtns = categoryBoxContainer.querySelectorAll("button");
+        allCategoryBtns.forEach(btn=>{
+            btn.classList.add("hover:bg-gradient-to-r");
+            btn.classList.remove("bg-gradient-to-r");
+
+            if(btn.innerText.toLowerCase() === "all"){
+                btn.classList.add("bg-gradient-to-r");
+            }
+        })
+        if(!(displayedTill < allPortfolioData.length))
+        {
+            loadMoreBtn.classList.add("hidden")
+        }
+        createCategoryButtons();
+    }
+    
+    function getTechStackLogo(techName) {
+        for (let i = 0; i < siteData.technologyData.length; i++) {
+            if(siteData.technologyData[i].technologyTitle.toLocaleLowerCase().includes(techName.toLocaleLowerCase()))
+                return siteData.technologyData[i].technologyLogoImage
+        }
+    }
+
+    function enableHoverDirection() {
+        $(" .masonry-layout .column > div.projectHolder ").each(function () {
+            $(this).hoverdir();
+        });
+    }
+    //#endregion
+</script>
+
+<style is:inline>
+    .column {
+        width: 32%;
+        flex-grow: 1;
+        display: flex;
+        /* border-left: 1px solid; */
+        /* border-right: 1px solid; */
+        flex-direction: column;
+        gap: 28px;
+    }
+    .masonry-item {
+        transform: scale(1);
+        opacity: 0;
+        animation: fadeIn 0.6s ease forwards;
+    }
+
+    @keyframes fadeIn {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+</style>

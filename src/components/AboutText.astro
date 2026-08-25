@@ -1,0 +1,22 @@
+---
+import { aboutMeSection } from "../data/site-data/profile"
+import HeadingText from "./headingText.astro"
+---
+<!-- About Introduction -->
+<div class="about mt-14 animate-on-scroll">
+    <HeadingText headText={aboutMeSection.titleText}></HeadingText>
+
+    <div
+        class="cards relative font-semibold flex flex-col items-center gap-5 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-6 px-10 shadow-sm shadow-[#000000be] mt-10"
+    >
+        <p>
+            {aboutMeSection.textContent}
+            {
+                aboutMeSection.linkToAboutMePage != "" &&
+                <span>&nbsp;</span><a class="text-lite-green" href={aboutMeSection.linkToAboutMePage}>{aboutMeSection.linkToAboutMePageText}...</a>
+            }
+        </p>
+        <i class="absolute text-3xl fa-duotone fa-quote-right right-3 bottom-3"
+        ></i>
+    </div>
+</div>

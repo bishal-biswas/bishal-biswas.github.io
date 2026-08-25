@@ -1,0 +1,41 @@
+---
+import ButtonLinkUI from "../components/ButtonLinkUI.astro";
+import PlainLayout from "../layouts/PlainLayout.astro";
+---
+
+<PlainLayout
+    pageType="project"
+    pageSmallTextBelow=" "
+    pageMainHeadingtagType="h1"
+    pageHeadingText="Search Results"
+    backgroundImgClass="object-fill"
+    backgroundImg="https://braydoncoyer-dev-git-v3-braydon-coyer.vercel.app/_next/static/media/rays.426980b9.png"
+>
+    <div id="searchResultsContainer" class="searchResultsContainer">
+
+    </div>
+    <div class="wrapper grid place-items-center py-3">
+        <ButtonLinkUI isBgColored={true} iconClass="fa-solid fa-house" isLeftIcon={true} action="/">Home</ButtonLinkUI>
+    </div>
+</PlainLayout>
+
+<script is:inline>
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    const params = Object.fromEntries(urlSearchParams.entries());
+
+    const headingTxt = document.querySelector(".heroSection-content h1");
+    const paraTxt = document.querySelector(".heroSection-content p");
+
+    headingTxt.textContent += ` for "${params.q}"`;
+    paraTxt.textContent = ``;
+
+    fetch("/api/articles.json").then(Response => Response.json()).then(data =>{
+        console.log(data);
+    })
+    fetch("/api/codeHelp.json").then(Response => Response.json()).then(data =>{
+        console.log(data);
+    })
+    fetch("/api/portfolio.json").then(Response => Response.json()).then(data =>{
+        console.log(data);
+    })
+</script>

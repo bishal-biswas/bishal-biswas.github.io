@@ -1,0 +1,15 @@
+---
+interface Props {
+    cardTitle:String,
+    cardIconClass:String,
+}
+const {cardTitle,  cardIconClass} = Astro.props
+---
+
+<div class="cards flex flex-col gap-5 lg:w-[48%] w-full dark:bg-dark-teal bg-dark-teal dark:text-font-gray text-font-gray rounded-lg p-5 shadow-md shadow-[#000000be] animate-on-scroll">
+    <div class="heading flex items-center lg:items-start gap-5 flex-row lg:flex-col ">
+        <i class="text-5xl" class:list={[cardIconClass]}></i>
+        <span class="cardsLabel w-6/12 uppercase font-semibold">{cardTitle}</span>
+    </div>
+    <slot></slot>
+</div>

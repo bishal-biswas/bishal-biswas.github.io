@@ -1,0 +1,32 @@
+---
+import { personaInfo } from '../data/site-data/profile';
+
+interface Props {
+    isVertical ?: boolean
+}
+const personInfo = personaInfo;
+
+const {isVertical = true} = Astro.props;
+---
+{
+    isVertical ?
+    <div class="widget-container socialLinks flex lg:flex-row flex-col justify-center items-center gap-3 w-full p-3 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]">
+        <ul class="socials flex gap-5 flex-wrap text-lg">
+            {
+                personInfo.socialLinks.map((link)=>(
+                    <li><a class="hover:text-lite-green" href={link.url}><i class:list={[link.iconClass]}></i></a></li>
+                ))
+            }
+        </ul>
+    </div>
+    :
+    <div class="widget-container socialLinks flex lg:flex-row flex-col justify-center items-center gap-3 w-full p-3 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]">
+        <ul class="socials flex gap-5 flex-col text-lg w-full">
+            {
+                personInfo.socialLinks.map((link)=>(
+                    <li class="capitalize rounded-full dark:bg-body-bg-2 bg-body-bg-2 p-2 px-4"><a class="size-full block text-center" href={link.url}><i class="mr-2" class:list={[link.iconClass]}></i>follow on {link.title}</a></li>
+                ))
+            }
+        </ul>
+    </div>
+}

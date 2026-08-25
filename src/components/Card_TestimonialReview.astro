@@ -1,0 +1,34 @@
+---
+interface Props {
+    reviewText: string,
+    clientName: string,
+    clientImg: string,
+    ratingStar: number,
+}
+
+const {reviewText, clientName, clientImg, ratingStar} = Astro.props;
+
+let stars : any[]=[];
+for (let i = 0; i < ratingStar; i++) {
+    stars.push(``)
+}
+---
+<!-- w-[30%] projectHolder relative items rounded-xl shadow-lg hover:shadow-lite-green -->
+<div class="reviewCard break-inside-avoid overflow-hidden relative h-min flex flex-col gap-3 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-5 shadow-md shadow-[#000000be] animate-on-scroll">
+    <i class="text-font-gray text-4xl fa-duotone fa-solid fa-quote-left"></i>
+    <span class="content">
+        <p class="text-sm dark:text-font-gray">{reviewText}</p>
+        
+        <span class="flex items-center gap-3 mt-2">
+            <img src={clientImg} alt={clientName} class="rounded-full size-14">
+            <div class="ClientDetails flex flex-col gap-2">
+                <p class="name">{clientName}</p>
+                <span class="stars flex gap-1">
+                    {stars.map((star)=>(
+                        <i class="fa-solid fa-star"></i>
+                    ))}
+                </span>
+            </div>
+        </span>
+    </span>
+</div>

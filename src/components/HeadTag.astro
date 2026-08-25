@@ -1,0 +1,79 @@
+---
+// import ViewTransitions from 'astro/components/ViewTransitions.astro';
+import { SEO } from "astro-seo";
+interface Props {
+    metaDescription: string,
+    title: string
+}
+
+const {metaDescription, title} = Astro.props;
+---
+
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" type="image/webp" href="/favicon.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="generator" content={Astro.generator} />
+    
+    <!-- <title>{title}</title>
+    <meta name="description" content={metaDescription}> -->
+
+    <SEO
+        title={title}
+        description={metaDescription}
+        openGraph={{
+            basic: {
+                title: `${title}`,
+                type: "A type.",
+                image: "https://user-images.githubusercontent.com/5182256/131216951-8f74f425-f775-463d-a11b-0e01ad9fce8d.png",
+            }
+        }}
+        twitter={{
+          creator: "@bishalbiswas"
+        }}
+        extend={{
+          // extending the default link tags
+          link: [{ rel: "icon", href: "/favicon.webp" }],
+          // extending the default meta tags
+          meta: [
+            {
+              name: "twitter:image",
+              content: "https://user-images.githubusercontent.com/5182256/131216951-8f74f425-f775-463d-a11b-0e01ad9fce8d.png",
+            },
+            { name: "twitter:title", content: `${title}` },
+            { name: "twitter:description", content: `${metaDescription}` },
+          ],
+        }}
+    />
+
+    <link rel="stylesheet" href="/assets/styles/main.css">
+    <link rel="stylesheet" href="/assets/styles/styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"/>
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <!-- <ViewTransitions /> -->
+
+    <slot />
+    <script is:inline>
+        if(localStorage.getItem("theme") == null){
+            if(window.matchMedia('(prefers-color-scheme: dark)').matches){
+                localStorage.theme = 'dark'
+                document.querySelector("html").classList.add("dark");
+            }
+            else{
+                localStorage.theme = 'light'
+                document.querySelector("html").classList.remove("dark");
+            }           
+
+            if(localStorage.getItem("theme") == "dark"){
+                document.addEventListener("DOMContentLoaded", ()=>{
+                    document.getElementById('themeToggleCheckbox').checked = true;          
+                })
+            }
+
+        }
+        else{
+            if(localStorage.theme === "dark") document.querySelector("html").classList.add("dark");
+            else document.querySelector("html").classList.remove("dark");
+        }
+    </script>
+</head>

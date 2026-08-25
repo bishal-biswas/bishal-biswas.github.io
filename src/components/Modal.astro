@@ -1,0 +1,72 @@
+---
+import ButtonLinkUI from "./ButtonLinkUI.astro";
+import ContactForm from "./ContactForm.astro";
+
+
+---
+
+<div id="myModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div id="modalBackground"
+        class="fixed inset-0 bg-[#424346bf] backdrop-blur-sm bg-opacity-75 transition-opacity opacity-0 duration-300 ease-out"></div>
+
+    <div class="fixed inset-0 z-10 overflow-y-auto">
+        <div id="modalContainer" class="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+            <div id="modalContent" class="relative transform transition-all delay-150 opacity-0 scale-95 duration-300 ease-out rounded-lg sm:my-8 w-[95%] sm:w-full sm:max-w-3xl">
+
+                <!-- Modal Content Here -->
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<script is:inline>
+    // Get elements
+    const modal = document.getElementById('myModal');
+    const modalBackground = document.getElementById('modalBackground');
+    const modalContainer = document.getElementById('modalContainer');
+    const modalContent = document.getElementById('modalContent');
+    
+    modalContent.addEventListener("click", (event)=>{
+        event.stopPropagation();
+    })
+    modalContainer.addEventListener("click" , ()=> {
+        closeModal()
+    })
+
+    // Close the modal if the user clicks outside the modal content
+    window.addEventListener('click', (event) => {
+        if (event.target === modalBackground) {
+            closeModal() // Trigger the close modal function
+        }
+    });
+
+    function fadeOpenModal() {
+        modal.classList.remove('hidden');
+        // Short delay to ensure the classes are applied after display:block
+        setTimeout(() => {
+            modalBackground.classList.remove('opacity-0');
+            modalBackground.classList.add('opacity-100');
+            modalContent.classList.remove('opacity-0', 'scale-95');
+            modalContent.classList.add('opacity-100', 'scale-100');
+            }, 10); 
+    }
+
+    function closeModal(){
+        // Start opacity and transform animations
+        modalBackground.classList.remove('opacity-100');
+        modalBackground.classList.add('opacity-0');
+        modalContent.classList.remove('opacity-100', 'scale-100');
+        modalContent.classList.add('opacity-0', 'scale-95');
+
+        // After animation ends, hide the modal
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // Duration of animation (300ms)
+        clearModalContent();
+    }
+
+    function clearModalContent() {
+        modalContent.innerHTML = "";
+    }
+</script>

@@ -1,0 +1,17 @@
+---
+import { getCollection } from "astro:content";
+import SinglePageLayout from "../layouts/SinglePageLayout.astro";
+
+export async function getStaticPaths() {
+  const pageEntries = await getCollection('pages');
+  return pageEntries.map(entry => ({
+    params: { slug: entry.data.slug }, props: { entry },
+  }));
+}
+// 2. For your template, you can get the entry directly from the prop
+const { entry } = Astro.props;
+
+---
+<SinglePageLayout title={entry.data.title} >
+    <div class="content" set:html={entry.rendered?.html}></div>
+</SinglePageLayout>

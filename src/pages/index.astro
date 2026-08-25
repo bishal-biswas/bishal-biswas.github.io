@@ -1,17 +1,48 @@
 ---
+import { globalStats } from "../data/site-data/profile";
 
+import ColumnLayout from "../layouts/ColumnLayout.astro";
+import HeroLinks from "../components/HeroLinks.astro";
+import PraiseCards from "../components/PraiseCards.astro";
+import VideoBio from "../components/VideoBio.astro";
+import AboutText from "../components/AboutText.astro";
+import ServicesCards from "../components/ServicesCards.astro";
+import ButtonLinkUI from "../components/ButtonLinkUI.astro";
+import { getPaths } from "../data/utils";
+import { pageData } from "../data/site-data/pageData";
+
+const pageContent = pageData.filter(page => page.pageTitle == "Home")[0];
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<ColumnLayout 
+    title="Bishal Biswas | Portfolio, .Net Developer, Web Developer, Blogger"
+    pageSmallText = {pageContent.pageSmallText}
+    pageHeadingText = {pageContent.pageHeadingText}
+    pageMainHeadingtagType = "h1" 
+    isMainHeadingDoubleLined = {true}
+    backgroundImg={getPaths("Asset Images") + "bg3.webp"}
+    >
+    
+    <HeroLinks position="left" Classes="gap-3 my-10 lg:justify-normal justify-center" slot="heroSection">
+
+        <ButtonLinkUI action="/portfolio">Recent Work</ButtonLinkUI>
+        <ButtonLinkUI action="#" iconClass="fa-solid fa-file">Download Resume</ButtonLinkUI>
+        
+    </HeroLinks>
+    
+    <div class="praiseCards-holder w-full flex flex-wrap gap-3 justify-evenly items-center mb-5">
+        {globalStats.map((cards) =>
+            <PraiseCards 
+                iconClass={cards.iconClass}
+                value={cards.value}
+                textData={cards.textData}>
+            </PraiseCards>)}
+    </div>
+    
+    <VideoBio />
+
+	<AboutText />
+
+    <ServicesCards />
+    
+</ColumnLayout>

@@ -1,0 +1,27 @@
+---
+import { getPaths } from "../data/utils"
+import HeadingText from "./headingText.astro"
+---
+<!-- Video Introduction -->
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"
+/>
+
+<div class="video mt-14 w-full animate-on-scroll">
+    <HeadingText headText="Introduction" TagType="span"/>
+
+    <a aria-label="Intro Video" tabindex="0" href=`${getPaths("Other Files")+"vid.mp4"}` data-fancybox="video" class="video-container relative flex justify-center items-center dark:bg-dark-teal bg-dark-teal rounded-lg text-center shadow-sm shadow-[#000000be] mt-10">
+        <img src={getPaths("Other Files") + "thumbnail.webp"} class="w-full lg:h-96 rounded-lg object-cover" alt={"Introduction video thumbnail Image"}>
+        <span class="animate-ping absolute inline-flex size-14 rounded-full bg-lite-green"></span>
+        <span class="absolute cursor-pointer size-14 flex justify-center items-center rounded-full text-dark-teal bg-lite-green">
+            <i class="fa-solid fa-play"></i>
+        </span>
+    </a>
+</div>
+<script is:inline src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script is:inline>
+    Fancybox.bind("[data-fancybox]", {
+      // Your custom options
+    });
+</script>

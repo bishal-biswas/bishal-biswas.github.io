@@ -1,0 +1,91 @@
+---
+import { footerLinks } from "../data/site-data/navigation";
+
+var currentYear = new Date().getFullYear();
+---
+
+<!-- Footer -->
+<footer class="text-center">
+    <div class=" animate-on-scroll cards w-full uppercase text-xs font-semibold flex flex-col dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-10 shadow-sm shadow-[#000000be] my-5" >
+        
+        <span class="flex justify-between flex-col lg:flex-row lg:gap-5 gap-3">
+            <span class="footerNote">
+                Made with ❤️ by Bishal Biswas
+            </span>
+            <span class="contactInfo hover:text-lite-green">
+                Email : <a href="mailto:bishalanshu@yahoo.in">bishalanshu@yahoo.in</a>
+            </span>
+        </span>
+    
+    </div>
+          
+    <div class=" animate-on-scroll footerLinksHolder w-full uppercase text-xs font-semibold flex flex-col lg:gap-5 gap-3 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-10 shadow-sm shadow-[#000000be] my-5" >
+        <span class="footerLinks flex justify-center items-center">
+            <ul class="flex justify-center items-center flex-wrap gap-4">
+                {
+                    footerLinks.map((link)=>(
+                        <li><a href={link.menuURL}>{link.menuTitle}</a></li>
+                    ))
+                }
+            </ul>
+        </span>
+        <span class="copyright"> &copy; {currentYear} All Rights reserved</span>
+    </div>
+
+    <span tabindex="0" id="BackToTop" onclick="bringToView('.scrollUp')" class="fixed z-[1] translate-x-[100px] right-5 bottom-5 rounded-full size-10 dark:bg-body-bg-2 bg-dark-teal border-2 dark:border-body-bg hover:bg-lite-green hover:scale-110 active:scale-90 cursor-pointer flex justify-center items-center text-xl transition-all ease-in-out duration-300" >
+        <i class="absolute fa-solid fa-arrow-up z-[1]"></i>
+        <div class="relative -rotate-90">
+            <svg class="progress-circle" width="40" height="40" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="45" stroke-width="7" fill="none"></circle>
+                <circle id="progress" cx="50" cy="50" r="45" stroke="#70ba65" stroke-width="7" fill="none" stroke-dasharray="283" stroke-dashoffset="283"></circle>
+            </svg>
+        </div>
+    </span>
+</footer>
+
+<script is:inline>
+    function bringToView(sectionElement) {
+        element = document.querySelector(sectionElement);
+        element.scrollIntoView();
+    }
+
+    //#region For Back to top starts
+    window.addEventListener('scroll', function () {
+        mybutton = document.getElementById("BackToTop");
+        if (document.body.scrollTop > 180 || document.documentElement.scrollTop > 180) {
+            mybutton.classList.add("translate-x-[100px]");
+            mybutton.classList.remove("translate-x-[100px]");
+        } else {
+            mybutton.classList.remove("translate-x-[100px]");
+            mybutton.classList.add("translate-x-[100px]");
+        }
+    })
+    //#endregion For Back to top ends
+   
+    // Get the progress circle element
+    const progressCircle = document.getElementById('progress');
+    const radius = progressCircle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+    
+    // Set initial stroke-dasharray and stroke-dashoffset
+    progressCircle.style.strokeDasharray = circumference;
+    progressCircle.style.strokeDashoffset = circumference;
+    
+    // Function to set progress
+    function setProgress(percent) {
+        const offset = circumference - (percent / 100) * circumference;
+        progressCircle.style.strokeDashoffset = offset;
+    }
+    
+    // Function to calculate scroll percentage
+    function updateScrollProgress() {
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollHeight = document.documentElement.scrollHeight - window.innerHeight; // Use clientHeight here
+        const scrollPercent = (scrollTop / scrollHeight) * 100;
+        setProgress(scrollPercent);
+    }
+    
+    // Event listener for scroll
+    window.addEventListener('scroll', updateScrollProgress);
+    
+</script>

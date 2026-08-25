@@ -1,0 +1,64 @@
+---
+import PlainLayout from "../../../layouts/PlainLayout.astro";
+import BlogArticleCards from "../../../components/BlogArticleCards.astro";
+import HeadingText from "../../../components/headingText.astro";
+import ArticlePagination from "../../../components/ArticlePagination.astro";
+import SectionDivider from "../../../components/SectionDivider.astro";
+import ArticleBottomAllCategories from "../../../components/ArticleBottomAllCategories.astro";
+import { getCollection, type CollectionEntry } from "astro:content";
+import { filterFuturePosts } from "../../../data/utils";
+
+let allBlogPosts2 = await getCollection("blog");
+allBlogPosts2 = filterFuturePosts(allBlogPosts2);
+let count : number =0;
+
+export async function getStaticPaths() {
+    const allBlogPosts = await getCollection("blog");
+    allBlogPosts.sort(
+        (a, b) =>
+            new Date(b.data.publishDate).valueOf() -
+            new Date(a.data.publishDate).valueOf(),
+    );
+    var tagsAllArticles: string[] = [];
+    for (let i = 0; i < allBlogPosts.length; i++)
+    {
+        for (let j = 0; j < allBlogPosts[i].data.tags.length; j++) tagsAllArticles.push(allBlogPosts[i].data.tags[j]);
+    }
+
+    const uniqueArr = [...new Set(tagsAllArticles)];
+
+    return uniqueArr.map((entry) => ({
+        params: { slug: entry.toLocaleLowerCase().replaceAll(" ", "-") },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+
+---
+
+<PlainLayout
+    isBreadcrumbShown={true}
+    pageMainHeadingtagType="h1"
+    isMainHeadingDoubleLined={true}
+    pageHeadingText=`Articles with tag "${entry}"`
+    pageSmallText="Articles"
+    title=`Articles with tag "${entry}"`
+>
+    <!-- Article Container -->
+    <div class="articlesContainer lg:mt-24 mt-20 w-full">
+        <HeadingText headText=`"${entry}" articles` TagType="span" />
+        <div class="blog-container flex flex-wrap justify-start items-center w-full my-10 gap-5">
+            {
+                allBlogPosts2.map((post: any) => (
+                    (post.data.tags.includes(entry)) &&
+                    <BlogArticleCards {post} />
+                ))
+            }
+        </div>
+    </div>
+
+    <SectionDivider />
+
+    <ArticleBottomAllCategories />
+</PlainLayout>

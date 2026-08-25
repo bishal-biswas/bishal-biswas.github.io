@@ -1,0 +1,65 @@
+---
+//Component Imports
+import HeadingText from "../components/headingText.astro";
+import { getPaths } from "../data/utils";
+
+interface Props {
+    timeLineHeadlineText: String,
+    listData: {
+        imageFilePath:string
+        title:String,
+        details:String,
+        duration:String,
+        fullDescription:String,
+    }[]
+}
+
+const {timeLineHeadlineText, listData} = Astro.props;
+
+---
+<div class="timeline-employment flex flex-wrap gap-3 justify-evenly items-center my-5 w-full mt-14 animate-on-scroll">
+    <HeadingText headText={timeLineHeadlineText} verticalMarginClass="mb-5"></HeadingText>
+
+    <div class="timeLine-container w-full">
+        
+        <ol class="flex flex-col gap-2 border-l-4 dark:border-dark-teal border-dark-teal pl-8">
+            {
+                listData.map((data)=>(
+                    <li
+                        class="before:block before:size-8 before:absolute before:border-4 before:border-lite-green before:rounded-full dark:before:bg-dark-teal before:bg-dark-teal before:-left-[50px]
+                        after:rotate-45  after:block after:size-5 after:absolute dark:after:bg-dark-teal after:bg-dark-teal after:left-[-10px] after:top-[30px] after:shadow-sm after:shadow-[#000000be] after:z-[-1]
+                         hover:before:animate-ping relative flex flex-col gap-2 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white rounded-lg p-6 px-10 shadow-sm shadow-[#000000be]">
+                        <div class="accordion flex gap-2 w-full justify-between items-center">
+                            <div class="headline flex gap-2">
+                                <img src={getPaths("Other Files")+data.imageFilePath} alt="logo" class="rounded-lg size-14" />
+                                <div class="details">
+                                    <span class="title font-semibold">
+                                        {data.title}
+                                    </span>
+                                    <span class="flex lg:flex-row flex-col lg:gap-3 gap-1 lg:items-center text-xs lg:text-base">
+                                        <span>{data.details}</span>
+                                        <i class="hidden lg:block fa-duotone fa-pipe"></i>
+                                        
+                                        <span class="date">
+                                            <i class="fa-duotone fa-calendar mr-2"></i>
+                                            {data.duration}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                            <span class="accordian-toggleBtn flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
+                                <i class="fa-solid fa-chevron-down transition-all"></i>
+                            </span>
+                        </div>
+                            
+                        <div class="data-description italic rounded-lg dark:bg-body-bg-2 bg-body-bg-2 text-lite-green block h-0 opacity-0 overflow-hidden p-0 transition-all duration-500"> <!-- h-0 invisible p-0 p-2 -->
+                            {data.fullDescription}
+                        </div>
+                    </li>
+                ))
+            }
+            
+        </ol>
+    </div>
+
+</div>

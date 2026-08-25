@@ -1,0 +1,33 @@
+---
+interface Props {
+    value: Number;
+    iconClass: String;
+    textData: String;
+    isWidthHalf ?: boolean;
+    topMarginClass?: string;
+}
+
+const {
+    value,
+    iconClass,
+    textData,
+    isWidthHalf = false,
+} = Astro.props;
+---
+
+<!-- Praise Card -->
+<div class="cards flex flex-col items-center gap-5 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-5 text-center shadow-md shadow-[#000000be] min-h-[160px] animate-on-scroll"
+    class:list={[isWidthHalf ? "w-[48%]" : "lg:w-[32%] w-full"]} >
+    <span class="counterValue flex items-center gap-1 text-2xl font-bold">
+        {value}
+        {
+            iconClass != "" ? (
+                <i class="text-lite-green text-xs" class:list={[iconClass]} />
+            ) : (
+                ""
+            )
+        }
+    </span>
+    <span class="divider w-full border border-dotted border-gray-500"></span>
+    <span class="cardsLabel w-6/12 uppercase font-semibold">{textData}</span>
+</div>

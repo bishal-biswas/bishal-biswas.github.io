@@ -1,0 +1,193 @@
+---
+
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
+import Prose from "../../components/Prose.astro";
+import { getCollection } from "astro:content";
+import HeadingText from "../../components/headingText.astro";
+import { getPaths, getTechStackLogo } from "../../data/utils";
+
+export async function getStaticPaths() {
+  const portfolioEntries = await getCollection('portfolio');
+  return portfolioEntries.map(entry => ({
+    params: { slug: entry.id }, props: { entry },
+  }));
+}
+
+const { entry } = Astro.props;
+// console.log(entry);
+
+let screenshotsCollection : string[] = [];
+if(entry.data.screenshotsCount){
+    for (let i = 0; i < entry.data.screenshotsCount; i++) {
+        screenshotsCollection.push(entry.data.screenshotsUniqueName?.replaceAll(".", `(${i+1}).`) || "");
+    }
+}
+
+let ratingClassArray : string[] =[];
+if(entry.data.rating){
+    for (let i = 0; i < 5; i++) {
+        if(i < entry.data.rating)
+            ratingClassArray.push("fa-solid fa-star");
+        else
+            ratingClassArray.push("fa-regular fa-star");
+        }
+}
+
+// console.log(screenshotsCollection);
+
+
+---
+<PlainLayout
+    isSwiperRequired={true}
+    title={entry.data.title}
+    pageHeadingText={entry.data.title}
+    pageMainHeadingtagType="h1"
+    pageSmallText={entry.data.projectType}
+    isBreadcrumbShown={true}
+    backgroundImg="https://images3.alphacoders.com/813/813087.jpg"
+    isHeroContentSectionShown={false}
+    pageType="project"
+>
+    <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 lg:mt-4 dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white" >
+        <div class="brightnessLow-overlay absolute z-0 rounded-lg w-full h-full dark:bg-[#00283a9b] bg-[#fcfcfe9b] backdrop-blur" >
+        </div>
+        <div class="heading-section z-[1] w-full flex flex-col lg:flex-row gap-4" >
+            <span class="w-full lg:w-1/2 flex justify-center items-center flex-col gap-2">
+                <div class="screenshots w-full">
+                    {
+                        entry.data.screenshots?.length != 0 &&
+                        <swiper-container autoplay="true" class="mySwiper" effect="coverflow" grab-cursor="true" centered-slides="true" 
+                        slides-per-view="1.2" coverflow-effect-rotate="50" coverflow-effect-stretch="0" coverflow-effect-depth="100" 
+                        coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
+                            {entry.data.screenshots?.map((screenshot:string) => (
+                                <swiper-slide>
+                                    <img src={`/assets/images/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                </swiper-slide>
+                            ))}
+                        </swiper-container>
+                    }
+
+                    {
+                        entry.data.screenshotsCount && 
+                        <swiper-container autoplay="true" class="mySwiper" effect="coverflow" grab-cursor="true" centered-slides="true" 
+                        slides-per-view="1.2" coverflow-effect-rotate="50" coverflow-effect-stretch="0" coverflow-effect-depth="100" 
+                        coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
+                            {screenshotsCollection.map((screenshot) => (
+                                <swiper-slide>
+                                    <img src={`/assets/images/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                </swiper-slide>
+                            ))}
+                        </swiper-container>
+                    }
+                </div>
+                
+                {
+                    (entry.data.projectLiveLink) && 
+                    <ButtonLinkUI isBgColored={true} action={entry.data.projectLiveLink} iconClass="fa-solid fa-desktop">Live Demo</ButtonLinkUI>
+                }
+            </span>
+            <span class="w-full lg:w-1/2 flex justify-center items-center flex-col gap-4" >
+                <h1 class="text-4xl font-bold text-center">{entry.data.title}</h1>
+                <span>{entry.data.projectType}</span>
+                <span class="flex w-full gap-3 justify-between">
+                    <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 w-1/2" >
+                        <div class="brightnessLow-overlay absolute z-0 rounded-lg w-full h-full bg-[#70ba6557]" >
+                        </div>
+                        <h2 class="z-[1] text-center">
+                            Project Status
+                            <span class="text-3xl font-semibold block">
+                                {entry.data.isProjectCompleted ? "Completed" : "In Progress"}
+                            </span>
+                        </h2>
+                    </section>
+                    <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 w-1/2" >
+                        <div class="brightnessLow-overlay absolute z-0 rounded-lg w-full h-full bg-[#70ba6557]" >
+                        </div>
+                        <h2 class="z-[1] text-center">
+                            Project Duration
+                            <span class="text-3xl font-semibold block">
+                                {entry.data.projectDuration}
+                            </span>
+                        </h2>
+                    </section>
+                </span>
+                <div class="techStacks flex gap-1">
+                    {
+                        entry.data.techStack.map((tech:string)=>(
+                        <img
+                            class="rounded size-12 hover:brightness-75 bg-white border-2 border-white"
+                            src={getPaths("Skills") + getTechStackLogo(tech)}
+                            alt={tech + " logo"}
+                            title={tech}
+                        />
+                        ))
+                    }
+                </div>
+
+                {
+                    (entry.data.rating) &&
+                    <div class="reviewsBox flex gap-3 lg:flex-row flex-col-reverse items-center rounded-md" title="5/5" >
+                        <h2 class="text-3xl font-semibold">{entry.data.rating} out of 5 Stars</h2>
+                        <span class="flex gap-2 text-yellow-400 text-2xl">
+                            {
+                                ratingClassArray.map((starIcon)=>(
+                                    <i class:list={[
+                                        starIcon
+                                    ]}></i>
+                                ))
+                            }
+                        </span>
+                    </div>
+                }
+
+                {
+                    (entry.data.projectLiveLink) && 
+                    <ButtonLinkUI isBgColored={true} action={entry.data.projectRepoLink || ""} iconClass="fa-brands fa-github">Github Repository</ButtonLinkUI>
+                }
+                
+            </span>
+        </div>
+    </section>
+
+    <section class="dark:bg-dark-teal bg-dark-teal rounded-xl p-5 lg:px-10">
+        
+        <Prose>
+            <div class="content" set:html={entry.rendered?.html}></div>
+        </Prose>
+
+    </section>
+
+    
+    {
+        entry.data.clientReview &&
+        <HeadingText headText="Client's Review" />
+        <div data-aos="fade-right" class="testimonialBox p-4 border bg-dark-teal dark:bg-transparent border-slate-200 rounded-3xl flex flex-col gap-4 w-full shadow-md">
+            <span class="flex justify-center items-center gap-2 text-base w-fit">
+                {
+                    entry.data.clientPic &&
+                    <img src={entry.data.clientPic} alt={entry.data.clientName} class="size-10 rounded-full" />
+                }
+                {
+                    entry.data.clientName &&
+                    <p class="font-semibold">{entry.data.clientName}</p>
+                }
+                {
+                    entry.data.clientProfession &&
+                    <p class="text-sm text-slate-400">{entry.data.clientProfession}</p>
+                }
+            </span>
+            <p class="text-xl font-semibold">"{entry.data.clientReview}"</p>
+            <span class="rating flex gap-2 text-yellow-300">
+                {
+                    ratingClassArray.map((starIcon)=>(
+                        <i class:list={[
+                            starIcon
+                        ]}></i>
+                    ))
+                }
+            </span>
+        </div>
+
+    }
+</PlainLayout>

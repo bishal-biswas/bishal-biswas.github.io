@@ -1,0 +1,17 @@
+---
+import ButtonLinkUI from "./ButtonLinkUI.astro";
+
+
+---
+<!-- Contact Form -->
+<div class="contactForm-container relative flex justify-center items-center dark:bg-dark-teal bg-dark-teal text-[#dedee0] text-sm rounded-lg text-center shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5 max-h-[400px]">
+    <form class="flex flex-col gap-5 w-full">
+        <input required type="text" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Your Name">
+        <input required type="email" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Email">
+        <textarea required name="" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full min-h-[150px]" placeholder="Your Message" id="" cols="10" rows="4"></textarea>
+
+        <span class="flex">
+            <ButtonLinkUI isButton={true} action="" isBgColored={true} iconClass="ml-2 fa-duotone fa-arrow-right transition-all ease-in-out duration-150" >Send</ButtonLinkUI>
+        </span>
+    </form>
+</div>

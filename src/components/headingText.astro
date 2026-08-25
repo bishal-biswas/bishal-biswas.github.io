@@ -1,0 +1,16 @@
+---
+interface Props {
+    headText: String,
+    TagType?: any
+    verticalMarginClass?: String
+}
+const {headText, TagType='h2', verticalMarginClass} = Astro.props;
+---
+<span class="heading-wrapper flex items-center relative border-t border-[#919ca1] border-dotted w-full"
+    class:list={[
+        verticalMarginClass
+    ]}
+>
+
+    <TagType class="absolute text-xl font-bold pr-3 z-[1] dark:bg-body-bg-2 bg-body-bg-2">{headText}</TagType>
+</span>

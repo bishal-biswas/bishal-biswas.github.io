@@ -1,0 +1,40 @@
+---
+
+---
+
+<div id="notification" class="fixed bottom-4 right-4 translate-x-full z-[11] dark:bg-dark-teal dark:text-teal-white dark:text-font-white bg-white px-4 py-2 border-2 border-lite-green rounded shadow shadow-lite-green transition-transform transform opacity-0 scale-95">
+    <p id="notification-message">This is a notification message!</p>
+</div>
+
+<!-- <button
+    onclick="showNotification('Hello! This is your notification.')"
+    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+> 
+    Show Notification
+</button>-->
+
+<script is:inline>
+    function showNotification(message) {
+        const notification = document.getElementById("notification");
+        const messageElement = document.getElementById("notification-message");
+
+        // Update the notification message
+        messageElement.textContent = message;
+
+        // Show the notification with animation
+        notification.classList.remove("translate-x-full", "opacity-0", "scale-95");
+        notification.classList.add("opacity-100", "scale-100");
+
+        // Hide the notification after 3 seconds
+        setTimeout(() => {
+            notification.classList.remove("opacity-100", "scale-100");
+            notification.classList.add("translate-x-full", "opacity-0", "scale-95");
+
+            // Fully hide the notification after animation ends
+            setTimeout(() => {
+                notification.classList.add("translate-x-full");
+            }, 300); // Match this duration with Tailwind transition duration
+        }, 3000);
+    }
+    showNotification("This Website is in Devlopment Phase.")
+</script>

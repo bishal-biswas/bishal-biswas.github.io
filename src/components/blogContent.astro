@@ -1,0 +1,213 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ArticleShareBtnLinks from "../components/ArticleShareBtnLinks.astro";
+import Prose from "./Prose.astro";
+import { getPaths } from "../data/utils";
+// import ButtonLinkUI from "./ButtonLinkUI.astro";
+
+interface Props {
+  post: CollectionEntry<'blog'>;
+}
+
+const { post } = Astro.props;
+---
+
+<style is:inline>
+    .dark {
+        .prose p span.textRevealSpan, .prose h1 span.textRevealSpan, .prose h2 span.textRevealSpan, .prose h3 span.textRevealSpan{
+        background-image: linear-gradient(90deg,  #c1b9be,#c1b9be);
+        }
+    }
+
+    .prose p span.textRevealSpan, .prose h1 span.textRevealSpan, .prose h2 span.textRevealSpan, .prose h3 span.textRevealSpan{
+        color: #a79a9a3d;
+        background-clip: text;
+        background-repeat: no-repeat;
+        background-size: 0% 100%;
+        background-image: linear-gradient(90deg,  #5a5859,#5a5859);
+        animation: scroll-reveal linear forwards;
+        animation-timeline: view();
+    }
+
+    .prose h1 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose h2 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose h3 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose h4 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose h5 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose h6 span.textRevealSpan{
+        animation-range-start: cover 20vh;
+        animation-range-end: cover 30vh;
+    }
+    .prose p span.textRevealSpan{
+        animation-range-start: cover 25vh;
+        animation-range-end: cover 60vh;
+    }
+    @keyframes scroll-reveal {
+        to {background-size: 100% 100%;}
+    }
+</style>
+
+<article class="flex flex-col lg:flex-row gap-3 lg:w-[73%]">
+    <div class="toc-container lg:w-[25%]">
+        <div class="TOC border dark:bg-dark-teal bg-dark-teal border-[#70ba65] shadow-lg lg:shadow-[#70ba65] rounded-lg sticky top-24" >
+            <span class="uppercase font-semibold p-2 block bg-lite-green rounded-tr-lg rounded-tl-lg" >Table of Content</span>
+            <ul class="p-2 leading-5 transition-all ease-in-out duration-300 text-sm" >
+                <!-- Table Of Content List will be Here -->
+            </ul>
+        </div>
+    </div>
+
+    <div class="article-content lg:w-[75%]">
+        <div class="post-body dark:bg-dark-teal bg-dark-teal p-4 rounded-lg text-sm">
+            <Prose>
+                <slot />
+                <!-- {post.Content} -->
+            </Prose> 
+        </div>
+
+        <aside class="footer mt-7 text-sm">
+            <div class="article-info-bottom dark:bg-dark-teal bg-dark-teal p-2 rounded-lg">
+                <div
+                    class="row gap-5 flex lg:flex-row flex-col-reverse justify-between"
+                >
+                    <div class="tags-wrapper inline-flex items-baseline gap-3">
+                        <i
+                            class="fa-thin fa-tags"
+                            style="transform: scale(-1,1);"></i>
+                        <div class="tags-container flex items-center flex-wrap gap-3" >
+                            {
+                                post.data.tags.map((tag: string) => (
+                                    <a
+                                        class="hover:text-[#70ba65]"
+                                        href={
+                                            "/articles/tag/" +
+                                            tag
+                                                .toLocaleLowerCase()
+                                                .replaceAll(" ", "-")
+                                        }
+                                    >
+                                        {"#" + tag}
+                                    </a>
+                                ))
+                            }
+                        </div>
+                    </div>
+
+                    <div class="category flex items-baseline gap-3 lg:w-1/5">
+                        <i class="fa-solid fa-folder-open"></i>
+                        <a
+                            href={"/articles/category/"+ post.data.category
+                                .toLowerCase()
+                                .replaceAll(" ", "-")}
+                            class="font-semibold flex justify-center items-center gap-2 w-fit rounded-full border-2 dark:border-font-white border-font-white dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white hover:text-[#70ba65] px-3 py-1 overflow-hidden hover:scale-105 transition-all ease-in-out duration-300"
+                        >
+                            <span>{post.data.category}</span>
+                        </a>
+                    </div>
+                </div>
+
+                <div
+                    class="row gap-5 flex lg:flex-row flex-col justify-between mt-4"
+                >
+                    <ArticleShareBtnLinks
+                        pageFeaturedImage={post.data.featuredImage}
+                        pageTitle={post.data.title}
+                    />
+
+                    <div
+                        class="like-dislike-wrapper w-full lg:w-fit flex justify-center items-center"
+                    >
+                        <div class="like-dislike-container w-fit">
+                            <div class="user-response flex gap-1">
+                                <span class="bg-lite-green hover:bg-dark-green rounded-tl-full rounded-bl-full px-4 p-2 cursor-pointer hover:scale-105 transition-all ease-in-out duration-300"><i class="fa-solid fa-thumbs-up"></i></span>
+                                <span class="bg-lite-green hover:bg-dark-green rounded-tr-full rounded-br-full px-4 p-2 cursor-pointer hover:scale-105 transition-all ease-in-out duration-300"><i class="fa-solid fa-thumbs-down -scale-x-100"></i></span
+                                >
+                            </div>
+                            <div class="values w-full flex text-center">
+                                <span class="block w-1/2">{post.data.likes}</span>
+                                <span class="block w-1/2">{post.data.dislikes}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                class="article-info-author mt-7 flex lg:flex-row flex-col justify-center items-center gap-3 w-full p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]"
+            >
+                <img src={getPaths("Asset Images")+"ProPic.webp"}
+                    alt="author Profile Pic"
+                    class="rounded-full size-20 shadow-lg shadow-[#70ba65]"
+                />
+                <div class="author-data text-center lg:text-left">
+                    <span class="block font-semibold">{post.data.author}</span>
+                    <span class="block"
+                        >Lorem ipsum dolor sit amet, consectetur adipisicing
+                        elit. Delectus officiis soluta ipsam quae magnam? Eius
+                        non fugiat molestiae dicta atque itaque ipsa obcaecati
+                        suscipit! Dicta aliquid doloremque mollitia nulla minus.</span
+                    >
+                </div>
+            </div>
+        </aside>
+    </div>
+</article>
+
+
+<script is:inline type="text/javascript">
+    
+    //#region Adding Span to every text in Prose for Text Reveal Animation
+    function addSpan(tags) {
+        tags.forEach(tag => {
+            tag.innerHTML = `<span class='textRevealSpan'>${tag.innerHTML}</span>`;
+        });
+    }
+    let allTextContent = document.querySelectorAll(".prose h2, .prose h3, .prose h4, .prose h5, .prose h6, .prose p");
+
+    addSpan(allTextContent);
+    
+    //#endregion
+    
+    // Select all the section elements
+    const sections = document.querySelectorAll(".prose h2, .prose h3");
+        
+    window.addEventListener("scroll", () => {
+        let current = "";
+        // Select all the anchor links in the TOC
+        const tocLinks = document.querySelectorAll(".TOC ul a");
+        // Loop through the sections to determine which one is in the viewport
+        sections.forEach(section => {
+            const sectionTop = section.offsetTop;
+            
+            // Check if the section is in the viewport (active section)
+            if (pageYOffset >= sectionTop - 650) {
+                current = section.getAttribute("id");
+            }
+        });
+
+        // Loop through the TOC links and update the active class based on the current section
+        tocLinks.forEach(link => {
+            
+            link.classList.remove("font-semibold", "text-dark-green");
+            if (link.getAttribute("href") === `#${current}`) {
+                link.classList.add("font-semibold", "text-dark-green");
+            }
+        });
+    });
+
+</script>

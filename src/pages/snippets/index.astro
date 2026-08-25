@@ -1,0 +1,97 @@
+---
+import { getCollection } from "astro:content";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import CardCodeResource from "../../components/Card_CodeResource.astro";
+import { pageData } from "../../data/site-data/pageData";
+
+const codeEntries = await getCollection('code-help') ;
+
+const pageContent = pageData.filter(page => page.pageTitle == "Snippets")[0];
+
+---
+
+<PlainLayout
+    title="Code Snippets"
+    pageType="project"
+    pageSmallTextBelow = {pageContent.pageSmallText}
+    pageHeadingText= {pageContent.pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImgClass="object-fill"
+    backgroundImg="/assets/images/gradient1.png"
+    isLargeWidth={true}
+>
+    <!--  https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLkvc.png  -->
+
+    <div class="codeArticles-container relative flex lg:flex-row flex-col my-5 gap-3">
+
+        <div class="sidebar lg:sticky top-24 flex flex-col gap-2 p-5 dark:bg-dark-teal bg-dark-teal rounded-xl lg:w-[20%] w-full h-fit shadow-lg shadow-body-bg-2 animate-on-scroll">
+            <div class="searchBox w-full flex justify-center items-center">
+                <form
+                    onsubmit="return validateSearchForm()"
+                    action="/search"
+                    name="searchPanel"
+                    class="relative flex gap-3 items-center w-full">
+                    <input
+                        required=""
+                        type="text"
+                        name="q"
+                        id="searchQuery"
+                        placeholder="Search code.."
+                        class="w-full p-3 pl-6 hover:p-4 transition-all ease-in-out duration-200 outline-none dark:text-white text-body-bg rounded-full backdrop-blur-sm shadow-xl dark:placeholder:text-gray-300 placeholder:text-gray-800 bg-[#cbd5e198]"
+                    />
+                    <button
+                        type="submit"
+                        class="absolute right-2 hover:bg-dark-green bg-lite-green rounded-full size-10"
+                    >
+                        <i class="fa-solid fa-magnifying-glass text-white"></i>
+                    </button>
+                </form>
+            </div>
+
+            <span class="text-sm font-semibold text-gray-400">Topics</span>
+            <ul class="flex flex-wrap gap-1 text-xs">
+                <li class="tag border border-[#587691d7] shadow shadow-[#587691d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full">Show All</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># C Sharp</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># HTML</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># CSS</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># JavaScript</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># Dot Net</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># Selenium</li>
+                <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># SQL Server</li>
+            </ul>
+        </div>
+
+        <div class="code-articles lg:w-[80%] w-full flex-wrap flex gap-3">
+            {
+                codeEntries.map((code)=>(
+                    !code.data.isDraft &&
+                    <CardCodeResource 
+                        cardTitle={code.data.title} 
+                        cardUrl={code.data.slug || ""} 
+                        descriptionText={code.data.metaDescription} 
+                        tags={code.data.tags}/>
+                ))
+            }
+            {
+                codeEntries.map((code)=>(
+                    !code.data.isDraft &&
+                    <CardCodeResource 
+                        cardTitle={code.data.title} 
+                        cardUrl={code.data.slug || ""} 
+                        descriptionText={code.data.metaDescription} 
+                        tags={code.data.tags}/>
+                ))
+            }
+            {
+                codeEntries.map((code)=>(
+                    !code.data.isDraft &&
+                    <CardCodeResource 
+                        cardTitle={code.data.title} 
+                        cardUrl={code.data.slug || ""} 
+                        descriptionText={code.data.metaDescription} 
+                        tags={code.data.tags}/>
+                ))
+            }
+        </div>
+    </div>
+</PlainLayout>

@@ -1,0 +1,55 @@
+---
+import "../global.css"
+import Navbar from '../components/Navbar.astro';
+import Footer from '../components/Footer.astro';
+import Prose from '../components/Prose.astro';
+import HeadTag from '../components/HeadTag.astro';
+import Modal from '../components/Modal.astro';
+import Notify from '../components/Notify.astro';
+
+interface Props {
+    title ?: string,
+    metaDescription ?: string
+    pageType ?: string,
+}
+
+const {title = "Page Title", 
+metaDescription="Some Page Description", 
+pageType,
+} = Astro.props;
+
+if(pageType == "blog"){
+    
+}
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+    <HeadTag {title} {metaDescription} />
+<body class="bg-body-bg lg:p-3">
+    <Modal />
+    <Notify />
+
+    <span class="scrollUp"></span>
+    <div class="dark:bg-body-bg-2 bg-body-bg-2 w-full flex flex-col items-center min-h-[90vh] rounded-md overflow-hidden">
+        <Navbar />
+
+        <main class="flex flex-col justify-center items-center lg:w-[1210px] w-full z-[1]  rounded-md">
+            
+            <div class="content-wrapper px-5 lg:px-16 pt-28 flex flex-col gap-8 w-full z-[2] dark:text-teal-white dark:text-font-white mb-12">
+                <Prose>
+                    <article>
+                        <slot />
+                    </article>
+                </Prose>
+
+                <Footer />
+            </div>
+
+        </main>
+    </div>
+    <div id="gradient-follow"></div>
+
+    <script is:inline src="/assets/scripts/main.js" data-astro-rerun></script>
+</body>
+</html>

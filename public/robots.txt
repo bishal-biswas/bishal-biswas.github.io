@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bishal-biswas.github.io/sitemap-index.xml

@@ -1,0 +1,48 @@
+---
+import { getPaths, getTechStackLogo } from '../data/utils';
+// import ButtonLinkUI from './ButtonLinkUI.astro';
+
+interface Props {
+    isHidden ?: boolean
+    projectTitle :string,
+    ProjectCategory :string,
+    projectDescription :string,
+    projectThumbnailImage :string,
+    projectSlug :string,
+    toolsUsed?:string[]
+}
+// {
+//     toolName:String,
+//     toolLogoFileName: String
+// }[]
+const {projectTitle, ProjectCategory, projectDescription, projectThumbnailImage, projectSlug, toolsUsed, isHidden=false} = Astro.props;
+
+---
+
+<div data-attr=`All ${ProjectCategory}` class="projectHolder relative items rounded-xl break-inside-avoid overflow-hidden shadow-lg hover:shadow-lite-green" class:list={[
+    isHidden && "hidden"
+]}>
+    <div class="details select-none overflow-hidden absolute w-full h-full flex flex-col justify-between p-4 gap-2 items-center bg-gradient-to-bl from-[#70ba658d] to-[#00283a90]">
+        <div class="top">
+            <a href=`/portfolio/${projectSlug}` class="font-semibold text-left w-full cursor-pointer text-xl">{projectTitle}</a>
+            <p class="line-clamp-4 text-sm pt-1">{projectDescription}</p>
+        </div>
+
+        <div class="bottom w-full flex items-center gap-3 ">
+
+            <div class="tools flex gap-2 overflow-x-auto overflow-hidden w-9/12 py-2">
+                {
+                    toolsUsed?.map((tool:any)=>(
+                        <img class="size-9 rounded" src={getPaths("Skills") + getTechStackLogo(tool)} alt={tool} title={tool} />
+                    ))
+                }
+            </div>
+            <span class="flex justify-center items-center w-3/12">
+                <a href=`/portfolio/${projectSlug}`
+                class="size-10 text-xl flex justify-center items-center rounded-full border-2 border-transparent hover:border-font-white hover:bg-lite-green hover:-rotate-90 transition-all ease-in-out" ><i class="fa-solid fa-arrow-down-right"></i></a>
+            </span>
+        </div>
+    </div>
+    
+    <img class="w-full object-cover object-top min-h-[200px] max-h-[350px]" loading="lazy" src={getPaths("Portfolio") + projectThumbnailImage}>
+</div>

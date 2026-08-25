@@ -1,0 +1,79 @@
+---
+interface Props {
+    paginationData : any
+}
+
+const {paginationData} = Astro.props;
+const { currentPage, lastPage, url } = paginationData;
+---
+
+<style>
+    .box-shadow{
+        box-shadow: 0 0 10px 2px #5fb353;
+    }
+</style>
+<div
+    class="article-paginations flex lg:flex-row flex-col-reverse justify-center items-center gap-3 w-full p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be] animate-on-scroll">
+    <span class="pageCounter font-semibold rounded-full p-3 lg:p-7 py-2 lg:py-3 border-2 border-white dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300">
+        Page {currentPage} of {lastPage}
+    </span>
+
+    <ul class="flex gap-3">
+        {
+            url.prev &&
+            <li>
+                <a
+                class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300"
+                href={url.prev}><i class="fa-solid fa-angles-left"></i></a>
+            </li>
+        }
+
+        {
+            //Previous Pages
+           url.prev &&
+           <li>
+               <a
+               class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300" 
+               href={url.prev}>{currentPage - 1}</a>
+           </li>
+
+        }
+
+        {
+            //Current Page
+            <li>
+                <span class="flex font-semibold justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 border-2 border-lite-green box-shadow dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">{currentPage}</span>
+            </li>
+        }
+
+        {
+            //Next Pages
+           url.next &&
+           <li>
+               <a
+               class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300" 
+               href={url.next}>{currentPage + 1}</a>
+           </li>
+        
+        }
+
+        {
+            (url.last && url.next != url.last) && 
+            <li>...</li>
+            <li>
+               <a
+               class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300" 
+               href={url.last}>{lastPage}</a>
+            </li>
+        }
+
+        {
+            url.next &&
+            <li>
+                <a
+                class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 dark:hover:bg-lite-green hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300" 
+                href={url.next}><i class="fa-solid fa-angles-right"></i></a>
+            </li>
+        }
+    </ul>
+</div>

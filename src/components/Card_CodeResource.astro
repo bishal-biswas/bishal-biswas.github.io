@@ -1,0 +1,28 @@
+---
+interface Props {
+    cardTitle : string,
+    cardUrl : string,
+    descriptionText : string,
+    tags ?: string[],
+}
+
+const {cardTitle, cardUrl, descriptionText, tags=[]} = Astro.props;
+---
+
+<div class="codeCard lg:min-h-[200px] xl:max-w-[32%] lg:max-w-[48%] w-full backdrop-blur-sm rounded-md py-5 px-4 dark:bg-[#00283aa7] shadow-lg shadow-body-bg-2 border-t border-t-[#23314d] transition-all ease-in-out active:scale-95 animate-on-scroll">
+    <a class="contents w-fit" href={`/snippets/${cardUrl}`}>
+        <h2 class="dark:text-[#58ded6] text-[#183550d7] font-semibold text-lg w-fit line-clamp-2">{cardTitle}</h2>
+    </a>
+    <span class="line-clamp-3 text-sm mt-2">{descriptionText}</span>
+    
+    {
+        tags.length > 0 &&
+        <div class="tags text-xs flex flex-wrap gap-1 mt-2 line-clamp-2">
+            {
+                tags.map((tag)=>(
+                    <span class="tag px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full">#{tag}</span>
+                ))
+            }
+        </div>
+    }
+</div>

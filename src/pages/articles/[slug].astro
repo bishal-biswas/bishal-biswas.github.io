@@ -1,0 +1,126 @@
+---
+import type { GetStaticPaths } from "astro";
+import { getCollection } from "astro:content";
+import ArticleBottomAllCategories from "../../components/ArticleBottomAllCategories.astro";
+import ArticleNavigationBottom from "../../components/ArticleNavigationBottom.astro";
+import ArticleSidebar from "../../components/ArticleSidebar.astro";
+import ArticleBottomRelatedPostsCarousal from "../../components/ArticleBottomRelatedPostsCarousal.astro"
+import BlogContent from "../../components/blogContent.astro";
+import SectionDivider from "../../components/SectionDivider.astro";
+import { calculateReadingTime, filterFuturePosts, getFormattedDate, getPaths } from "../../data/utils";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+
+/* const blog ={
+    data : {
+        tags: ["tag1", "tag2"],
+        category : "Web Development"
+    },
+    Content : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?  Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non? Lorem ipsum dolor sit amet consectetur adipisicing elit. Et eveniet dolor dolorum vitae delectus veniam amet laudantium quos rerum maiores in, sint omnis fugit quo, a suscipit corporis perferendis non?"
+} */
+
+export const getStaticPaths = (async () => {
+  let allBlogPosts = await getCollection('blog');
+  allBlogPosts = filterFuturePosts(allBlogPosts);
+  return allBlogPosts.map((entry) => {
+    return {
+      params: { slug: entry.data.slug },
+      props: {  entry },
+    };
+  });
+}) satisfies GetStaticPaths;
+
+const BlogPosts = await getCollection('blog');
+
+interface navButtons {
+    data : {
+        title:string,
+        slug:string,
+    }
+}
+let nextArticle : navButtons = {
+    data : {
+        title:"",
+        slug:"",
+    }
+};
+let previousArticle : navButtons = {
+    data : {
+        title:"",
+        slug:"",
+    }
+};
+
+const { entry } = Astro.props;
+
+BlogPosts.sort((a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf());
+
+BlogPosts.map(function (article, i) {
+    if (article.data.title == entry.data.title) {
+        if (i > 0) {
+            previousArticle.data.title = BlogPosts[i - 1].data.title;
+            previousArticle.data.slug = BlogPosts[i - 1].data.slug || "";
+        }
+        if ((i+1) < BlogPosts.length) {
+            nextArticle.data.title = BlogPosts[i + 1].data.title;
+            nextArticle.data.slug = BlogPosts[i + 1].data.slug || "";
+        }
+    }
+});
+
+---
+
+<PlainLayout
+  isSwiperRequired={true}
+  isBreadcrumbShown={true}
+  pageMainHeadingtagType="h1"
+  isMainHeadingDoubleLined={true}
+  isHeadContentAbove={true}
+  pageHeadingText={entry.data.title}
+  pageSmallText=""
+  isLargeWidth={true}
+  title={entry.data.title}
+  backgroundImg={getPaths("Article") + entry.data.featuredImage}
+  pageType="blog"
+>
+
+    <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5" >
+        <span title="Published on" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg" >
+            <i class="fa-solid fa-calendar-days"></i>
+            <span class="date">{getFormattedDate(entry.data.publishDate)}</span>
+        </span>
+        <span title="Reading Time" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg">
+            <i class="fa-regular fa-clock"></i>
+            <span id="readingTime" class="readingTime">{calculateReadingTime(entry.body?.replaceAll("#", "") ?? "")}</span>
+        </span>
+        {
+            (entry.data.views) &&
+            <span title="Visits" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg" >
+                <i class="fa-duotone fa-eye"></i>
+                <span class="">{entry.data.views} Views</span>
+            </span>
+        }
+    </div>
+    
+    <!-- Article Container -->
+    <div class="articlesContainer flex flex-col lg:flex-row w-full gap-3">
+        <BlogContent post={entry} set:html={entry.rendered?.html}>
+            
+        </BlogContent>
+        
+        <ArticleSidebar />
+    </div>
+    
+    <SectionDivider />
+    
+    <ArticleNavigationBottom {nextArticle} {previousArticle} />
+    
+    <ArticleBottomRelatedPostsCarousal ignoreArticle={entry.data.title} category={entry.data.category.toString()} />
+    
+    <ArticleBottomAllCategories />
+
+</PlainLayout>
+
+<script is:inline>
+    TOCGenerator();
+
+</script>

@@ -1,0 +1,84 @@
+---
+import "../global.css"
+import Navbar from '../components/Navbar.astro';
+import HeroSection from '../components/HeroSection.astro';
+import BreadcrumbsHolder from '../components/BreadcrumbsHolder.astro';
+import Footer from '../components/Footer.astro';
+import HeadTag from '../components/HeadTag.astro';
+import Modal from '../components/Modal.astro';
+import Prose from '../components/Prose.astro';
+import Notify from '../components/Notify.astro';
+
+interface Props {
+    title ?: string,
+    isHeroContentSectionShown ?: boolean,
+    metaDescription ?: string
+    isBreadcrumbShown ?: boolean,
+    pageType ?: string,
+    backgroundImg ?: string
+    backgroundImgClass ?: string
+}
+
+const {title = "Page Title", 
+metaDescription="Some Page Description", 
+isBreadcrumbShown, pageType,
+isHeroContentSectionShown = true
+} = Astro.props;
+
+let {backgroundImg = "https://images3.alphacoders.com/813/813087.jpg", backgroundImgClass} = Astro.props;
+let isDarkImage;
+if(pageType == "blog"){
+    isDarkImage = true;
+}
+---
+
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<HeadTag {title} {metaDescription}>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+    <link rel="stylesheet" href="/assets/styles/prism.css">
+</HeadTag>
+<body class="bg-body-bg lg:p-3 ">
+    <Modal />
+    <Notify />
+    
+    <span class="scrollUp"></span>
+    <div class="dark:bg-body-bg-2 bg-body-bg-2 w-full flex flex-col items-center min-h-[90vh] rounded-md ">
+        <Navbar />
+
+        <main class="dark:bg-body-bg-2 bg-body-bg-2 flex flex-col justify-center items-center lg:max-w-[1210px] w-full z-[1] rounded-md">
+            
+            <HeroSection 
+                {isHeroContentSectionShown}
+                imgFile={backgroundImg}
+                ImgClass={backgroundImgClass}
+                isPlainLayout={true}
+                isDarkImg = {isDarkImage}
+                {pageType}
+                isMainHeadingDoubleLined = {false}
+                isCodeHelpPage = {true}>
+                
+                {
+                    isBreadcrumbShown && <BreadcrumbsHolder />
+                }
+            
+            </HeroSection>
+            <div class="content-wrapper flex flex-col gap-8 w-full z-[2] dark:text-teal-white dark:text-font-white px-5 mb-12 lg:px-12">
+                <Prose>
+                    <article class="grid place-items-center">
+                        <slot />
+                    </article>
+                </Prose>
+
+                <Footer />
+            </div>
+
+        </main>
+    </div>
+
+    <div id="gradient-follow"></div>
+
+    <script is:inline src="/assets/scripts/main.js" data-astro-rerun></script>
+    <script is:inline src="/assets/scripts/prism.js"></script>
+</body>
+</html>

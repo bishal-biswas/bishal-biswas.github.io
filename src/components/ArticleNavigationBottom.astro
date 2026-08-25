@@ -1,0 +1,55 @@
+---
+import ArticleNavigationLinks from "./ArticleNavigationLinks.astro";
+interface Props {
+    previousArticle : navButtons,
+    nextArticle : navButtons,
+}
+
+interface navButtons {
+    data : {
+        title:string,
+        slug:string,
+    }
+}
+
+const {previousArticle , nextArticle} = Astro.props;
+---
+
+<div
+    class="article-navigation flex lg:flex-row flex-col justify-between items-center gap-3 w-full p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]"
+>
+    <span class="lg:w-[32%] flex justify-normal">
+        {
+            previousArticle.data.slug != "" ? (
+                <ArticleNavigationLinks
+                    navigationSide="left"
+                    titleofArticle={previousArticle.data.title}
+                    urlToArticle={previousArticle.data.slug}
+                />
+            ) : (
+                <span class="lg:w-[32%]" aria-label="no previous article" />
+            )
+        }
+    </span>
+    <a href="/articles" class="flex justify-center items-center">
+        <span class="flex flex-col items-center justify-center group">
+            <span class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 group-hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300" >
+                <i class="fa-solid fa-house"></i>
+            </span>
+            <span class="group-hover:text-[#70ba65]">Articles</span>
+        </span>
+    </a>
+    <span class="lg:w-[32%] flex justify-end">
+        {
+            nextArticle.data.slug != "" ? (
+                <ArticleNavigationLinks
+                    navigationSide="right"
+                    titleofArticle={nextArticle.data.title}
+                    urlToArticle={nextArticle.data.slug}
+                />
+            ) : (
+                <span class="lg:w-[32%]" aria-label="no next article" />
+            )
+        }
+    </span>
+</div>

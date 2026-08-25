@@ -1,0 +1,182 @@
+---
+import { getCollection } from "astro:content";
+import { personaInfo } from "../data/site-data/profile";
+import { getPaths } from "../data/utils";
+const personalIfo = personaInfo;
+const socialLinks = personalIfo.socialLinks;
+const BioData = personalIfo.Bio;
+
+const allBlogPosts = await getCollection("blog");
+
+---
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All My Links- {personalIfo.fullName}</title>
+    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css"/>
+</head> 
+<body class="bg-cover relative grid place-items-center select-none">
+
+    <img src={"https://thumbs.dreamstime.com/b/rocks-underwater-atlantic-ocean-galicia-spain-pontevedra-193238909.jpg"} class="overlay top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" />
+    <!-- <img src={getPaths("Asset Images")+"bio-bg.jpg"} class="overlay top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" /> -->
+    <div class="overlay backdrop-blur-sm top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-[2]"></div>
+
+    <div class="wrapper text-white max-w[700px] md:w-[700px] w-[90%] flex justify-center items-center flex-col relative z-[2] pt-28 pb-14">
+        
+        <div class="Bio-infoBox w-full rounded-md bg-[#bcbcbc3e] shadow-xl shadow-body-bg p-5 relative flex justify-center items-center">
+            <img src={getPaths("Other Files")+"headshot.jpg"} alt={`Profile Pic of ${personalIfo.fullName}`} class="rounded-full size-36 border-4 border-teal-500 absolute -top-20 shadow-lg">
+            
+            <span class="contentText text-center flex gap-3 items-center flex-col mt-14">
+                <span class="flex gap-1 items-center">
+                    <h1 class="font-bold text-2xl">{personalIfo.fullName}</h1>
+                    <i class="fa-solid fa-badge-check text-blue-400"></i>
+                </span>
+
+                {
+                    BioData.professionTitle &&
+                    <span class="title flex font-semibold text-xl">
+                        {BioData.professionTitle}
+                    </span>
+                }
+                
+                <p>{BioData.bioText}</p>
+                
+                {
+                    BioData.location &&
+                    <span class="Location flex gap-3 items-center">
+                        <i class="fa-solid fa-location-dot"></i> <span>{BioData.location}</span>
+                    </span>
+                }
+
+                <ul class="social-link flex gap-3">
+                    {
+                        socialLinks.map((link)=>(
+                            <li><a class="size-12 text-4xl flex items-center justify-center bg-white rounded-full" style={`color:${link.color}`} href={link.url}><i class={link.iconClass}></i></a></li>
+                        ))
+                    }
+                </ul>
+            </span>
+        </div>
+
+        <div class="links w-full my-5 text-center text-xl">
+            <ul class="w-full">
+                {
+                    BioData.links.map((link)=>(
+                        <li class="my-2 w-full">
+                            <a href={link.url} class="w-full hover:scale-[1.01] active:scale-[0.98] transition-all ease-in-out duration-150 shadow-xl shadow-body-bg block bg-[#bcbcbc3e] rounded-full p-2 px-4">
+                                <i class={link.iconClass}></i> {link.text}
+                            </a>
+                        </li>
+                    ))
+                }
+            </ul>
+        </div>
+
+        <div class="recent-articles my-5 lg:w-full md:w-full w-[380px]">
+            <swiper-container class="mySwiper" init="false">
+                {
+                    allBlogPosts.reverse().slice(0,5).map(
+                        (post: any) =>(
+                            <swiper-slide>
+                                <div class="article-card rounded-lg shadow-2xl size-full my-7 active:scale-95">
+                                    <a href={"/articles/"+post.slug} class="article-thumbnail h-[80%] block" >
+                                        <img src={getPaths("Article")+post.data.featuredImage} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg lg:h-[160px] md:h-[250px] h-[200px]" />
+                                    </a>
+                                    <div class="article-data h-[60px] p-2 text-left bg-[#00151f8a] rounded-br-lg rounded-bl-lg">
+                                        <a href={"/articles/"+post.slug} class="line-clamp-2 text-sm" >
+                                            {post.data.title}
+                                        </a>
+                                    </div>
+                                </div>
+                            </swiper-slide>
+                        ))
+                }
+            </swiper-container>
+        </div>
+
+        <footer class="text-center rounded-full bg-[#00000057] p-2 px-4">
+            <span>Made by {personalIfo.fullName}🔥</span>
+        </footer>
+    </div>
+
+    <script is:inline src="/assets/scripts/jquery.min.js"></script>
+    <script is:inline src="/assets/scripts/jquery.ripples.js"></script>
+    <script is:inline >
+        /*Jquery Ripple Starts*/
+        $(document).ready(function () {
+            try {
+                $('.overlay').ripples({
+                    resolution: 512,
+                    dropRadius: 20, //px
+                    perturbance: 0.4,
+                });
+            }
+            catch (e) {
+                $('.error').show().text(e);
+            }
+        });
+
+        // Automatic drops
+	    setInterval(function() {
+	    	var $el = $('.overlay');
+	    	var x = Math.random() * $el.outerWidth();
+	    	var y = Math.random() * $el.outerHeight();
+	    	var dropRadius = 25;
+	    	var strength = 0.09 + Math.random() * 0.04;
+        
+	    	$el.ripples('drop', x, y, dropRadius, strength);
+	    }, 1000);
+        /*Jquery Ripple Ends*/
+
+        /* setTimeout(() => {
+            document.querySelector("div.overlay").classList.add("z-[1]");
+            document.querySelector("div.overlay").classList.remove("z-[3]");
+        }, 1500); */
+    </script>
+    
+    <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+    <script is:inline>
+        const swiperEl = document.querySelector(".recent-articles swiper-container");
+        Object.assign(swiperEl, {
+            slidesPerView: 3.7,
+            autoplay: true,
+            loop:true,
+            spaceBetween: 30,
+            breakpoints: {
+                "@0.00": {
+                    slidesPerView: 1.1,
+                    spaceBetween: 10,
+                },
+                "@0.75": {
+                    slidesPerView: 1.4,
+                    spaceBetween: 20,
+                },
+                "@1.00": {
+                    slidesPerView: 1.8,
+                    spaceBetween: 40,
+                },
+                "@1.50": {
+                    slidesPerView: 2.4,
+                    spaceBetween: 30,
+                },
+            },
+        }); 
+
+        swiperEl.initialize();
+        
+        /* var devtools = /./;
+        devtools.toString = function() {
+            if (!this.opened) {
+                alert("Console is open!");
+            }
+            this.opened = true;
+        };
+        console.log('%c', devtools); */
+
+    </script>
+</body>
+</html>

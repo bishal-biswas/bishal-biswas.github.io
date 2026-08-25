@@ -1,0 +1,125 @@
+---
+import { getPaths } from "../data/utils";
+
+var randomImage = 0;
+
+interface Props {
+    imgFile?: string;
+    ImgClass?: string;
+    smallText?: string;
+    isPageSmallTextDark ?: boolean;
+    mainHeadingText?: string;
+    isMainHeadingDoubleLined: boolean;
+    isHeroContentSectionShown?: boolean;
+    MainHeadingtagType?: string;
+    mainHeadingSize?: String;
+    descriptionText?: string;
+    isPlainLayout?: boolean;
+    isDarkImg?: boolean;
+    pageType?: string;
+    isCodeHelpPage?: boolean;
+}
+
+var {
+    imgFile,
+    ImgClass,
+    smallText = "",
+    mainHeadingText,
+    MainHeadingtagType = "p",
+    mainHeadingSize,
+    descriptionText = "",
+    isPageSmallTextDark = false,
+    isMainHeadingDoubleLined = false,
+    isPlainLayout = false,
+    isDarkImg = false,
+    pageType,
+    isHeroContentSectionShown = true,
+    isCodeHelpPage = false,
+} = Astro.props;
+
+if (imgFile == "" || imgFile == undefined)
+    imgFile = getPaths("Asset Images") + "bg1.webp";
+---
+
+<div class="heroImage absolute top-0 lg:px-12 theme-background-img w-full flex justify-center items-center animate-on-scroll">
+    <img
+        src={imgFile}
+        alt="background image"
+        class="bg-fixed w-full rounded-xl lg:h-[560px] object-cover"
+        class:list={[isDarkImg ? "brightness-50" : "brightness-75", ImgClass, !isCodeHelpPage ? "h-[440px]" : "mt-16"]}
+    />
+</div>
+
+<div
+    class="heroSection lg:pt-20 pt-28 lg:px-20 px-5 z-[1] w-full flex lg:gap-8 lg:flex-row lg:text-left text-center"
+    class:list={
+        [pageType != "project" && "lg:mt-24", isCodeHelpPage && "lg:pb-80 pb-40"]
+    }>
+
+    {!isPlainLayout && <div class="blankSpace lg:w-4/12 lg:block hidden" />}
+    {
+        isHeroContentSectionShown && (
+            <div
+                class="heroSection-content lg:px-5 text-font-white"
+                class:list={[
+                    isPlainLayout
+                        ? "w-full text-center flex justify-center items-center flex-col place-items-center"
+                        : "lg:w-8/12 w-full place-items-center lg:place-items-start",
+                ]}
+            >
+                {smallText != "" && (
+                    <p class="uppercase text-sm font-semibold [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
+                        {smallText}
+                    </p>
+                )}
+
+                {mainHeadingText && (
+                    <MainHeadingtagType
+                        class:list={[
+                            "leading-[normal] lg:my-7 my-3 [text-shadow:_1px_2px_2px_rgb(0_0_0_/_70%)]",
+                            {
+                                "font-bold text-5xl": mainHeadingSize == "" || mainHeadingSize == undefined,
+                            },
+                            { "lg:w-[55%]": isMainHeadingDoubleLined },
+                            {
+                                "font-bold lg:text-6xl text-5xl lg:leading-[4rem]":
+                                    mainHeadingSize == "large",
+                            },
+                        ]}
+                    >
+                        {mainHeadingText}
+                    </MainHeadingtagType>
+                )}
+
+                {descriptionText != "" && (
+                    <p class="[text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]" class:list={[
+                        isPageSmallTextDark && "dark:text-teal-white dark:text-font-white text-font-gray"
+                    ]}>
+                        {descriptionText}
+                    </p>
+                )}
+
+                <slot />
+            </div>
+        )
+    }
+</div>
+
+<script is:inline>
+    const parallaxElements = document.querySelector('.heroImage img');
+    window.addEventListener("scroll", function () {
+        
+        const scrollPosition = window.pageYOffset;
+        const elementOffset = parallaxElements.parentElement.offsetTop;
+        const windowHeight = window.innerHeight;
+        
+        // Calculate parallax speed
+        const speed = 0.5; // Change this to control the speed of the parallax effect
+        const translateY = (scrollPosition - elementOffset) * speed;
+        
+        // Move the image position
+        if (scrollPosition > elementOffset - windowHeight && scrollPosition < elementOffset + parallaxElements.parentElement.clientHeight) {
+            parallaxElements.style.objectPosition = `50% ${translateY}px`;
+        }
+    });
+</script>

@@ -1,0 +1,21 @@
+---
+interface Props {
+    prdImageUrl ?: string
+    prdTitle : string
+    prdDescription : string
+    prdLink : string
+}
+
+const {prdImageUrl, prdTitle, prdDescription, prdLink} = Astro.props;
+---
+
+<div class="product rounded-xl border-2 dark:bg-dark-teal bg-font-white shadow shadow-teal-300 dark:border-teal-300 border-lite-green border-dashed flex w-full lg:w-[32%] md:w-[48%] animate-on-scroll">
+    {
+        prdImageUrl &&
+        <img src={prdImageUrl} alt={prdTitle} class="w-32 h-full rounded-l-xl object-cover">
+    }
+    <div class="details p-3">
+        <a target="_blank" href={prdLink} class="font-semibold line-clamp-2 pb-1 hover:underline">{prdTitle}</a>
+        <span class="line-clamp-3 text-sm">{prdDescription}</span>
+    </div>
+</div>

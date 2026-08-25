@@ -1,0 +1,104 @@
+---
+import { offeredServices } from "../data/site-data/skills";
+
+import ButtonLinkUI from "./ButtonLinkUI.astro";
+import HeadingText from "./headingText.astro";
+import LinksPlaceHolder from "./linksPlaceHolder.astro";
+
+---
+
+<!-- Services Introduction -->
+<div class="about mt-14">
+    <HeadingText headText={offeredServices.titleText}/>
+
+    <div class="serviceCardsHolder mt-10 flex flex-wrap justify-between items-center gap-7">
+        {
+            offeredServices.servicesData.map(serviceItems =>(
+            <div class="serviceCards flex flex-col gap-3 lg:w-[48%] dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-5 shadow-md shadow-[#000000be] animate-on-scroll">
+                <i class="dark:text-font-gray text-4xl" class:list={[
+                    serviceItems.iconClass
+                ]}></i>
+                <p class="font-bold text-base dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white">{serviceItems.title}</p>
+                <span class="content line-clamp-4">
+                    <p class="text-sm dark:text-font-gray">{serviceItems.shortDescription}</p>
+                    <ul class="text-sm dark:text-font-gray my-2">
+                        {
+                            serviceItems.servicesPoints.map((points)=>(
+                                <li><i class="text-dark-green fa-duotone fa-solid fa-circle-check pr-3"></i>{points}</li>
+                            ))
+                        }
+                    </ul>
+                </span>
+                <button data-service-id={serviceItems.id} class="servicesBtns group w-fit text-sm text-lite-green capitalize font-semibold cursor-pointer">view more <i class="ml-2 fa-solid fa-arrow-right group-hover:pl-1.5 transition-all ease-in-out duration-150"></i></button>
+            </div>
+            ))
+        }
+    </div>
+
+    <span class="-top-4 -right-4 text-lg size-8"></span>
+    
+    <LinksPlaceHolder Classes="my-5">
+        <ButtonLinkUI action="https://www.upwork.com/freelancers/~0115a5e68520f6bde9" isBgColored={true} iconClass="text-xl fa-brands fa-upwork">Available on Upwork</ButtonLinkUI>
+    </LinksPlaceHolder>
+</div>
+
+
+<script is:inline>
+    
+    const openModalButtons = document.querySelectorAll('.servicesBtns');
+    // Function to open modal with animation
+    openModalButtons.forEach(openModalButton => {
+        
+        openModalButton.addEventListener('click', () => {
+            addServicesInfoComponentIntoModal()
+            const modalTitle = document.getElementById('modal-title');
+            const modalIcon = document.getElementById('modalIcon').querySelector('i');
+            const modalContentPlaceHolder = document.getElementById('modalContentPlaceHolder');
+            const closeBtn = document.getElementById('closeBtn');
+            // Start opacity and transform animations
+
+            let textContent = openModalButton.previousElementSibling.innerHTML;
+            let title = openModalButton.previousElementSibling.previousElementSibling.textContent;
+            let icon = openModalButton.previousElementSibling.previousElementSibling.previousElementSibling;
+            
+            modalTitle.textContent = title;
+            modalIcon.classList.value = icon.classList.toString();
+            modalIcon.classList.add("text-lite-green");
+            modalContentPlaceHolder.innerHTML = textContent;
+            
+            closeBtn.addEventListener("click",()=>{
+                closeModal()
+            })
+
+            fadeOpenModal();
+        });
+            
+    })
+    
+    function addServicesInfoComponentIntoModal() {
+        let componentContent = `
+            <div class="dark:bg-dark-teal bg-dark-teal shadow-xl dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 relative">
+
+                <span id="closeBtn" class="absolute -top-4 -right-4 text-lg size-8 cursor-pointer rounded-full bg-lite-green p-1 text-white grid place-items-center hover:scale-110">
+                    <i class="fa-solid fa-xmark"></i>
+                </span>
+
+                <div class="sm:flex sm:items-start">
+                    <div id="modalIcon" class="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full sm:mx-0 sm:h-10 sm:w-10">
+                        <i></i>
+                    </div>
+                    <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left">
+                        <h3 class="text-lg font-medium leading-6 text-lite-green" id="modal-title">Modal Title</h3>
+                        <div class="mt-2" id="modalContentPlaceHolder">
+                            <p class="text-sm text-gray-500">Your modal description goes here.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            `;
+        
+        modalContent.insertAdjacentHTML("afterbegin", componentContent);
+    }
+
+    
+</script>

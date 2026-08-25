@@ -1,0 +1,54 @@
+---
+import type { GetStaticPaths } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import CodeHelpLayout from "../../layouts/CodeHelpLayout.astro";
+import { filterFuturePosts, getFormattedDate } from "../../data/utils";
+
+export const getStaticPaths = (async () => {
+  let allCodeSnippets = await getCollection('code-help');
+  allCodeSnippets = filterFuturePosts(allCodeSnippets);
+  return allCodeSnippets.map((entry : CollectionEntry<"code-help">) => {
+    return {
+      params: { slug: entry.data.slug },
+      props: {  entry },
+    };
+  });
+}) satisfies GetStaticPaths;
+const { entry } = Astro.props;
+---
+
+
+<CodeHelpLayout  
+    title={entry.data.title}
+    metaDescription={entry.data.metaDescription}
+>
+
+    <div class="container grid place-items-center">
+        <div class="content lg:max-w-[800px] max-w-[390px]">
+            <div class="heading dark:bg-dark-teal bg-dark-teal p-3 py-6 w-full rounded-md text-center">
+                <time datetime={entry.data.publishDate.toString()}>{getFormattedDate(entry.data.publishDate)}</time>
+                <h1 class="text-3xl">{entry.data.title}</h1>
+
+                <ul class="flex flex-wrap gap-1 text-xs list-none justify-center items-center m-0 p-0">
+                    {
+                        entry.data.tags?.map((tag)=>(
+                            <li class="tag border border-[#183550d7] px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full"># {tag}</li>
+                        ))
+                    }
+                </ul>
+            </div>
+            <div class="content" set:html={entry.rendered?.html}>
+
+            </div>
+        </div>
+    </div>
+</CodeHelpLayout>
+<style is:inline>
+    div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span{
+        padding: .7em;
+    }
+    pre p {
+        display: none;
+    }
+</style>
