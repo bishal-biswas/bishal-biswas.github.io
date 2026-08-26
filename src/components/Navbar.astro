@@ -1,4 +1,5 @@
 ---
+import { siteFiles } from "../data/site-data/siteFiles";
 import { navbarMenus } from "../data/site-data/navigation"
 import { getPaths } from "../data/utils";
 const navLinks = navbarMenus;
@@ -34,7 +35,7 @@ const navLinks = navbarMenus;
 
             <div class="left-sec my-auto lg:w-[30%]">
                 <a href="/" class="logo block w-fit" aria-label="Home" tabindex="0">
-                    <img src={getPaths("Asset Images")+`logo.png`} class="h-10 dark:invert-0 invert" alt="Logo" />
+                    <img src={siteFiles.logo} class="h-10 dark:invert-0 invert" alt="Logo" />
                 </a>
             </div>
             <div class="rightSide lg:w-[70%] gap-8 lg:gap-0 w-full lg:h-auto h-[90vh] lg:py-0 py-5 left-0 lg:top-0 top-[10vh] lg:flex justify-between lg:relative absolute lg:backdrop-blur-none backdrop-blur lg:bg-transparent lg:dark:bg-transparent dark:bg-[#00283ac3] bg-[#fcfcfec3]">

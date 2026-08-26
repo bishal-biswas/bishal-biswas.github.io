@@ -1,4 +1,5 @@
 ---
+import { personalFiles } from "../data/site-data/personalFiles";
 import type { CollectionEntry } from "astro:content";
 import ArticleShareBtnLinks from "../components/ArticleShareBtnLinks.astro";
 import Prose from "./Prose.astro";
@@ -150,7 +151,7 @@ const { post } = Astro.props;
             <div
                 class="article-info-author mt-7 flex lg:flex-row flex-col justify-center items-center gap-3 w-full p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]"
             >
-                <img src={getPaths("Asset Images")+"ProPic.webp"}
+                <img src={personalFiles.profilePicture}
                     alt="author Profile Pic"
                     class="rounded-full size-20 shadow-lg shadow-[#70ba65]"
                 />

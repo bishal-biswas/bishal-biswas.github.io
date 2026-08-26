@@ -25,6 +25,7 @@
 
 /* light values (your "light" keys) */
 :root {
+  --bio-color: #00283a;
   --body-bg: ; /* you left this blank in the original too */
   --body-bg-2: #dedede;
   --dark-teal-color: #fcfcfe;

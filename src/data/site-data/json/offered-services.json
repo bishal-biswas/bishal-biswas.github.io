@@ -1,0 +1,53 @@
+{
+  "titleText": "What I can do for you",
+  "servicesData": [
+    {
+      "id": 1,
+      "title": "Full Stack Web Development",
+      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "servicesPoints": [
+        "Point 1 Full Stack Web Development",
+        "Point 2 Full Stack Web Development",
+        "Point 3 Full Stack Web Development",
+        "Point 4 Full Stack Web Development"
+      ],
+      "iconClass": "fa-solid fa-brackets-curly"
+    },
+    {
+      "id": 2,
+      "title": "Static Site and Landing Page Designing",
+      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "servicesPoints": [
+        "Point 1 Static Site and Landing Page Designing",
+        "Point 2 Static Site and Landing Page Designing",
+        "Point 3 Static Site and Landing Page Designing",
+        "Point 4 Static Site and Landing Page Designing"
+      ],
+      "iconClass": "fa-solid fa-code"
+    },
+    {
+      "id": 3,
+      "title": "WordPress Setup",
+      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "servicesPoints": [
+        "Point 1 WordPress Setup",
+        "Point 2 WordPress Setup",
+        "Point 3 WordPress Setup",
+        "Point 4 WordPress Setup"
+      ],
+      "iconClass": "fa-brands fa-wordpress"
+    },
+    {
+      "id": 4,
+      "title": "Selenium Automation with C#",
+      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "servicesPoints": [
+        "Point 1 Selenium Automation with C#",
+        "Point 2 Selenium Automation with C#",
+        "Point 3 Selenium Automation with C#",
+        "Point 4 Selenium Automation with C#"
+      ],
+      "iconClass": "fa-brands fa-battle-net"
+    }
+  ]
+}

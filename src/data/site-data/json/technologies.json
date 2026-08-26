@@ -1,0 +1,89 @@
+{
+  "technologyData": [
+    {
+      "technologyTitle": "Astro",
+      "technologyLogoImage": "astro.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "VS Code",
+      "technologyLogoImage": "vscode.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "Angular",
+      "technologyLogoImage": "angular-new6082.logowik.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "C#",
+      "technologyLogoImage": "c-sharp.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "ASP.Net MVC",
+      "technologyLogoImage": "asp-net-mvc-1-.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "PHP",
+      "technologyLogoImage": "php.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "Bootstrap",
+      "technologyLogoImage": "bootstrap.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "Dot Net Core",
+      "technologyLogoImage": "NET_Core_Logo.svg.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "Dot Net",
+      "technologyLogoImage": "dotnet.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "HTML",
+      "technologyLogoImage": "HTML5.png",
+      "isTechStack": true
+    },
+    {
+      "technologyTitle": "Tailwind CSS",
+      "technologyLogoImage": "TailwindCSS.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "Visual Studio",
+      "technologyLogoImage": "Visual-Studio-logo.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "TypeScript",
+      "technologyLogoImage": "TypeScript.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "Vercel",
+      "technologyLogoImage": "vercel.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "Xata.io",
+      "technologyLogoImage": "Xata.io.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "JavaScript",
+      "technologyLogoImage": "JavaScript.png",
+      "isTechStack": false
+    },
+    {
+      "technologyTitle": "YouTube API",
+      "technologyLogoImage": "YouTube API.png",
+      "isTechStack": false
+    }
+  ]
+}

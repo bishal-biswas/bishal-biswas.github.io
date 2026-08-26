@@ -1,0 +1,20 @@
+{
+  "blogCategories": [
+    {
+      "title": "Web Development",
+      "imageFile": "php.png"
+    },
+    {
+      "title": "Freelancing",
+      "imageFile": "1676826699397.png"
+    },
+    {
+      "title": "C Sharp",
+      "imageFile": "c-sharp.png"
+    },
+    {
+      "title": "Astro",
+      "imageFile": "astro.png"
+    }
+  ]
+}

@@ -1,0 +1,36 @@
+{
+  "staticPaths": [
+    {
+      "name": "Asset Images",
+      "path": "/assets/images/"
+    },
+    {
+      "name": "Admin Images",
+      "path": "/assets/admin-images/"
+    },
+    {
+      "name": "Skills",
+      "path": "/uploads/skills/"
+    },
+    {
+      "name": "Categories",
+      "path": "/uploads/categ/"
+    },
+    {
+      "name": "Portfolio",
+      "path": "/uploads/portfolios/"
+    },
+    {
+      "name": "Article",
+      "path": "/uploads/articles/"
+    },
+    {
+      "name": "Certificate",
+      "path": "/uploads/certificates/"
+    },
+    {
+      "name": "Other Files",
+      "path": "/uploads/files/"
+    }
+  ]
+}

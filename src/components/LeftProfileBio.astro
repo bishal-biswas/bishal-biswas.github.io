@@ -2,6 +2,7 @@
 /* import { Image } from "astro:assets";
 import myImportedImage from '../../src/assets/images/ProPic.jpg'; */
 
+import { personalFiles } from "../data/site-data/personalFiles";
 import { personaInfo } from "../data/site-data/profile";
 import { calculateAge } from "../data/utils";
 import { getPaths } from "../data/utils";
@@ -28,7 +29,7 @@ const personInfo = personaInfo;
                 class="rounded-full relative size-20 lg:size-28 border-2 border-lite-green z-[1]"
             /> -->
             <img
-                src={getPaths("Asset Images")+"ProPic.webp"}
+                src={personalFiles.profilePicture}
                 alt="profile photo"
                 class="rounded-full relative size-20 lg:size-28 border-2 border-lite-green z-[1]"
             />

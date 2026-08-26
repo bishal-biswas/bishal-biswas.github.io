@@ -58,7 +58,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Articles")[0];
     pageSmallText={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
     title="Articles" 
-    backgroundImg={getPaths("Asset Images") + "bg2.webp"}
+    backgroundImg={pageContent.backgroundImage}
     >
 
     <!-- Article Container -->

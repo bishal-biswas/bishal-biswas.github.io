@@ -28,7 +28,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
     pageSmallText={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
     title="Portfolio"
-    backgroundImg={getPaths("Asset Images") + "bg6.webp"}
+    backgroundImg={pageContent.backgroundImage}
 >
     <!-- Hero Content -->
 

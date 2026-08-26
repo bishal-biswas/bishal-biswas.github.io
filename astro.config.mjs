@@ -7,7 +7,9 @@ import tailwindcss from '@tailwindcss/vite';
 // https://astro.build/config
 export default defineConfig({
     site: 'https://bishal-biswas.github.io',
-    integrations: [sitemap()],
+    // /admin is a static Decap page in public/, so it never reaches the sitemap;
+    // the filter is insurance in case it ever becomes a real route.
+    integrations: [sitemap({ filter: (page) => !page.includes('/admin') })],
     vite: {
         plugins: [tailwindcss()],
     },

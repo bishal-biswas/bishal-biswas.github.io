@@ -1,0 +1,14 @@
+{
+  "skillsStats": [
+    {
+      "value": 10,
+      "iconClass": "fa-solid fa-plus",
+      "textData": "Projects Made"
+    },
+    {
+      "value": 2,
+      "iconClass": "fa-solid fa-plus",
+      "textData": "Experience in Years"
+    }
+  ]
+}

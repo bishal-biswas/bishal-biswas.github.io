@@ -1,5 +1,5 @@
 ---
-import { footerLinks } from "../data/site-data/navigation";
+import { footerLinks, footerText } from "../data/site-data/navigation";
 
 var currentYear = new Date().getFullYear();
 ---
@@ -10,10 +10,10 @@ var currentYear = new Date().getFullYear();
         
         <span class="flex justify-between flex-col lg:flex-row lg:gap-5 gap-3">
             <span class="footerNote">
-                Made with ❤️ by Bishal Biswas
+                {footerText.footerNote}
             </span>
             <span class="contactInfo hover:text-lite-green">
-                Email : <a href="mailto:bishalanshu@yahoo.in">bishalanshu@yahoo.in</a>
+                Email : <a href={`mailto:${footerText.contactEmail}`}>{footerText.contactEmail}</a>
             </span>
         </span>
     
@@ -29,7 +29,7 @@ var currentYear = new Date().getFullYear();
                 }
             </ul>
         </span>
-        <span class="copyright"> &copy; {currentYear} All Rights reserved</span>
+        <span class="copyright"> &copy; {currentYear} {footerText.copyrightText}</span>
     </div>
 
     <span tabindex="0" id="BackToTop" onclick="bringToView('.scrollUp')" class="fixed z-[1] translate-x-[100px] right-5 bottom-5 rounded-full size-10 dark:bg-body-bg-2 bg-dark-teal border-2 dark:border-body-bg hover:bg-lite-green hover:scale-110 active:scale-90 cursor-pointer flex justify-center items-center text-xl transition-all ease-in-out duration-300" >

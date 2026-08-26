@@ -3,6 +3,9 @@ import ColumnLayout from "../layouts/ColumnLayout.astro";
 import Cards_ContactLinks from "../components/Cards_ContactLinks.astro";
 import SectionDivider from "../components/SectionDivider.astro";
 import ContactForm from "../components/ContactForm.astro";
+import { getPageContent } from "../data/utils";
+
+const pageContent = getPageContent("Contact");
 ---
 
 <ColumnLayout
@@ -10,6 +13,7 @@ import ContactForm from "../components/ContactForm.astro";
     pageSmallText = "Contact Me"
     pageHeadingText = "Have a question? Let's Get in Touch"
     pageMainHeadingtagType = "h1" 
+    backgroundImg = {pageContent.backgroundImage}
     isBreadcrumbShown = {true}>
 
     <div class="linksCards-holder w-full flex flex-wrap gap-3 lg:flex-row flex-col justify-evenly items-center mb-5">

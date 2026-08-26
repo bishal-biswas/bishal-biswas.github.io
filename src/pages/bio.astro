@@ -1,4 +1,5 @@
 ---
+import { personalFiles } from "../data/site-data/personalFiles";
 import "../global.css"
 import { getCollection } from "astro:content";
 import { personaInfo } from "../data/site-data/profile";
@@ -23,12 +24,12 @@ const allBlogPosts = await getCollection("article");
 
     <img src={"https://thumbs.dreamstime.com/b/rocks-underwater-atlantic-ocean-galicia-spain-pontevedra-193238909.jpg"} class="overlay top-0 fixed! h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" />
     <!-- <img src={getPaths("Asset Images")+"bio-bg.jpg"} class="overlay top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" /> -->
-    <div class="overlay backdrop-blur-sm top-0 fixed! h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-[2]"></div>
+    <div class="overlay backdrop-blur- top-0 fixed! h-screen w-full bg-linear-to-br from-cyan-700 to-[#00000057] z-2"></div>
 
-    <div class="wrapper text-white max-w[700px] md:w-[700px] w-[90%] flex justify-center items-center flex-col relative z-[2] pt-28 pb-14">
+    <div class="wrapper text-white max-w[700px] md:w-[700px] w-[90%] flex justify-center items-center flex-col relative z-2 pt-28 pb-14">
         
         <div class="Bio-infoBox w-full rounded-md bg-[#bcbcbc3e] shadow-xl shadow-body-bg p-5 relative flex justify-center items-center">
-            <img src={getPaths("Other Files")+"headshot.jpg"} alt={`Profile Pic of ${personalIfo.fullName}`} class="rounded-full size-36 border-4 border-teal-500 absolute -top-20 shadow-lg">
+            <img src={personalFiles.bioHeadshot} alt={`Profile Pic of ${personalIfo.fullName}`} class="rounded-full size-36 border-4 border-teal-500 absolute -top-20 shadow-lg">
             
             <span class="contentText text-center flex gap-3 items-center flex-col mt-14">
                 <span class="flex gap-1 items-center">
@@ -83,11 +84,11 @@ const allBlogPosts = await getCollection("article");
                         (post: any) =>(
                             <swiper-slide>
                                 <div class="article-card rounded-lg shadow-2xl size-full my-7 active:scale-95">
-                                    <a href={"/articles/"+post.slug} class="article-thumbnail h-[80%] block" >
+                                    <a href={"/articles/"+post.data.slug} class="article-thumbnail h-[80%] block" >
                                         <img src={getPaths("Article")+post.data.featuredImage} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg lg:h-[160px] md:h-[250px] h-[200px]" />
                                     </a>
                                     <div class="article-data h-[60px] p-2 text-left bg-[#00151f8a] rounded-br-lg rounded-bl-lg">
-                                        <a href={"/articles/"+post.slug} class="line-clamp-2 text-sm" >
+                                        <a href={"/articles/"+post.data.slug} class="line-clamp-2 text-sm" >
                                             {post.data.title}
                                         </a>
                                     </div>

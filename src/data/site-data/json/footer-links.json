@@ -1,0 +1,27 @@
+{
+  "footerNote": "Made with ❤️ by Bishal Biswas",
+  "contactEmail": "bishalanshu@yahoo.in",
+  "copyrightText": "All Rights reserved",
+  "footerLinks": [
+    {
+      "menuTitle": "About",
+      "menuURL": "/about"
+    },
+    {
+      "menuTitle": "Privacy Policies",
+      "menuURL": "/privacy-policy"
+    },
+    {
+      "menuTitle": "Disclaimer",
+      "menuURL": "/disclaimer"
+    },
+    {
+      "menuTitle": "Terms and Condition",
+      "menuURL": "/terms-condition"
+    },
+    {
+      "menuTitle": "Contact",
+      "menuURL": "/contact"
+    }
+  ]
+}

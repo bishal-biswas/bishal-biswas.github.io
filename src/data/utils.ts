@@ -1,6 +1,7 @@
 import { blogCategories } from "./site-data/content";
 import { staticPaths } from "./site-data/navigation";
 import { technologyData } from "./site-data/skills";
+import { pageData } from "./site-data/pageData";
 function getFormattedDate(parameter_date:any){
     const options = { day: 'numeric', month: 'long', year: 'numeric' };
     return parameter_date.toLocaleString('en-US', options)
@@ -104,6 +105,21 @@ function calculateAge (birthDate:Date, otherDate:Date) {
     return years;
 }
 
+// Hero copy + background for a page, keyed by the pageTitle in page-data.json.
+// Returns blanks rather than throwing if the key is missing, so a renamed entry
+// degrades to an empty hero instead of a build failure.
+function getPageContent(pageTitle: string) {
+    const match = pageData.find((page: any) => page.pageTitle === pageTitle);
+    return {
+        pageSmallText: match?.pageSmallText ?? "",
+        pageHeadingText: match?.pageHeadingText ?? "",
+        isSmallBelow: match?.isSmallBelow ?? false,
+        // undefined (not "") so layouts fall back to no background image at all
+        backgroundImage: match?.backgroundImage || undefined,
+        backgroundImageClass: match?.backgroundImageClass || undefined,
+    };
+}
+
 function filterFuturePosts(posts: any[]) {
     const today = new Date(); // Get the current date
     return posts.filter((post) => {
@@ -112,4 +128,4 @@ function filterFuturePosts(posts: any[]) {
     });
   }
 
-export {getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts}
+export {getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts}

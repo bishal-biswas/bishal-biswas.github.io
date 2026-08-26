@@ -1,6 +1,9 @@
 ---
 import CardTestimonialReview from "../components/Card_TestimonialReview.astro";
 import PlainLayout from "../layouts/PlainLayout.astro";
+import { getPageContent } from "../data/utils";
+
+const pageContent = getPageContent("Testimonials");
 
 ---
 
@@ -10,7 +13,8 @@ import PlainLayout from "../layouts/PlainLayout.astro";
     isPageSmallTextDark={true}
     pageMainHeadingtagType="h1"
     pageHeadingText="Testimonials"
-    backgroundImg="https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLkvc.png"
+    backgroundImg={pageContent.backgroundImage}
+    backgroundImgClass={pageContent.backgroundImageClass}
     pageType="project"
     >
     

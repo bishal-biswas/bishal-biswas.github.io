@@ -10,8 +10,10 @@ import ServicesCards from "../components/ServicesCards.astro";
 import ButtonLinkUI from "../components/ButtonLinkUI.astro";
 import { getPaths } from "../data/utils";
 import { pageData } from "../data/site-data/pageData";
+import { personalFiles } from "../data/site-data/personalFiles";
 
 const pageContent = pageData.filter(page => page.pageTitle == "Home")[0];
+
 ---
 
 <ColumnLayout 
@@ -20,13 +22,17 @@ const pageContent = pageData.filter(page => page.pageTitle == "Home")[0];
     pageHeadingText = {pageContent.pageHeadingText}
     pageMainHeadingtagType = "h1" 
     isMainHeadingDoubleLined = {true}
-    backgroundImg={getPaths("Asset Images") + "bg3.webp"}
+    backgroundImg={pageContent.backgroundImage}
     >
     
     <HeroLinks position="left" Classes="gap-3 my-10 lg:justify-normal justify-center" slot="heroSection">
 
         <ButtonLinkUI action="/portfolio">Recent Work</ButtonLinkUI>
-        <ButtonLinkUI action="#" iconClass="fa-solid fa-file">Download Resume</ButtonLinkUI>
+        {
+            personalFiles.resumePDF &&
+            <ButtonLinkUI action={personalFiles.resumePDF} iconClass="fa-solid fa-file">Download Resume</ButtonLinkUI>
+
+        }
         
     </HeroLinks>
     

@@ -5,7 +5,7 @@ import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
 import Prose from "../../components/Prose.astro";
 import { getCollection } from "astro:content";
 import HeadingText from "../../components/headingText.astro";
-import { getPaths, getTechStackLogo } from "../../data/utils";
+import { getPaths, getTechStackLogo, getPageContent } from "../../data/utils";
 
 export async function getStaticPaths() {
   const portfolioEntries = await getCollection('portfolio');
@@ -15,6 +15,7 @@ export async function getStaticPaths() {
 }
 
 const { entry } = Astro.props;
+const pageContent = getPageContent("Portfolio Detail");
 // console.log(entry);
 
 let screenshotsCollection : string[] = [];
@@ -45,7 +46,7 @@ if(entry.data.rating){
     pageMainHeadingtagType="h1"
     pageSmallText={entry.data.projectType}
     isBreadcrumbShown={true}
-    backgroundImg="https://images3.alphacoders.com/813/813087.jpg"
+    backgroundImg={pageContent.backgroundImage}
     isHeroContentSectionShown={false}
     pageType="project"
     ogType="article"

@@ -9,6 +9,11 @@ on:
   workflow_dispatch:
 
 # Allow this job to clone the repo and create a page deployment
+# Collapse rapid CMS commits (one per media upload) into a single deploy.
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
 permissions:
   contents: read
   pages: write

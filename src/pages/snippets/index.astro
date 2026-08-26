@@ -16,8 +16,8 @@ const pageContent = pageData.filter(page => page.pageTitle == "Snippets")[0];
     pageSmallTextBelow = {pageContent.pageSmallText}
     pageHeadingText= {pageContent.pageHeadingText}
     pageMainHeadingtagType="h1"
-    backgroundImgClass="object-fill"
-    backgroundImg="/assets/images/gradient1.png"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
     isLargeWidth={true}
 >
     <!--  https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLkvc.png  -->
@@ -62,26 +62,6 @@ const pageContent = pageData.filter(page => page.pageTitle == "Snippets")[0];
         </div>
 
         <div class="code-articles lg:w-[80%] w-full flex-wrap flex gap-3">
-            {
-                codeEntries.map((code)=>(
-                    !code.data.isDraft &&
-                    <CardCodeResource 
-                        cardTitle={code.data.title} 
-                        cardUrl={code.data.slug || ""} 
-                        descriptionText={code.data.metaDescription} 
-                        tags={code.data.tags}/>
-                ))
-            }
-            {
-                codeEntries.map((code)=>(
-                    !code.data.isDraft &&
-                    <CardCodeResource 
-                        cardTitle={code.data.title} 
-                        cardUrl={code.data.slug || ""} 
-                        descriptionText={code.data.metaDescription} 
-                        tags={code.data.tags}/>
-                ))
-            }
             {
                 codeEntries.map((code)=>(
                     !code.data.isDraft &&

@@ -1,5 +1,5 @@
 export { personaInfo, aboutMeSection, globalStats } from "./profile";
-export { staticPaths, navbarMenus, footerLinks } from "./navigation";
+export { staticPaths, navbarMenus, footerLinks, footerText } from "./navigation";
 export {
     skillsStats,
     offeredServices,
@@ -10,3 +10,5 @@ export {
 } from "./skills";
 export { blogCategories, products } from "./content";
 export { pageData } from "./pageData";
+export { siteFiles } from "./siteFiles";
+export { personalFiles } from "./personalFiles";

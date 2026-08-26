@@ -1,0 +1,116 @@
+{
+  "pageData": [
+    {
+      "pageTitle": "Home",
+      "pageSmallText": "Hi my friends on the internet!",
+      "pageHeadingText": "Discover my work space!",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/bg3.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Skills",
+      "pageSmallText": "Resume",
+      "pageHeadingText": "My Skills and History ",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/bg4.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Portfolio",
+      "pageSmallText": "Portfolio",
+      "pageHeadingText": "Some of my recent works..",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/bg6.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Articles",
+      "pageSmallText": "Articles",
+      "pageHeadingText": "Welcome to my Personal Blog..",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/bg2.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Snippets",
+      "pageSmallText": "My Brain Dump. Some of the Code Samples I keep, so I could just copy-paste them 😜",
+      "pageHeadingText": "Code Reference and Snippets",
+      "isSmallBelow": true,
+      "backgroundImage": "/assets/images/gradient1.png",
+      "backgroundImageClass": "object-fill"
+    },
+    {
+      "pageTitle": "Products",
+      "pageSmallText": "My favourite tech gear and things I recommend using.",
+      "pageHeadingText": "Products",
+      "isSmallBelow": true,
+      "backgroundImage": "/assets/images/footer_rays.cafe5d09.png",
+      "backgroundImageClass": "object-fill"
+    },
+    {
+      "pageTitle": "Contact",
+      "pageSmallText": "Contact Me",
+      "pageHeadingText": "Have a question? Let's Get in Touch",
+      "isSmallBelow": false,
+      "backgroundImage": "",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "About",
+      "pageSmallText": "",
+      "pageHeadingText": "I'm Bishal Biswas - a Software and a web developer.",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/matrixeffect.png",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Testimonials",
+      "pageSmallText": "What people say about me I have worked with!",
+      "pageHeadingText": "Testimonials",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/matrixeffect.png",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Search",
+      "pageSmallText": "",
+      "pageHeadingText": "Search Results",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/rays.426980b9.png",
+      "backgroundImageClass": "object-fill"
+    },
+    {
+      "pageTitle": "404",
+      "pageSmallText": "Looks like the page you landed on is gone...",
+      "pageHeadingText": "404 Not Found",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/404.avif",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Portfolio Detail",
+      "pageSmallText": "",
+      "pageHeadingText": "",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/portfolio-default.jpg",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Article Category",
+      "pageSmallText": "Articles",
+      "pageHeadingText": "",
+      "isSmallBelow": false,
+      "backgroundImage": "",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Article Tag",
+      "pageSmallText": "Articles",
+      "pageHeadingText": "",
+      "isSmallBelow": false,
+      "backgroundImage": "",
+      "backgroundImageClass": ""
+    }
+  ]
+}

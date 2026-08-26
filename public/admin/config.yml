@@ -1,0 +1,484 @@
+backend:
+  name: github
+  repo: bishal-biswas/bishal-biswas.github.io
+  branch: main
+  base_url: https://decap-oauth-bishal.vercel.app
+  auth_endpoint: api/auth
+  commit_messages:
+    create: 'content: create {{collection}} "{{slug}}"'
+    update: 'content: update {{collection}} "{{slug}}"'
+    delete: 'content: delete {{collection}} "{{slug}}"'
+    uploadMedia: 'media: upload "{{path}}"'
+    deleteMedia: 'media: delete "{{path}}"'
+
+site_url: https://bishal-biswas.github.io
+display_url: https://bishal-biswas.github.io
+
+# Uncomment, run `npx decap-server`, and visit localhost:4321/admin/ to edit
+# against the working tree instead of GitHub. No OAuth involved.
+local_backend: true
+
+# Fallback only. Every collection overrides these.
+#
+# public_folder is deliberately "" everywhere: this site stores BARE FILENAMES
+# in frontmatter and prepends the directory at render time via getPaths(), e.g.
+#   getPaths("Article") + entry.data.featuredImage
+# If Decap wrote "/uploads/articles/foo.png" the site would build a broken
+# doubled path. See src/data/utils.ts and src/data/site-data/navigation.js.
+media_folder: public/uploads/files
+public_folder: ''
+
+collections:
+  # ---------------------------------------------------------------- articles
+  # URL comes from the `slug` FIELD: /articles/<slug>/
+  - name: article
+    label: Articles
+    label_singular: Article
+    description: Blog posts rendered at /articles/<slug>/
+    folder: src/content/articles
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    summary: '{{title}}'
+    sortable_fields: [publishDate, title, category]
+    media_folder: /public/uploads/articles
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /articles/<slug>/. Changing this on a published post breaks its existing links.'
+      - { name: featuredImage, label: Featured Image, widget: image, hint: 'Saved as a bare filename; the site prepends /uploads/articles/' }
+      - { name: author, label: Author, widget: string, default: Bishal Biswas }
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'A future date hides the post until that day.' }
+      - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely.' }
+      - { name: category, label: Category, widget: select, options: ['Web Development', 'Freelancing', 'C Sharp', 'Astro'] }
+      - { name: tags, label: Tags, widget: list, default: [] }
+      - { name: likes, label: Likes, widget: number, required: false, value_type: int }
+      - { name: dislikes, label: Dislikes, widget: number, required: false, value_type: int }
+      - { name: views, label: Views, widget: number, required: false, value_type: int }
+      - { name: body, label: Body, widget: markdown }
+
+  # --------------------------------------------------------------- portfolio
+  # URL is derived from the TITLE (lowercased, spaces -> hyphens), not a slug
+  # field. See getStaticPaths in src/pages/portfolio/[slug].astro.
+  - name: portfolio
+    label: Portfolio
+    label_singular: Project
+    description: Projects rendered at /portfolio/<title-as-slug>/
+    folder: src/content/portfolio
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{title}}'
+    identifier_field: title
+    summary: '{{title}} — {{projectType}}'
+    sortable_fields: [publishDate, title]
+    media_folder: /public/uploads/portfolios
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string, hint: 'The URL is built from this. Renaming a project changes its URL.' }
+      - { name: featuredImage, label: Featured Image, widget: image, hint: 'Bare filename; the site prepends /uploads/portfolios/' }
+      - { name: projectBriefDescription, label: Brief Description, widget: text }
+      - name: screenshots
+        label: Screenshots
+        widget: list
+        required: false
+        media_folder: /public/assets/images/screenshots
+        public_folder: ''
+        field: { name: screenshot, label: Screenshot, widget: image }
+        hint: 'Stored in /assets/images/screenshots/ — a different folder from the featured image.'
+      - { name: projectType, label: Project Type, widget: string }
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - { name: isDraft, label: Draft, widget: boolean, default: true }
+      - { name: isStatus, label: Status, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
+      - { name: techStack, label: Tech Stack, widget: list, hint: 'Matched against technologyData to show logos — spelling matters.' }
+      - { name: isProjectCompleted, label: Completed, widget: boolean, default: true }
+      - { name: projectDuration, label: Duration, widget: string, hint: 'e.g. 2 Month' }
+      - { name: rating, label: Rating, widget: number, required: false, value_type: int, min: 1, max: 5 }
+      - { name: projectLiveLink, label: Live Link, widget: string, required: false }
+      - { name: projectRepoLink, label: Repo Link, widget: string, required: false }
+      - { name: clientName, label: Client Name, widget: string, required: false }
+      - { name: clientProfession, label: Client Profession, widget: string, required: false }
+      - { name: clientPic, label: Client Photo URL, widget: string, required: false, hint: 'Full URL — this one is not a repo file.' }
+      - { name: clientReview, label: Client Review, widget: text, required: false }
+      - { name: body, label: Body, widget: markdown }
+
+  # ---------------------------------------------------------------- snippets
+  # URL comes from the `slug` FIELD: /snippets/<slug>/
+  - name: code-help
+    label: Snippets
+    label_singular: Snippet
+    description: Code snippets rendered at /snippets/<slug>/
+    folder: src/content/code-help
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    sortable_fields: [publishDate, title]
+    media_folder: /public/uploads/articles
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /snippets/<slug>/'
+      - { name: metaDescription, label: Meta Description, widget: text, hint: 'Used for SEO and social share cards.' }
+      - { name: featuredImage, label: Featured Image, widget: image, required: false }
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - { name: isDraft, label: Draft, widget: boolean, default: true }
+      - { name: tags, label: Tags, widget: list, required: false, default: [] }
+      - { name: body, label: Body, widget: markdown }
+
+  # ------------------------------------------------------------------- pages
+  # URL comes from the `slug` FIELD, at the site root: /<slug>/
+  - name: pages
+    label: Pages
+    label_singular: Page
+    description: Standalone pages rendered at /<slug>/
+    folder: src/content/pages
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    media_folder: /public/uploads/files
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /<slug>/ at the site root.'
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - { name: isDraft, label: Draft, widget: boolean, default: true }
+      - { name: body, label: Body, widget: markdown }
+
+  # --------------------------------------------------------------- site data
+  # How the SITE is configured: branding, navigation, footer, per-page hero copy
+  # and images. Content of the site rather than facts about the person.
+  #
+  # static-paths.json is deliberately NOT exposed: it maps every image folder on
+  # the site, and a typo there breaks images site-wide. Edit that one in code.
+  - name: site-data
+    label: Site Data
+    editor:
+      preview: false
+    files:
+      - name: site-files
+        label: Logo
+        file: src/data/site-data/json/site-files.json
+        # Full public paths, used directly as an img src (never via getPaths).
+        fields:
+          - name: logo
+            label: Site Logo
+            widget: image
+            media_folder: /public/assets/images
+            public_folder: /assets/images
+            hint: 'Shown in the navbar. Inverted in light mode, so a transparent PNG works best.'
+
+      - name: navbar
+        label: Navigation Menu
+        file: src/data/site-data/json/navbar-menus.json
+        fields:
+          - name: navbarMenus
+            label: Menus
+            widget: list
+            label_singular: Menu Item
+            summary: '{{fields.menuTitle}}'
+            fields:
+              - { name: menuTitle, label: Title, widget: string }
+              - { name: menuURL, label: URL, widget: string, hint: 'Use javascript:void(0) for dropdown parents.' }
+              - { name: hasSubMenu, label: Has Submenu, widget: boolean, default: false }
+              - name: subMenuList
+                label: Submenu Items
+                widget: list
+                fields:
+                  - { name: menuTitle, label: Title, widget: string, required: false }
+                  - { name: menuURL, label: URL, widget: string, required: false }
+
+      - name: footer
+        label: Footer
+        file: src/data/site-data/json/footer-links.json
+        fields:
+          - { name: footerNote, label: Footer Note, widget: string, hint: 'Left side of the top footer bar. Emoji are fine.' }
+          - { name: contactEmail, label: Contact Email, widget: string, hint: 'Shown as a mailto link on the right.' }
+          - { name: copyrightText, label: Copyright Text, widget: string, hint: 'Rendered after the year, which updates automatically: "(c) 2026 <this text>".' }
+          - name: footerLinks
+            label: Footer Links
+            widget: list
+            summary: '{{fields.menuTitle}}'
+            fields:
+              - { name: menuTitle, label: Title, widget: string }
+              - { name: menuURL, label: URL, widget: string }
+
+      - name: page-headings
+        label: Page Headings
+        file: src/data/site-data/json/page-data.json
+        fields:
+          - name: pageData
+            label: Pages
+            widget: list
+            label_singular: Page
+            summary: '{{fields.pageTitle}}'
+            fields:
+              - { name: pageTitle, label: Page Key, widget: string, hint: 'Matched by exact string in page code - do not rename without changing the page.' }
+              - { name: pageSmallText, label: Small Text, widget: string, required: false }
+              - { name: pageHeadingText, label: Heading, widget: string, required: false }
+              - { name: isSmallBelow, label: Small text below heading, widget: boolean, default: false }
+              - name: backgroundImage
+                label: Hero Background
+                widget: image
+                required: false
+                media_folder: /public/assets/images
+                public_folder: /assets/images
+                hint: 'Full path, not a bare filename - used directly as an img src. Use "Replace with URL" for an external image. Leave empty for no background.'
+              - name: backgroundImageClass
+                label: Background Fit
+                widget: select
+                required: false
+                options: ['', 'object-cover', 'object-fill', 'object-contain']
+                hint: 'How the image fills the hero. Blank uses the layout default.'
+
+      - name: blog-categories
+        label: Article Categories
+        file: src/data/site-data/json/blog-categories.json
+        media_folder: /public/uploads/categ
+        public_folder: ''
+        fields:
+          - name: blogCategories
+            label: Categories
+            widget: list
+            label_singular: Category
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: Title, widget: string, hint: 'Must match the category value used on articles exactly.' }
+              - { name: imageFile, label: Image, widget: image, hint: 'Bare filename; the site prepends /uploads/categ/' }
+
+      - name: products
+        label: Products
+        file: src/data/site-data/json/products.json
+        fields:
+          - name: products
+            label: Products
+            widget: list
+            label_singular: Product
+            summary: '{{fields.productTitle}}'
+            fields:
+              - { name: productTitle, label: Title, widget: string }
+              - { name: productDescription, label: Description, widget: text }
+              - { name: productLink, label: Link, widget: string, required: false }
+              - { name: productImage, label: Image URL, widget: string, hint: 'Full URL - these are external images.' }
+              - { name: productCategory, label: Category, widget: string }
+      
+  # ----------------------------------------------------------- personal info
+  # Facts about Bishal: profile, photos, resume, and the career history shown on
+  # the Skills page (education, employment, certificates, technologies).
+  - name: personal-info
+    label: Personal Info
+    editor:
+      preview: false
+    files:
+      - name: profile
+        label: Profile
+        file: src/data/site-data/json/persona-info.json
+        fields:
+          - { name: fullName, label: Full Name, widget: string }
+          - { name: statusText, label: Status Text, widget: string }
+          - { name: typeWriterText, label: Typewriter Lines, widget: list }
+          - { name: residence, label: Residence, widget: string }
+          - { name: City, label: City, widget: string }
+          - { name: DOB, label: Date of Birth, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'Drives the age shown in the sidebar.' }
+          - name: Bio
+            label: Bio
+            widget: object
+            fields:
+              - { name: professionTitle, label: Profession Title, widget: string }
+              - { name: bioText, label: Bio Text, widget: text, hint: 'Also the fallback meta description for pages that do not set one.' }
+              - { name: location, label: Location, widget: string }
+              - name: links
+                label: Links
+                widget: list
+                summary: '{{fields.text}}'
+                fields:
+                  - { name: iconClass, label: Icon Class, widget: string }
+                  - { name: url, label: URL, widget: string }
+                  - { name: text, label: Text, widget: string }
+          - name: socialLinks
+            label: Social Links
+            widget: list
+            summary: '{{fields.title}}'
+            fields:
+              - { name: title, label: Network, widget: string }
+              - { name: iconClass, label: Icon Class, widget: string }
+              - { name: color, label: Colour, widget: color }
+              - { name: url, label: URL, widget: string, required: false }
+
+      - name: personal-files
+        label: Photos, Resume & Video
+        file: src/data/site-data/json/personal-files.json
+        # Full public paths, used directly as href/src (never via getPaths).
+        # Leaving public_folder unset makes Decap default it to the media_folder
+        # ("/public/..."), which 404s: public/ is stripped at build time.
+        fields:
+          - name: profilePicture
+            label: Profile Picture
+            widget: image
+            media_folder: /public/assets/images
+            public_folder: /assets/images
+            hint: 'Sidebar, About page and the article author box.'
+          - name: bioHeadshot
+            label: Bio Page Headshot
+            widget: image
+            media_folder: /public/uploads/files
+            public_folder: /uploads/files
+            hint: 'The round photo at the top of /bio.'
+          - name: resumePDF
+            label: Resume (PDF)
+            widget: file
+            media_folder: /public/uploads/files
+            public_folder: /uploads/files
+            hint: 'Linked from the Download Resume button on the homepage.'
+          - name: bioVideo
+            label: Intro Video
+            widget: file
+            media_folder: /public/uploads/files
+            public_folder: /uploads/files
+            hint: 'Opened by the Introduction player on the homepage.'
+          - name: bioVideoThumbnail
+            label: Intro Video Poster
+            widget: image
+            media_folder: /public/uploads/files
+            public_folder: /uploads/files
+            hint: 'Still shown before the intro video plays.'
+
+      - name: about-me
+        label: About Section
+        file: src/data/site-data/json/about-me-section.json
+        fields:
+          - { name: titleText, label: Title, widget: string }
+          - { name: textContent, label: Text, widget: text }
+          - { name: linkToAboutMePageText, label: Link Text, widget: string }
+          - { name: linkToAboutMePage, label: Link URL, widget: string }
+
+      - name: certificates
+        label: Certificates
+        file: src/data/site-data/json/certificates.json
+        media_folder: /public/uploads/certificates
+        public_folder: ''
+        fields:
+          - name: certificateData
+            label: Certificates
+            widget: list
+            label_singular: Certificate
+            summary: '{{fields.title}}'
+            fields:
+              - { name: imageFilePath, label: Image, widget: image, hint: 'Bare filename; the site prepends /uploads/certificates/' }
+              - { name: title, label: Title, widget: string, hint: 'HTML-escaped anchor tags work here - see the existing C# entry.' }
+
+      - name: education
+        label: Education
+        file: src/data/site-data/json/education.json
+        media_folder: /public/uploads/files
+        public_folder: ''
+        fields:
+          - name: educationData
+            label: Education
+            widget: list
+            label_singular: Qualification
+            summary: '{{fields.title}} - {{fields.details}}'
+            fields:
+              - { name: imageFilePath, label: Logo, widget: image, hint: 'Bare filename; the site prepends /uploads/files/' }
+              - { name: title, label: Institution, widget: string }
+              - { name: details, label: Qualification, widget: string, hint: 'e.g. BCA' }
+              - { name: duration, label: Duration, widget: string, hint: 'e.g. 2017 - 2021' }
+              - { name: fullDescription, label: Description, widget: text }
+
+      - name: employment
+        label: Employment
+        file: src/data/site-data/json/employment.json
+        media_folder: /public/uploads/files
+        public_folder: ''
+        fields:
+          - name: employmentData
+            label: Employment
+            widget: list
+            label_singular: Role
+            summary: '{{fields.title}} - {{fields.details}}'
+            fields:
+              - { name: imageFilePath, label: Logo, widget: image, hint: 'Bare filename; the site prepends /uploads/files/' }
+              - { name: title, label: Company, widget: string }
+              - { name: details, label: Role, widget: string }
+              - { name: duration, label: Duration, widget: string }
+              - { name: fullDescription, label: Description, widget: text }
+
+      - name: technologies
+        label: Technologies
+        file: src/data/site-data/json/technologies.json
+        media_folder: /public/uploads/skills
+        public_folder: ''
+        fields:
+          - name: technologyData
+            label: Technologies
+            widget: list
+            label_singular: Technology
+            summary: '{{fields.technologyTitle}}'
+            fields:
+              - { name: technologyTitle, label: Name, widget: string, hint: 'Matched against project techStack values to pick logos - keep spelling consistent.' }
+              - { name: technologyLogoImage, label: Logo, widget: image, hint: 'Bare filename; the site prepends /uploads/skills/' }
+              - { name: isTechStack, label: Show in tech stack, widget: boolean, default: true }
+
+      - name: services
+        label: Services Offered
+        file: src/data/site-data/json/offered-services.json
+        fields:
+          - { name: titleText, label: Section Title, widget: string }
+          - name: servicesData
+            label: Services
+            widget: list
+            label_singular: Service
+            summary: '{{fields.title}}'
+            fields:
+              - { name: id, label: ID, widget: number, value_type: int }
+              - { name: title, label: Title, widget: string }
+              - { name: shortDescription, label: Short Description, widget: text }
+              - { name: servicesPoints, label: Bullet Points, widget: list }
+              - { name: iconClass, label: Icon Class, widget: string, hint: 'Font Awesome class, e.g. fa-solid fa-code' }
+      
+      - name: global-stats
+        label: Homepage Stats
+        file: src/data/site-data/json/global-stats.json
+        fields:
+          - name: globalStats
+            label: Stats
+            widget: list
+            summary: '{{fields.value}} {{fields.textData}}'
+            fields:
+              - { name: value, label: Value, widget: number, value_type: int }
+              - { name: iconClass, label: Icon Class, widget: string }
+              - { name: textData, label: Label, widget: string }
+
+      - name: skills-stats
+        label: Skills Page Stats
+        file: src/data/site-data/json/skills-stats.json
+        fields:
+          - name: skillsStats
+            label: Stats
+            widget: list
+            summary: '{{fields.value}} {{fields.textData}}'
+            fields:
+              - { name: value, label: Value, widget: number, value_type: int }
+              - { name: iconClass, label: Icon Class, widget: string }
+              - { name: textData, label: Label, widget: string }
+

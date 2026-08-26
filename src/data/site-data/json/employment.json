@@ -1,0 +1,18 @@
+{
+  "employmentData": [
+    {
+      "imageFilePath": "upwork.png",
+      "title": "Upwork",
+      "details": "Freelance Web Developer",
+      "duration": "From November 2023",
+      "fullDescription": "String"
+    },
+    {
+      "imageFilePath": "wipro.png",
+      "title": "Wipro Kolkata",
+      "details": "Automation Analyst",
+      "duration": "January 2021 - March 2022",
+      "fullDescription": "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Est molestias neque illo ut rerum quibusdam perspiciatis, numquam cupiditate minima. Non aspernatur corporis nesciunt cupiditate laborum veniam odio adipisci commodi asperiores?"
+    }
+  ]
+}

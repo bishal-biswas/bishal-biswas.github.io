@@ -1,6 +1,9 @@
 ---
 import ButtonLinkUI from "../components/ButtonLinkUI.astro";
 import PlainLayout from "../layouts/PlainLayout.astro";
+import { getPageContent } from "../data/utils";
+
+const pageContent = getPageContent("Search");
 ---
 
 <PlainLayout
@@ -8,8 +11,8 @@ import PlainLayout from "../layouts/PlainLayout.astro";
     pageSmallTextBelow=" "
     pageMainHeadingtagType="h1"
     pageHeadingText="Search Results"
-    backgroundImgClass="object-fill"
-    backgroundImg="https://braydoncoyer-dev-git-v3-braydon-coyer.vercel.app/_next/static/media/rays.426980b9.png"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
 >
     <div id="searchResultsContainer" class="searchResultsContainer">
 

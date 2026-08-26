@@ -31,8 +31,8 @@ const pageContent = pageData.filter(page => page.pageTitle == "Products")[0];
     pageSmallTextBelow={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
     pageMainHeadingtagType="h1"
-    backgroundImgClass="object-fill"
-    backgroundImg="/assets/images/footer_rays.cafe5d09.png"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
 >
 
     <div class="wrapper">

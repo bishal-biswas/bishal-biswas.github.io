@@ -1,0 +1,57 @@
+{
+  "residence": "West Bengal",
+  "Bio": {
+    "professionTitle": "Software Developer | Web Developer | Blogger",
+    "bioText": "Hi , I am Bishal, a Masters student with a dream of becoming a professional web developer. I like to explorer and write content/articles on computer/tech related stuffs on my blog.",
+    "location": "Kolkata, WB",
+    "links": [
+      {
+        "iconClass": "fa-solid fa-globe-pointer",
+        "url": "https://bishal-biswas.github.io/",
+        "text": "Check Out my Work on my Portfolio"
+      },
+      {
+        "iconClass": "fa-solid fa-download",
+        "url": "/uploads/files/bishal-resume-23_08_2026.pdf",
+        "text": "Download My Resume"
+      }
+    ]
+  },
+  "City": "Barrackpore",
+  "socialLinks": [
+    {
+      "title": "Facebook",
+      "iconClass": "fab fa-facebook",
+      "color": "#6060ce",
+      "url": ""
+    },
+    {
+      "title": "Twitter",
+      "iconClass": "fab fa-twitter",
+      "color": "#010101",
+      "url": ""
+    },
+    {
+      "title": "Linkedin",
+      "iconClass": "fab fa-linkedin",
+      "color": "#4747c7",
+      "url": ""
+    },
+    {
+      "title": "Github",
+      "iconClass": "fab fa-github",
+      "color": "#010101",
+      "url": ""
+    }
+  ],
+  "Resume": "/public/uploads/how-to-win-friends-and-influence-people-carnegie-dale-sep-2010.pdf",
+  "DOB": "1996-07-04",
+  "fullName": "Bishal Biswas",
+  "typeWriterText": [
+    "I love Software Development",
+    "I love making Websites",
+    "I am a Freelancer",
+    "I am a Content Writer too"
+  ],
+  "statusText": "I am Online"
+}

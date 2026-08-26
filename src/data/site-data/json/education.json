@@ -1,0 +1,18 @@
+{
+  "educationData": [
+    {
+      "imageFilePath": "ignou.gif",
+      "title": "IGNOU",
+      "details": "BCA",
+      "duration": "2017 - 2021",
+      "fullDescription": "String"
+    },
+    {
+      "imageFilePath": "ignou.gif",
+      "title": "IGNOU",
+      "details": "MCA",
+      "duration": "2021-2024",
+      "fullDescription": "Completing Master of Computer Application"
+    }
+  ]
+}

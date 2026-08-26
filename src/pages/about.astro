@@ -1,8 +1,10 @@
 ---
+import { personalFiles } from "../data/site-data/personalFiles";
 import PlainLayout from "../layouts/PlainLayout.astro";
-import { getPaths } from "../data/utils";
+import { getPaths, getPageContent } from "../data/utils";
 import { personaInfo } from "../data/site-data/profile";
 const personInfo = personaInfo;
+const pageContent = getPageContent("About");
 
 ---
 
@@ -14,7 +16,8 @@ pageType = "project"
 ogType = "profile"
 pageHeadingText = {"I'm Bishal Biswas - a Software and a web developer."}
 pageMainHeadingtagType = {"h1"}
-backgroundImg = {"https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLkvc.png"}
+backgroundImg = {pageContent.backgroundImage}
+backgroundImgClass = {pageContent.backgroundImageClass}
 >
     <div class="content-placeholder">
         <article>
@@ -46,7 +49,7 @@ backgroundImg = {"https://framerusercontent.com/images/hREJN8AsFEbJPz6GtPdzL1hLk
                         <span class="relative flex justify-center items-center">
                             <span class="size-[85px] lg:size-[105px] absolute shadow-lg shadow-lite-green bg-lite-green rounded-full block z-0"></span>
                             <img
-                                src={getPaths("Asset Images")+"ProPic.jpg"}
+                                src={personalFiles.profilePicture}
                                 alt="profile photo"
                                 class="rounded-full relative size-20 lg:size-28 border-2 border-lite-green z-[1]"
                             />

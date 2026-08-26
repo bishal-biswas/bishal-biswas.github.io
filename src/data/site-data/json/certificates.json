@@ -1,0 +1,24 @@
+{
+  "certificateData": [
+    {
+      "imageFilePath": "C-sharp-Certificate-with-Freecodecamp-and-Microsoft.png",
+      "title": "&lt;a class='underline' href='https://www.freecodecamp.org/certification/bishalbiswas/foundational-c-sharp-with-microsoft'&gt;C# Certificate with Freecodecamp and Microsoft&lt;/a&gt;"
+    },
+    {
+      "imageFilePath": "Brainware-University.jpg",
+      "title": "Software engineering Course by Brainware"
+    },
+    {
+      "imageFilePath": "e4bddf2e697346cbe7e8f4f57f4acf8a9816270e_2_690x338.png",
+      "title": "Frontend course by Free Code Camp"
+    },
+    {
+      "imageFilePath": "4747950_3527_2.jpg",
+      "title": "Dot and C# Course by Udemy"
+    },
+    {
+      "imageFilePath": "e4bddf2e697346cbe7e8f4f57f4acf8a9816270e_2_690x338.png",
+      "title": "MERN Course by Coursera"
+    }
+  ]
+}
