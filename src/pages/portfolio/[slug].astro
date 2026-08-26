@@ -37,7 +37,6 @@ if(entry.data.rating){
 
 // console.log(screenshotsCollection);
 
-
 ---
 <PlainLayout
     isSwiperRequired={true}
@@ -46,7 +45,7 @@ if(entry.data.rating){
     pageMainHeadingtagType="h1"
     pageSmallText={entry.data.projectType}
     isBreadcrumbShown={true}
-    backgroundImg={pageContent.backgroundImage}
+    backgroundImg={getPaths("Portfolio") + entry.data.featuredImage || pageContent.backgroundImage}
     isHeroContentSectionShown={false}
     pageType="project"
     ogType="article"
@@ -66,7 +65,7 @@ if(entry.data.rating){
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
                             {entry.data.screenshots?.map((screenshot:string) => (
                                 <swiper-slide>
-                                    <img src={`/assets/images/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>
@@ -79,7 +78,7 @@ if(entry.data.rating){
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
                             {screenshotsCollection.map((screenshot) => (
                                 <swiper-slide>
-                                    <img src={`/assets/images/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>

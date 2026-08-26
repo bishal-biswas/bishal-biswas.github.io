@@ -244,7 +244,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
             if((displayedTill + limit) <= items.length)
                 displayedTill += limit;
             else
-                displayedTill == items.length;
+                displayedTill = items.length;
         }
         
         buildMasonry(items, displayedTill);

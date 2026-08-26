@@ -58,7 +58,11 @@ collections:
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'A future date hides the post until that day.' }
       - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely.' }
       - { name: category, label: Category, widget: select, options: ['Web Development', 'Freelancing', 'C Sharp', 'Astro'] }
-      - { name: tags, label: Tags, widget: list, default: [] }
+      - name: tags
+        label: Tags
+        widget: list
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Tag, widget: string }
       - { name: likes, label: Likes, widget: number, required: false, value_type: int }
       - { name: dislikes, label: Dislikes, widget: number, required: false, value_type: int }
       - { name: views, label: Views, widget: number, required: false, value_type: int }
@@ -89,7 +93,7 @@ collections:
         label: Screenshots
         widget: list
         required: false
-        media_folder: /public/assets/images/screenshots
+        media_folder: /public/uploads/portfolios/screenshots
         public_folder: ''
         field: { name: screenshot, label: Screenshot, widget: image }
         hint: 'Stored in /assets/images/screenshots/ — a different folder from the featured image.'
@@ -97,7 +101,12 @@ collections:
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
       - { name: isStatus, label: Status, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
-      - { name: techStack, label: Tech Stack, widget: list, hint: 'Matched against technologyData to show logos — spelling matters.' }
+      - name: techStack
+        label: Tech Stack
+        widget: list
+        hint: 'Matched against Technologies to show logos - spelling matters.'
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Technology, widget: string }
       - { name: isProjectCompleted, label: Completed, widget: boolean, default: true }
       - { name: projectDuration, label: Duration, widget: string, hint: 'e.g. 2 Month' }
       - { name: rating, label: Rating, widget: number, required: false, value_type: int, min: 1, max: 5 }
@@ -136,7 +145,12 @@ collections:
       - { name: featuredImage, label: Featured Image, widget: image, required: false }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
-      - { name: tags, label: Tags, widget: list, required: false, default: [] }
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Tag, widget: string }
       - { name: body, label: Body, widget: markdown }
 
   # ------------------------------------------------------------------- pages
@@ -296,7 +310,11 @@ collections:
         fields:
           - { name: fullName, label: Full Name, widget: string }
           - { name: statusText, label: Status Text, widget: string }
-          - { name: typeWriterText, label: Typewriter Lines, widget: list }
+          - name: typeWriterText
+            label: Typewriter Lines
+            widget: list
+            # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+            field: { name: value, label: Line, widget: string }
           - { name: residence, label: Residence, widget: string }
           - { name: City, label: City, widget: string }
           - { name: DOB, label: Date of Birth, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'Drives the age shown in the sidebar.' }
@@ -453,7 +471,11 @@ collections:
               - { name: id, label: ID, widget: number, value_type: int }
               - { name: title, label: Title, widget: string }
               - { name: shortDescription, label: Short Description, widget: text }
-              - { name: servicesPoints, label: Bullet Points, widget: list }
+              - name: servicesPoints
+                label: Bullet Points
+                widget: list
+                # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+                field: { name: value, label: Point, widget: string }
               - { name: iconClass, label: Icon Class, widget: string, hint: 'Font Awesome class, e.g. fa-solid fa-code' }
       
       - name: global-stats
