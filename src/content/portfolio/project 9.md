@@ -1,5 +1,5 @@
 ---
-title : Project 9
+title : Project 9 Bishal
 featuredImage : project5.jpeg
 projectBriefDescription : Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed incidunt, nulla est dicta sit pariatur reprehenderit et tempore iste quae cupiditate aspernatur sapiente dolorum omnis laudantium 
 screenshots : ["project 1 (1).png", "project 1 (2).png", "project 1 (3).png", "project 1 (4).png", "project 1 (5).png", ]

@@ -9,23 +9,25 @@ import Notify from '../components/Notify.astro';
 
 interface Props {
     title ?: string,
-    metaDescription ?: string
+    metaDescription : string
     pageType ?: string,
+    ogType ?: string,
+    ogImage ?: string,
 }
 
 const {title = "Page Title", 
-metaDescription="Some Page Description", 
-pageType,
+metaDescription, 
+pageType, ogType, ogImage,
 } = Astro.props;
 
-if(pageType == "blog"){
+if(pageType == "article"){
     
 }
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-    <HeadTag {title} {metaDescription} />
+    <HeadTag {title} {metaDescription} {ogType} {ogImage} />
 <body class="bg-body-bg lg:p-3">
     <Modal />
     <Notify />

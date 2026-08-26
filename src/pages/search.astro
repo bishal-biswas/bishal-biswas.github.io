@@ -28,14 +28,4 @@ import PlainLayout from "../layouts/PlainLayout.astro";
 
     headingTxt.textContent += ` for "${params.q}"`;
     paraTxt.textContent = ``;
-
-    fetch("/api/articles.json").then(Response => Response.json()).then(data =>{
-        console.log(data);
-    })
-    fetch("/api/codeHelp.json").then(Response => Response.json()).then(data =>{
-        console.log(data);
-    })
-    fetch("/api/portfolio.json").then(Response => Response.json()).then(data =>{
-        console.log(data);
-    })
 </script>

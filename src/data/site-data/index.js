@@ -9,3 +9,4 @@ export {
     technologyData,
 } from "./skills";
 export { blogCategories, products } from "./content";
+export { pageData } from "./pageData";

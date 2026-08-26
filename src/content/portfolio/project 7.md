@@ -1,5 +1,5 @@
 ---
-title : Online Election
+title : Online Election by Bishal
 slug : online-election
 featuredImage : project7.png
 projectBriefDescription : Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed incidunt, nulla est dicta sit pariatur reprehenderit et tempore iste quae cupiditate aspernatur sapiente dolorum omnis laudantium 

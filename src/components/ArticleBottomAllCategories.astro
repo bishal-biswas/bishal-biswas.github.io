@@ -4,7 +4,7 @@ import HeadingText from "./headingText.astro";
 import { getCollection } from "astro:content";
 import { getCategoryImage, findCategoryCount, getPaths, filterFuturePosts } from "../data/utils.ts"
 
-let allBlogPosts = await getCollection("blog");
+let allBlogPosts = await getCollection("article");
 allBlogPosts = filterFuturePosts(allBlogPosts);
 var categAllArticles: string[] = []; 
 for (let i = 0; i < allBlogPosts.length; i++) categAllArticles.push(allBlogPosts[i].data.category);

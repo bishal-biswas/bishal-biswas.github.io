@@ -19,7 +19,7 @@ import PlainLayout from "../../layouts/PlainLayout.astro";
 } */
 
 export const getStaticPaths = (async () => {
-  let allBlogPosts = await getCollection('blog');
+  let allBlogPosts = await getCollection('article');
   allBlogPosts = filterFuturePosts(allBlogPosts);
   return allBlogPosts.map((entry) => {
     return {
@@ -29,7 +29,7 @@ export const getStaticPaths = (async () => {
   });
 }) satisfies GetStaticPaths;
 
-const BlogPosts = await getCollection('blog');
+const BlogPosts = await getCollection('article');
 
 interface navButtons {
     data : {
@@ -80,7 +80,10 @@ BlogPosts.map(function (article, i) {
   isLargeWidth={true}
   title={entry.data.title}
   backgroundImg={getPaths("Article") + entry.data.featuredImage}
-  pageType="blog"
+  pageType="article"
+  ogType="article"
+  ogImage={getPaths("Article") + entry.data.featuredImage}
+  metaDescription={`${entry.data.title} - an article by ${entry.data.author} on ${entry.data.category}.`}
 >
 
     <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5" >

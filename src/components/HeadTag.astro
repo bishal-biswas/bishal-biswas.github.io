@@ -1,12 +1,26 @@
 ---
 // import ViewTransitions from 'astro/components/ViewTransitions.astro';
 import { SEO } from "astro-seo";
+import { personaInfo } from "../data/site-data/profile";
+import { getPaths } from "../data/utils";
+
 interface Props {
     metaDescription: string,
-    title: string
+    title: string,
+    // Open Graph object type for this page: "website" | "article" | "profile"
+    ogType?: string,
+    // Page specific share image. Relative paths are resolved against `site`.
+    ogImage?: string
 }
 
-const {metaDescription, title} = Astro.props;
+const defaultOgImage = getPaths("Other Files") + "thumbnail.webp";
+const defaultDescription = personaInfo.Bio.bioText;
+
+const {metaDescription = defaultDescription, title, ogType = "website", ogImage = defaultOgImage} = Astro.props;
+
+// Social crawlers require absolute URLs, so resolve anything relative against the configured site.
+const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
+const socialImageURL = new URL(ogImage, Astro.site).href;
 ---
 
 <head>
@@ -14,35 +28,38 @@ const {metaDescription, title} = Astro.props;
     <link rel="icon" type="image/webp" href="/favicon.webp" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="generator" content={Astro.generator} />
-    
-    <!-- <title>{title}</title>
-    <meta name="description" content={metaDescription}> -->
 
     <SEO
         title={title}
         description={metaDescription}
+        canonical={canonicalURL}
         openGraph={{
             basic: {
                 title: `${title}`,
-                type: "A type.",
-                image: "https://user-images.githubusercontent.com/5182256/131216951-8f74f425-f775-463d-a11b-0e01ad9fce8d.png",
+                type: ogType,
+                image: socialImageURL,
+                url: canonicalURL,
+            },
+            optional: {
+                description: metaDescription,
+                siteName: personaInfo.fullName,
+            },
+            image: {
+                alt: `${title}`,
             }
         }}
         twitter={{
-          creator: "@bishalbiswas"
+          card: "summary_large_image",
+          site: "@bishalbiswas",
+          creator: "@bishalbiswas",
+          title: `${title}`,
+          description: metaDescription,
+          image: socialImageURL,
+          imageAlt: `${title}`,
         }}
         extend={{
           // extending the default link tags
           link: [{ rel: "icon", href: "/favicon.webp" }],
-          // extending the default meta tags
-          meta: [
-            {
-              name: "twitter:image",
-              content: "https://user-images.githubusercontent.com/5182256/131216951-8f74f425-f775-463d-a11b-0e01ad9fce8d.png",
-            },
-            { name: "twitter:title", content: `${title}` },
-            { name: "twitter:description", content: `${metaDescription}` },
-          ],
         }}
     />
 

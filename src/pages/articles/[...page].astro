@@ -11,13 +11,13 @@ import { getCollection } from "astro:content";
 import { pageData } from "../../data/site-data/pageData";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
-let allBlogPosts = await getCollection("blog", ({ data }:{data:any}) => {
+let allBlogPosts = await getCollection("article", ({ data }:{data:any}) => {
         return data.isDraft === false;
     });
 
     allBlogPosts = filterFuturePosts(allBlogPosts);
     allBlogPosts.sort(
-        (a:CollectionEntry<"blog">, b:CollectionEntry<"blog">) =>
+        (a:CollectionEntry<"article">, b:CollectionEntry<"article">) =>
             new Date(b.data.publishDate).valueOf() -
             new Date(a.data.publishDate).valueOf(),
     );
@@ -28,7 +28,7 @@ let allBlogPosts = await getCollection("blog", ({ data }:{data:any}) => {
 }
 interface Props {
     page : {
-        data : CollectionEntry<"blog">[],
+        data : CollectionEntry<"article">[],
         start: number,
         end: number,
         size: number,

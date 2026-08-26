@@ -11,7 +11,7 @@ import Notify from '../components/Notify.astro';
 interface Props {
     title ?: string,
     isHeroContentSectionShown ?: boolean,
-    metaDescription ?: string
+    metaDescription : string
     pageSmallText ?: string,
     pageSmallTextBelow ?: string,
     isPageSmallTextDark ?: boolean
@@ -22,6 +22,8 @@ interface Props {
     pageHeadingText : string
     pageMainHeadingtagType : string,
     pageType ?: string,
+    ogType ?: string,
+    ogImage ?: string,
     backgroundImg ?: string
     backgroundImgClass ?: string
     isLargeWidth ?: boolean
@@ -29,23 +31,24 @@ interface Props {
 }
 
 const {title = "Page Title", 
-metaDescription="Some Page Description", 
+metaDescription, 
 pageSmallText, pageSmallTextBelow, isPageSmallTextDark = false, 
 pageHeadingText, pageMainHeadingtagType="p", 
 isMainHeadingDoubleLined = false, isMainHeadinglarge = false, isBreadcrumbShown, pageType,
-isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isSwiperRequired = false
+isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isSwiperRequired = false,
+ogType, ogImage
 } = Astro.props;
 
 let {backgroundImg, backgroundImgClass} = Astro.props;
 let isDarkImage;
-if(pageType == "blog"){
+if(pageType == "article"){
     isDarkImage = true;
 }
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<HeadTag {title} {metaDescription}>
+<HeadTag {title} {metaDescription} {ogType} {ogImage}>
     {
         isSwiperRequired &&
         <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
@@ -93,7 +96,7 @@ if(pageType == "blog"){
                 }
             </HeroSection>
             <div class="content-wrapper flex flex-col gap-8 w-full z-[2] dark:text-teal-white dark:text-font-white px-5 mb-12" class:list={[
-                pageType == "blog" ? "lg:pt-40 pt-20" : "lg:px-12 pt-6"
+                pageType == "article" ? "lg:pt-40 pt-20" : "lg:px-12 pt-6"
                 ]}>
                 <slot />
 

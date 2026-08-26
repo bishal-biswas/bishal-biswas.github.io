@@ -12,29 +12,32 @@ import Notify from '../components/Notify.astro';
 interface Props {
     title ?: string,
     isHeroContentSectionShown ?: boolean,
-    metaDescription ?: string
+    metaDescription : string
     isBreadcrumbShown ?: boolean,
     pageType ?: string,
+    ogType ?: string,
+    ogImage ?: string,
     backgroundImg ?: string
     backgroundImgClass ?: string
 }
 
 const {title = "Page Title", 
-metaDescription="Some Page Description", 
+metaDescription, 
 isBreadcrumbShown, pageType,
-isHeroContentSectionShown = true
+isHeroContentSectionShown = true,
+ogType, ogImage
 } = Astro.props;
 
 let {backgroundImg = "https://images3.alphacoders.com/813/813087.jpg", backgroundImgClass} = Astro.props;
 let isDarkImage;
-if(pageType == "blog"){
+if(pageType == "article"){
     isDarkImage = true;
 }
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<HeadTag {title} {metaDescription}>
+<HeadTag {title} {metaDescription} {ogType} {ogImage}>
     <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
     <link rel="stylesheet" href="/assets/styles/prism.css">
 </HeadTag>

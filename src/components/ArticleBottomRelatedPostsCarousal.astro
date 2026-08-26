@@ -9,7 +9,7 @@ interface Props {
 }
 
 const {category, ignoreArticle} = Astro.props;
-let allBlogPosts = await getCollection("blog");
+let allBlogPosts = await getCollection("article");
 allBlogPosts = filterFuturePosts(allBlogPosts);
 let RelatedArticles = [];
 

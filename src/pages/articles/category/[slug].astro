@@ -8,13 +8,13 @@ import ArticleBottomAllCategories from "../../../components/ArticleBottomAllCate
 import { getCollection, type CollectionEntry } from "astro:content";
 import { filterFuturePosts } from "../../../data/utils";
 
-let allBlogPosts2 = await getCollection("blog");
+let allBlogPosts2 = await getCollection("article");
 allBlogPosts2 = filterFuturePosts(allBlogPosts2);
 
 let count : number =0;
 export async function getStaticPaths() {
 
-    const allBlogPosts = await getCollection("blog");
+    const allBlogPosts = await getCollection("article");
     allBlogPosts.sort(
         (a, b) =>
             new Date(b.data.publishDate).valueOf() -

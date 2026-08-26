@@ -70,7 +70,7 @@ const codeHelpCollection = defineCollection({
 });
 
 export const collections = {
-    blog: articleCollection,
+    article: articleCollection,
     portfolio: portfolioCollection,
     pages: pagesCollection,
     "code-help": codeHelpCollection,

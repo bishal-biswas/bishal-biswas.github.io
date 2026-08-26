@@ -1,4 +1,5 @@
 ---
+import "../global.css"
 import { getCollection } from "astro:content";
 import { personaInfo } from "../data/site-data/profile";
 import { getPaths } from "../data/utils";
@@ -6,7 +7,7 @@ const personalIfo = personaInfo;
 const socialLinks = personalIfo.socialLinks;
 const BioData = personalIfo.Bio;
 
-const allBlogPosts = await getCollection("blog");
+const allBlogPosts = await getCollection("article");
 
 ---
 
@@ -16,13 +17,13 @@ const allBlogPosts = await getCollection("blog");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All My Links- {personalIfo.fullName}</title>
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.5.1/css/all.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"/>
 </head> 
 <body class="bg-cover relative grid place-items-center select-none">
 
-    <img src={"https://thumbs.dreamstime.com/b/rocks-underwater-atlantic-ocean-galicia-spain-pontevedra-193238909.jpg"} class="overlay top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" />
+    <img src={"https://thumbs.dreamstime.com/b/rocks-underwater-atlantic-ocean-galicia-spain-pontevedra-193238909.jpg"} class="overlay top-0 fixed! h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" />
     <!-- <img src={getPaths("Asset Images")+"bio-bg.jpg"} class="overlay top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-0" /> -->
-    <div class="overlay backdrop-blur-sm top-0 fixed h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-[2]"></div>
+    <div class="overlay backdrop-blur-sm top-0 fixed! h-screen w-full bg-gradient-to-br from-dark-teal to-[#00000057] z-[2]"></div>
 
     <div class="wrapper text-white max-w[700px] md:w-[700px] w-[90%] flex justify-center items-center flex-col relative z-[2] pt-28 pb-14">
         

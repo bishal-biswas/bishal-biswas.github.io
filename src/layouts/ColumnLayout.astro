@@ -12,28 +12,31 @@ import Notify from '../components/Notify.astro';
 
 interface Props {
     title ?: string,
-    metaDescription ?: string
+    metaDescription : string
     pageSmallText : string,
     isMainHeadingDoubleLined ?: boolean,
     isBreadcrumbShown ?: boolean,
     isSwiperRequired ?: boolean,
     pageHeadingText : string
     pageMainHeadingtagType : string,
+    ogType ?: string,
+    ogImage ?: string,
     backgroundImg ?: string
 }
 
 const {title = "Page Title", 
-metaDescription="Some Page Description", 
+metaDescription, 
 pageSmallText, pageHeadingText, pageMainHeadingtagType="p", 
 isMainHeadingDoubleLined = false,
 isSwiperRequired = false,
-isBreadcrumbShown, backgroundImg
+isBreadcrumbShown, backgroundImg,
+ogType, ogImage
 } = Astro.props;
 ---
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-    <HeadTag {title} {metaDescription}>
+    <HeadTag {title} {metaDescription} {ogType} {ogImage}>
         {
             isSwiperRequired &&
             <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
