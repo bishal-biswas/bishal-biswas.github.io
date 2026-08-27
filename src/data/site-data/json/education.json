@@ -1,18 +1,32 @@
 {
   "educationData": [
     {
+      "imageFilePath": "brainware-institution.png",
+      "details": "Certificate Course",
+      "duration": "2015-2016",
+      "title": "Brainware Institution",
+      "fullDescription": "Glimpse of Software Engineering. Syllabus included C, C++, Java, VB.Net. And Final Project with JSP."
+    },
+    {
       "imageFilePath": "ignou.gif",
       "title": "IGNOU",
       "details": "BCA",
       "duration": "2017 - 2021",
-      "fullDescription": "String"
+      "fullDescription": "Bachelor's of Computer Application"
     },
     {
       "imageFilePath": "ignou.gif",
       "title": "IGNOU",
       "details": "MCA",
       "duration": "2021-2024",
-      "fullDescription": "Completing Master of Computer Application"
+      "fullDescription": "Completed Master's in Computer Application from IGNOU. My syllabus included learning about System Design, Artificial Intelligence, and Programming in Java, PHP and .Net"
+    },
+    {
+      "imageFilePath": "iit-patna.png",
+      "title": "IIT Patna",
+      "details": "M.Tech in Cloud Computing",
+      "duration": "2025-2027",
+      "fullDescription": "Course includes AI/ML, Designing Algorithm, Cloud Security, AWS, Azure, DevOps"
     }
   ]
 }
