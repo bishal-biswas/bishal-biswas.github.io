@@ -15,6 +15,22 @@
     {
       "title": "Astro",
       "imageFile": "astro.png"
+    },
+    {
+      "title": "JavaScript",
+      "imageFile": "https://freesvg.org/img/js_logo.png"
+    },
+    {
+      "title": ".NET",
+      "imageFile": "https://i.pinimg.com/736x/ed/54/87/ed5487cdf75aa7ae06e257c2ea143833.jpg"
+    },
+    {
+      "title": "SQL",
+      "imageFile": "https://estuary.dev/static/d02a8d0785a4d9eeddead9dcc720f436/e8256/569dae_Azure_Sql_Server_Logo_Transparent_1_13b0b548d9.png"
+    },
+    {
+      "title": "DevOps",
+      "imageFile": "https://static.vecteezy.com/system/resources/previews/034/788/757/original/devops-software-color-icon-illustration-vector.jpg"
     }
   ]
 }
