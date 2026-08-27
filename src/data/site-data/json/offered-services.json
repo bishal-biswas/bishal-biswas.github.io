@@ -2,52 +2,31 @@
   "titleText": "What I can do for you",
   "servicesData": [
     {
+      "title": "Static Site Generation Service",
       "id": 1,
-      "title": "Full Stack Web Development",
-      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "shortDescription": "Bring speed and efficiency to your website with Static Site Generation (SSG) using Astro, Jekyll, and Next.js. This service focuses on building ultra-fast, SEO-friendly, and scalable websites, ensuring a seamless user experience with pre-rendered content and optimized performance. Whether you need a personal portfolio, blog, or business landing page, static sites provide the ideal solution with minimal server dependencies.",
       "servicesPoints": [
-        "Point 1 Full Stack Web Development",
-        "Point 2 Full Stack Web Development",
-        "Point 3 Full Stack Web Development",
-        "Point 4 Full Stack Web Development"
+        "\"Blazing-Fast Performance – Pre-rendered pages load instantly, reducing latency.\"",
+        "\"SEO Optimization – Improved indexing and search rankings with static HTML.\"",
+        "\"Reduced Server Load – No complex backend, ensuring lightweight operations.\"",
+        "\"Secure & Reliable – No dynamic vulnerabilities, enhancing security.\"",
+        "\"Cross-Platform Deployment – Easily deploy across Vercel, Netlify, and other hosting services.\"",
+        "\"Optimized for Mobile & Accessibility – Fully responsive designs for enhanced user experience.\"",
+        "\"Scalability & Cost-Efficiency – Ideal for projects that require low maintenance and high performance.\""
       ],
-      "iconClass": "fa-solid fa-brackets-curly"
+      "iconClass": "fa-light fa-globe-pointer"
     },
     {
       "id": 2,
-      "title": "Static Site and Landing Page Designing",
-      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
+      "title": "Full Stack Web Development",
+      "shortDescription": "Transform your vision into a fully functional and scalable website with expert frontend and backend support. I provide a seamless development experience with technologies tailored to your needs.",
+      "iconClass": "fa-solid fa-code",
       "servicesPoints": [
-        "Point 1 Static Site and Landing Page Designing",
-        "Point 2 Static Site and Landing Page Designing",
-        "Point 3 Static Site and Landing Page Designing",
-        "Point 4 Static Site and Landing Page Designing"
-      ],
-      "iconClass": "fa-solid fa-code"
-    },
-    {
-      "id": 3,
-      "title": "WordPress Setup",
-      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
-      "servicesPoints": [
-        "Point 1 WordPress Setup",
-        "Point 2 WordPress Setup",
-        "Point 3 WordPress Setup",
-        "Point 4 WordPress Setup"
-      ],
-      "iconClass": "fa-brands fa-wordpress"
-    },
-    {
-      "id": 4,
-      "title": "Selenium Automation with C#",
-      "shortDescription": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.Lorem ipsum dolor sit amet consectetur adipisicing elit. Corporis officia optio, sed dolores deserunt iste.",
-      "servicesPoints": [
-        "Point 1 Selenium Automation with C#",
-        "Point 2 Selenium Automation with C#",
-        "Point 3 Selenium Automation with C#",
-        "Point 4 Selenium Automation with C#"
-      ],
-      "iconClass": "fa-brands fa-battle-net"
+        "\"Customizable Frontend – Choose between Astro, React, or Angular to create a stunning and responsive UI.\"",
+        "\"Robust Backend Solutions – Select from .Net Web API, MongoDB, Xata, or Supabase for a secure and efficient backend.\"",
+        "\"End-to-End Development – From database setup to API integrations, ensuring smooth performance and scalability.\"",
+        "\"Optimized & Secure – Implementing SEO, authentication, and deployment best practices for a reliable web presence.\""
+      ]
     }
   ]
 }
