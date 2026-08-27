@@ -1,12 +1,12 @@
 {
   "globalStats": [
     {
-      "value": 10,
+      "value": 23,
       "iconClass": "fa-solid fa-plus",
       "textData": "Completed Projects"
     },
     {
-      "value": 10,
+      "value": 11,
       "iconClass": "fa-solid fa-plus",
       "textData": "Happy Clients"
     },
