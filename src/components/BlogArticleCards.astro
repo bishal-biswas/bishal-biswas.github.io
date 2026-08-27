@@ -25,6 +25,7 @@ const {post, index = 1} = Astro.props;
             <img
                 src={getPaths("Article") + post.data.featuredImage}
                 alt="article Thumbnail Image"
+                style={`view-transition-name: article-image-${post.data.slug}`}
                 class="FeatureImg group-hover:scale-100 w-full h-full object-cover object-center rounded-lg scale-110 transition-all ease-in-out"
             />
         </a>

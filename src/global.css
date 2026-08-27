@@ -42,3 +42,51 @@
   --font-white-color: #fcfcfe;
   --font-gray-color: #a6b2b8;
 }
+/* ── Cross-document view transitions ──────────────────────────────────────
+   Pure CSS, no JS router: the browser animates between full page loads.
+   Chrome/Edge 126+ and Safari 18.2+ support this; Firefox is still landing
+   it. Unsupported browsers ignore these rules and navigate normally, so no
+   polyfill or feature detection is needed. */
+@view-transition {
+  navigation: auto;
+}
+
+@keyframes vt-fade-out {
+  to { opacity: 0; transform: translateY(-6px); }
+}
+@keyframes vt-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+}
+
+::view-transition-old(root) {
+  animation: 200ms cubic-bezier(0.4, 0, 1, 1) both vt-fade-out;
+}
+::view-transition-new(root) {
+  animation: 300ms cubic-bezier(0, 0, 0.2, 1) both vt-fade-in;
+}
+
+/* Morphing an image between pages (article card -> article hero) is a size
+   and position change, so give every named group a little longer than the
+   root cross-fade. */
+::view-transition-group(*) {
+  animation-duration: 400ms;
+  animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
+}
+
+/* The header holds still instead of cross-fading with the page body. */
+.site-header {
+  view-transition-name: site-header;
+}
+
+/* Both ends of the featured-image morph are object-fit: cover, so the
+   snapshots interpolate without squashing. */
+::view-transition-old(*),
+::view-transition-new(*) {
+  object-fit: cover;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  @view-transition {
+    navigation: none;
+  }
+}

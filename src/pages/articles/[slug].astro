@@ -83,6 +83,7 @@ BlogPosts.map(function (article, i) {
   pageType="article"
   ogType="article"
   ogImage={getPaths("Article") + entry.data.featuredImage}
+  heroImgTransitionName={`article-image-${entry.data.slug}`}
   metaDescription={`${entry.data.title} - an article by ${entry.data.author} on ${entry.data.category}.`}
 >
 

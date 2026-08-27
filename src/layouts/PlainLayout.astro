@@ -22,6 +22,7 @@ interface Props {
     pageHeadingText : string
     pageMainHeadingtagType : string,
     pageType ?: string,
+    heroImgTransitionName ?: string,
     ogType ?: string,
     ogImage ?: string,
     backgroundImg ?: string
@@ -36,6 +37,7 @@ pageSmallText, pageSmallTextBelow, isPageSmallTextDark = false,
 pageHeadingText, pageMainHeadingtagType="p", 
 isMainHeadingDoubleLined = false, isMainHeadinglarge = false, isBreadcrumbShown, pageType,
 isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isSwiperRequired = false,
+heroImgTransitionName,
 ogType, ogImage
 } = Astro.props;
 
@@ -70,6 +72,7 @@ if(pageType == "article"){
                 {isHeroContentSectionShown}
                 imgFile={backgroundImg}
                 ImgClass={backgroundImgClass}
+                imgTransitionName={heroImgTransitionName}
                 isPlainLayout={true}
                 smallText={pageSmallText || ""}
                 {isPageSmallTextDark}
