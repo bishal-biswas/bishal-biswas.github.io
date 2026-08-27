@@ -1,11 +1,18 @@
 {
   "employmentData": [
     {
+      "imageFilePath": "brilliant-waves.png",
+      "title": "Brilliant Waves Enterprise",
+      "details": "Web and Software Designer",
+      "duration": "Since 2024",
+      "fullDescription": "Web Designing and Content Managing of the Website"
+    },
+    {
       "imageFilePath": "upwork.png",
       "title": "Upwork",
       "details": "Freelance Web Developer",
       "duration": "From November 2023",
-      "fullDescription": "String"
+      "fullDescription": "Working as a web designer. Completed more than 23+ projects till now."
     },
     {
       "imageFilePath": "wipro.png",
