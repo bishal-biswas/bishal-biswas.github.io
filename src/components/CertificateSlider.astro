@@ -1,7 +1,7 @@
 ---
 //Component Imports
 import HeadingText from "../components/headingText.astro";
-import { getPaths } from "../data/utils";
+import { getPaths, resolveAsset } from "../data/utils";
 
 interface Props {
     certificateHeadlineText: String;
@@ -29,12 +29,12 @@ const { certificateHeadlineText, certificateData } = Astro.props;
                     <swiper-slide>
                         <div class="article-card rounded-lg shadow-2xl h-full">
                             <a
-                                href={getPaths("Certificate")+certificate.imageFilePath}
+                                href={resolveAsset("Certificate", certificate.imageFilePath)}
                                 class="article-thumbnail h-full block"
                                 data-fancybox="certificate"
                                 data-caption={certificate.title} >
                                 <img
-                                    src={getPaths("Certificate")+certificate.imageFilePath}
+                                    src={resolveAsset("Certificate", certificate.imageFilePath)}
                                     alt={certificate.title}
                                     class="rounded-lg w-full object-fill lg:h-[140px] h-[200px]"
                                 />

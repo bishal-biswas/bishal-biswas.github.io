@@ -57,7 +57,17 @@ collections:
       - { name: author, label: Author, widget: string, default: Bishal Biswas }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'A future date hides the post until that day.' }
       - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely.' }
-      - { name: category, label: Category, widget: select, options: ['Web Development', 'Freelancing', 'C Sharp', 'Astro'] }
+      - name: category
+        label: Category
+        # Pulled live from Site Data > Article Categories, so adding a category
+        # there makes it selectable here with no config change. Also guarantees
+        # the exact string match that getCategoryImage() relies on.
+        widget: relation
+        collection: site-data
+        file: blog-categories
+        value_field: 'blogCategories.*.title'
+        display_fields: ['blogCategories.*.title']
+        search_fields: ['blogCategories.*.title']
       - name: tags
         label: Tags
         widget: list

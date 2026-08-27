@@ -1,7 +1,7 @@
 ---
 //Component Imports
 import HeadingText from "../components/headingText.astro";
-import { getPaths } from "../data/utils";
+import { getPaths, resolveAsset } from "../data/utils";
 
 interface Props {
     timeLineHeadlineText: String,
@@ -31,7 +31,7 @@ const {timeLineHeadlineText, listData} = Astro.props;
                          hover:before:animate-ping relative flex flex-col gap-2 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white rounded-lg p-6 px-10 shadow-sm shadow-[#000000be]">
                         <div class="accordion flex gap-2 w-full justify-between items-center">
                             <div class="headline flex gap-2">
-                                <img src={getPaths("Other Files")+data.imageFilePath} alt="logo" class="rounded-lg size-14" />
+                                <img src={resolveAsset("Other Files", data.imageFilePath)} alt="logo" class="rounded-lg size-14" />
                                 <div class="details">
                                     <span class="title font-semibold">
                                         {data.title}

@@ -84,6 +84,16 @@ interface categoriesPrototype {
     articleCount :number
 }
 
+// Most image fields store a bare filename and get their folder prepended here.
+// But Decap's image widget also offers "Replace with URL", so any of them can
+// come back as an absolute URL or an already-rooted path - prepending a folder
+// to those produces "/uploads/categ/https://...". Pass everything through this.
+function resolveAsset(pathName: string, file: string | undefined) {
+    if (!file) return "";
+    if (/^(https?:)?\/\//.test(file) || file.startsWith("/")) return file;
+    return getPaths(pathName) + file;
+}
+
 function getPaths(directoryName: string){
     const match = staticPaths.find(item => item.name === directoryName);
     const directory = match ? match.path : "";
@@ -128,4 +138,4 @@ function filterFuturePosts(posts: any[]) {
     });
   }
 
-export {getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts}
+export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts}

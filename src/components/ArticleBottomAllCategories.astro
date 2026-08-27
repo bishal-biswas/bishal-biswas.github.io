@@ -2,7 +2,7 @@
 import HeadingText from "./headingText.astro";
 
 import { getCollection } from "astro:content";
-import { getCategoryImage, findCategoryCount, getPaths, filterFuturePosts } from "../data/utils.ts"
+import { getCategoryImage, findCategoryCount, getPaths, filterFuturePosts, resolveAsset } from "../data/utils.ts"
 
 let allBlogPosts = await getCollection("article");
 allBlogPosts = filterFuturePosts(allBlogPosts);
@@ -28,7 +28,7 @@ const uniqueArr = [...new Set(categAllArticles)];
                         href={"/articles/category/"+category.toLocaleLowerCase().replaceAll(" ", "-")}
                         class="font-semibold flex justify-center items-center gap-2 w-fit rounded-lg border-2 dark:border-font-white border-font-gray dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white uppercase overflow-hidden hover:scale-105 transition-all ease-in-out duration-300" >
                         <img
-                            src={getPaths("Categories") + getCategoryImage(category)}
+                            src={resolveAsset("Categories", getCategoryImage(category))}
                             alt="CategoryImage"
                             class="bg-white size-7 lg:size-12 object-cover"
                         /> 
