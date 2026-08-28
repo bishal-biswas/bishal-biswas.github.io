@@ -1,33 +1,46 @@
 ---
+import { resolveAsset } from "../data/utils";
+
 interface Props {
     reviewText: string,
     clientName: string,
-    clientImg: string,
-    ratingStar: number,
+    clientImg?: string,
+    ratingStar?: number,
 }
 
-const {reviewText, clientName, clientImg, ratingStar} = Astro.props;
+const {reviewText, clientName, clientImg, ratingStar = 0} = Astro.props;
 
-let stars : any[]=[];
-for (let i = 0; i < ratingStar; i++) {
-    stars.push(``)
-}
+// Clamp to 0-5 so a bad value can't render 40 stars.
+const rating = Math.max(0, Math.min(5, Math.round(Number(ratingStar) || 0)));
+const filled = Array.from({ length: rating });
+const empty = Array.from({ length: 5 - rating });
+
+// clientImg is optional. It may be a bare filename (uploaded through the CMS)
+// or a full URL, so resolveAsset() handles both; when it is missing we show an
+// initial instead of a broken image.
+const imgSrc = clientImg ? resolveAsset("Other Files", clientImg) : "";
+const initial = (clientName || "?").trim().charAt(0).toUpperCase();
 ---
-<!-- w-[30%] projectHolder relative items rounded-xl shadow-lg hover:shadow-lite-green -->
 <div class="reviewCard break-inside-avoid overflow-hidden relative h-min flex flex-col gap-3 dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white rounded-lg p-5 shadow-md shadow-[#000000be] animate-on-scroll">
-    <i class="text-font-gray text-4xl fa-duotone fa-solid fa-quote-left"></i>
+    <i class="text-font-gray text-4xl fa-duotone fa-solid fa-quote-left" aria-hidden="true"></i>
     <span class="content">
-        <p class="text-sm dark:text-font-gray">{reviewText}</p>
-        
-        <span class="flex items-center gap-3 mt-2">
-            <img src={clientImg} alt={clientName} class="rounded-full size-14">
-            <div class="ClientDetails flex flex-col gap-2">
-                <p class="name">{clientName}</p>
-                <span class="stars flex gap-1">
-                    {stars.map((star)=>(
-                        <i class="fa-solid fa-star"></i>
-                    ))}
-                </span>
+        <blockquote class="text-sm dark:text-font-gray">{reviewText}</blockquote>
+
+        <span class="flex items-center gap-3 mt-3">
+            {
+                imgSrc
+                    ? <img src={imgSrc} alt={`Photo of ${clientName}`} loading="lazy" width="56" height="56" class="rounded-full size-14 object-cover shrink-0" />
+                    : <span aria-hidden="true" class="rounded-full size-14 shrink-0 grid place-items-center bg-lite-green text-dark-teal font-bold text-xl">{initial}</span>
+            }
+            <div class="ClientDetails flex flex-col gap-1">
+                <p class="name font-semibold">{clientName}</p>
+                {
+                    rating > 0 &&
+                    <span class="stars flex gap-1 text-sm" role="img" aria-label={`${rating} out of 5 stars`}>
+                        {filled.map(() => (<i class="fa-solid fa-star text-amber-400"></i>))}
+                        {empty.map(() => (<i class="fa-regular fa-star opacity-40"></i>))}
+                    </span>
+                }
             </div>
         </span>
     </span>

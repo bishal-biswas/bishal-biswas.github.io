@@ -2,6 +2,7 @@
 import CardTestimonialReview from "../components/Card_TestimonialReview.astro";
 import PlainLayout from "../layouts/PlainLayout.astro";
 import { getPageContent } from "../data/utils";
+import { testimonials } from "../data/site-data/testimonials";
 
 const pageContent = getPageContent("Testimonials");
 
@@ -20,9 +21,21 @@ const pageContent = getPageContent("Testimonials");
     >
     
     <div class="testimonials-container masonry-layout relative w-full my-5 columns-1 md:columns-2 lg:columns-3 gap-5 space-y-10">
-        <CardTestimonialReview reviewText="So the course is just as great as dhruvee rather himself, I like how the way he explain the things by showing his own life experiences and yeah that will help me a lot for sure, mainly the day 3 and 4 part will help me beat the procrastination" clientName="Hardeep S" clientImg="https://cdn.prod.website-files.com/65e8a443d3a217849e4283b8/65e8a443d3a217849e42846b_Frame%20237849%20(25).svg" ratingStar={5} />
-        <CardTestimonialReview reviewText="I must say this was a life-changing course for me. Understanding the things which TRULY make me happy helped me identify the tasks that I should be focusing on for achieving long-term happiness. This course is especially for people who aren't satisfied with how they spend their 24 hours in the day, or for some reason have regrets. This course has the golden nuggets for that problem." clientName="Jed L." clientImg="https://cdn.prod.website-files.com/65e8a443d3a217849e4283b8/65e8a443d3a217849e4283f9_dlckb92c.bmp" ratingStar={4} />
-        <CardTestimonialReview reviewText="The nine pillar of happiness mentioned in the first module, I really liked! This course truly helped me because I am a house wife and I have 2 kids and in all day I planned my work and then I'll do my work fast .my husband also happy with me. Thanks a lot." clientName="Bushra Khan R." clientImg="https://cdn.prod.website-files.com/65e8a443d3a217849e4283b8/65e8a443d3a217849e4283ea_l8novhb6.bmp" ratingStar={3} />
-        <CardTestimonialReview reviewText="Very, very informative and affordable course. Thanks Dhruv for the information + experience and for the affordable price of this course" clientName="Rajnikant K." clientImg="https://cdn.prod.website-files.com/65e8a443d3a217849e4283b8/65e8a443d3a217849e4283e7_izxo6een.bmp" ratingStar={4}/>
+        {
+            testimonials.map((review) => (
+                <CardTestimonialReview
+                    reviewText={review.reviewText}
+                    clientName={review.clientName}
+                    clientImg={review.clientImg}
+                    ratingStar={review.ratingStar} />
+            ))
+        }
     </div>
+
+    {
+        testimonials.length === 0 &&
+        <p class="w-full text-center py-16 opacity-70">
+            No testimonials yet — check back soon.
+        </p>
+    }
 </PlainLayout>

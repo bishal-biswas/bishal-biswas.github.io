@@ -1,0 +1,15 @@
+{
+  "testimonials": [
+    {
+      "ratingStar": 5,
+      "clientName": "Ben Ottoman (CEO Cybersecurity.fi)",
+      "reviewText": "I am thoroughly impressed with the Astro.build project you delivered. Your technical expertise and attention to detail have resulted in a high-quality, performant site that meets all our requirements. The code is clean, well-documented, and easy to maintain. Your responsiveness and ability to solve challenges efficiently made this collaboration a great experience. Fantastic job",
+      "clientImg": "ben-20ottoman-1-.jpg"
+    },
+    {
+      "ratingStar": 5,
+      "clientName": "Mark Hughes",
+      "reviewText": "Bishal knows how to give 100% while working on any project. He has good understanding of clients need and provides more than expected from him. Will work with him again in future!"
+    }
+  ]
+}

@@ -401,6 +401,27 @@ collections:
           - { name: linkToAboutMePageText, label: Link Text, widget: string }
           - { name: linkToAboutMePage, label: Link URL, widget: string }
 
+      - name: testimonials
+        label: Testimonials
+        file: src/data/site-data/json/testimonials.json
+        media_folder: /public/uploads/files
+        public_folder: ''
+        fields:
+          - name: testimonials
+            label: Reviews
+            label_singular: Review
+            widget: list
+            summary: '{{fields.clientName}} - {{fields.ratingStar}}/5'
+            fields:
+              - { name: reviewText, label: Review, widget: text, hint: 'What the client said. Shown as a quote on /testimonials.' }
+              - { name: clientName, label: Client Name, widget: string }
+              - name: clientImg
+                label: Client Photo
+                widget: image
+                required: false
+                hint: 'Optional. Without one, the card shows the initial of the name instead.'
+              - { name: ratingStar, label: Rating, widget: number, value_type: int, min: 0, max: 5, default: 5, hint: 'Stars out of 5. Use 0 to hide the rating.' }
+
       - name: certificates
         label: Certificates
         file: src/data/site-data/json/certificates.json

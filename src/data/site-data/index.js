@@ -12,3 +12,4 @@ export { blogCategories, products } from "./content";
 export { pageData } from "./pageData";
 export { siteFiles } from "./siteFiles";
 export { personalFiles } from "./personalFiles";
+export { testimonials } from "./testimonials";
