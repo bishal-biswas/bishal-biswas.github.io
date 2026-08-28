@@ -35,8 +35,6 @@ if(entry.data.rating){
         }
 }
 
-// console.log(screenshotsCollection);
-
 ---
 <PlainLayout
     isSwiperRequired={true}
@@ -63,22 +61,22 @@ if(entry.data.rating){
                         <swiper-container autoplay="true" class="mySwiper" effect="coverflow" grab-cursor="true" centered-slides="true" 
                         slides-per-view="1.2" coverflow-effect-rotate="50" coverflow-effect-stretch="0" coverflow-effect-depth="100" 
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
-                            {entry.data.screenshots?.map((screenshot:string) => (
+                            {(entry.data.screenshots as string[] | undefined)?.map((screenshot) => (
                                 <swiper-slide>
-                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>
                     }
 
                     {
-                        entry.data.screenshotsCount && 
+                        entry.data.screenshots?.length == 0 && entry.data.screenshotsCount && 
                         <swiper-container autoplay="true" class="mySwiper" effect="coverflow" grab-cursor="true" centered-slides="true" 
                         slides-per-view="1.2" coverflow-effect-rotate="50" coverflow-effect-stretch="0" coverflow-effect-depth="100" 
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
                             {screenshotsCollection.map((screenshot) => (
                                 <swiper-slide>
-                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg" loading="lazy"/>
+                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>
@@ -129,7 +127,7 @@ if(entry.data.rating){
                 </div>
 
                 {
-                    (entry.data.rating) &&
+                    (ratingClassArray.length > 0) &&
                     <div class="reviewsBox flex gap-3 lg:flex-row flex-col-reverse items-center rounded-md" title="5/5" >
                         <h2 class="text-3xl font-semibold">{entry.data.rating} out of 5 Stars</h2>
                         <span class="flex gap-2 text-yellow-400 text-2xl">

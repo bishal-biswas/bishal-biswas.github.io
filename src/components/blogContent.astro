@@ -3,7 +3,7 @@ import { personalFiles } from "../data/site-data/personalFiles";
 import type { CollectionEntry } from "astro:content";
 import ArticleShareBtnLinks from "../components/ArticleShareBtnLinks.astro";
 import Prose from "./Prose.astro";
-import { getPaths } from "../data/utils";
+import { aboutMeSection } from "../data/site-data/profile"
 // import ButtonLinkUI from "./ButtonLinkUI.astro";
 
 interface Props {
@@ -157,12 +157,13 @@ const { post } = Astro.props;
                 />
                 <div class="author-data text-center lg:text-left">
                     <span class="block font-semibold">{post.data.author}</span>
-                    <span class="block"
-                        >Lorem ipsum dolor sit amet, consectetur adipisicing
-                        elit. Delectus officiis soluta ipsam quae magnam? Eius
-                        non fugiat molestiae dicta atque itaque ipsa obcaecati
-                        suscipit! Dicta aliquid doloremque mollitia nulla minus.</span
-                    >
+                    <span class="block">
+                        {aboutMeSection.textContent}
+                        {
+                            aboutMeSection.linkToAboutMePage != "" &&
+                            <span>&nbsp;</span><a class="text-lite-green" href={aboutMeSection.linkToAboutMePage}>{aboutMeSection.linkToAboutMePageText}...</a>
+                        }
+                    </span>
                 </div>
             </div>
         </aside>

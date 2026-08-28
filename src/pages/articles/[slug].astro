@@ -103,6 +103,8 @@ const articleDescription = plainBody.length > 80
   heroImgTransitionName={`article-image-${entry.data.slug}`}
   metaDescription={articleDescription}
 >
+    <link rel="stylesheet" href="/assets/styles/prism.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
 
     <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5" >
         <span title="Published on" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg" >
@@ -124,9 +126,7 @@ const articleDescription = plainBody.length > 80
     
     <!-- Article Container -->
     <div class="articlesContainer flex flex-col lg:flex-row w-full gap-3">
-        <BlogContent post={entry} set:html={entry.rendered?.html}>
-            
-        </BlogContent>
+        <BlogContent post={entry as never} set:html={entry.rendered?.html}/>
         
         <ArticleSidebar />
     </div>
@@ -141,7 +141,38 @@ const articleDescription = plainBody.length > 80
 
 </PlainLayout>
 
+<script is:inline src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+<script is:inline>
+    // Function to decode HTML entities
+    function decodeHtmlEntities(str) {
+        const textArea = document.createElement("textarea");
+        textArea.innerHTML = str;
+        return textArea.value;
+    }
+
+    // Update captions for Fancybox
+    document.querySelectorAll("[data-fancybox]").forEach((element) => {
+        const encodedCaption = element.getAttribute("data-caption");
+        if (encodedCaption) {
+            const decodedCaption = decodeHtmlEntities(encodedCaption);
+            element.setAttribute("data-caption", decodedCaption); // Update the attribute
+        }
+    });
+
+    Fancybox.bind('[data-fancybox]', {
+      //
+    });    
+</script>
+<script is:inline src="/assets/scripts/prism.js"></script>
 <script is:inline>
     TOCGenerator();
 
 </script>
+<style is:inline>
+    div.code-toolbar > .toolbar > .toolbar-item > a, div.code-toolbar > .toolbar > .toolbar-item > button, div.code-toolbar > .toolbar > .toolbar-item > span{
+        padding: .7em;
+    }
+    pre p {
+        display: none;
+    }
+</style>

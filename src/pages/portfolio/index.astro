@@ -336,6 +336,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
     function makeToolsUsedComponent(toolsList) {
         let toolElement = "";
         for (let i = 0; i < toolsList.length; i++) {
+            console.log(getTechStackLogo(toolsList[i]));
             toolElement+= `<img class="size-9 rounded" src=${skillImgPath + getTechStackLogo(toolsList[i])} alt=${toolsList[i]} title=${toolsList[i]} />`
         }
         return toolElement
@@ -381,7 +382,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
     
     function getTechStackLogo(techName) {
         for (let i = 0; i < siteData.technologyData.length; i++) {
-            if(siteData.technologyData[i].technologyTitle.toLocaleLowerCase().includes(techName.toLocaleLowerCase()))
+            if(siteData.technologyData[i].technologyTitle.toLocaleLowerCase().trim().includes(techName.toLocaleLowerCase().trim()))
                 return siteData.technologyData[i].technologyLogoImage
         }
     }
