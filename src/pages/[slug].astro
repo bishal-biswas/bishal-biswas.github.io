@@ -1,6 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import SinglePageLayout from "../layouts/SinglePageLayout.astro";
+import Prose from "../components/Prose.astro";
 
 export async function getStaticPaths() {
   const pageEntries = await getCollection('pages');
@@ -13,5 +14,7 @@ const { entry } = Astro.props;
 
 ---
 <SinglePageLayout title={entry.data.title} metaDescription={entry.data.metaDescription || ""} >
-    <div class="content" set:html={entry.rendered?.html}></div>
+    <Prose>
+        <div class="content" set:html={entry.rendered?.html}></div>
+    </Prose>
 </SinglePageLayout>

@@ -51,10 +51,8 @@ const navLinks = navbarMenus;
                                 ]}>
                                     {
                                         link.menuURL != "javascript:void(0)" 
-                                        ?
-                                        <a tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer" href={link.menuURL}>{link.menuTitle}</a>
-                                        :
-                                        <span tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer">{link.menuTitle}</span>
+                                        ? <a tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer" href={link.menuURL}>{link.menuTitle}</a>
+                                        : <span tabindex="0" class="hover:text-lite-green aria-current:text-lite-green cursor-pointer">{link.menuTitle}</span>
                                     }
                                     {
                                         link.hasSubMenu && 
@@ -108,9 +106,9 @@ const navLinks = navbarMenus;
                 </span>
                 
                 <button id="hamburger" aria-label="Mobile Navigation Menu Button" class="lg:hidden flex flex-col items-center justify-between w-5 h-4 focus:outline-none">
-                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
-                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
-                    <span class="block w-5 h-[2px] rounded dark:bg-font-white bg-font-white transition-transform duration-300 ease-in-out transform origin-center"></span>
+                    <span class="block w-5 h-[2px] rounded dark:bg-white bg-black transition-transform duration-300 ease-in-out transform origin-center"></span>
+                    <span class="block w-5 h-[2px] rounded dark:bg-white bg-black transition-transform duration-300 ease-in-out transform origin-center"></span>
+                    <span class="block w-5 h-[2px] rounded dark:bg-white bg-black transition-transform duration-300 ease-in-out transform origin-center"></span>
                 </button>
             </span>
 

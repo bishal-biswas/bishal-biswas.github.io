@@ -13,7 +13,7 @@ var currentYear = new Date().getFullYear();
                 {footerText.footerNote}
             </span>
             <span class="contactInfo hover:text-lite-green">
-                Email : <a href={`mailto:${footerText.contactEmail}`}>{footerText.contactEmail}</a>
+                Email : <a class="hover:text-lite-green" href={`mailto:${footerText.contactEmail}`}>{footerText.contactEmail}</a>
             </span>
         </span>
     
@@ -24,7 +24,7 @@ var currentYear = new Date().getFullYear();
             <ul class="flex justify-center items-center flex-wrap gap-4">
                 {
                     footerLinks.map((link)=>(
-                        <li><a href={link.menuURL}>{link.menuTitle}</a></li>
+                        <li><a class="hover:text-lite-green" href={link.menuURL}>{link.menuTitle}</a></li>
                     ))
                 }
             </ul>
