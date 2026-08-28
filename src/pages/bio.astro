@@ -17,7 +17,9 @@ const allBlogPosts = await getCollection("article");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>All My Links- {personalIfo.fullName}</title>
+    <title>All My Links - {personalIfo.fullName}</title>
+    <meta name="description" content={`Every link for ${personalIfo.fullName} in one place - portfolio, articles, social profiles and contact details.`} />
+    <link rel="canonical" href="https://bishal-biswas.github.io/bio/" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css"/>
 </head> 
 <body class="bg-cover relative grid place-items-center select-none">

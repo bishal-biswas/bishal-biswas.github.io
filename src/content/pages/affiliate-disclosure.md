@@ -1,6 +1,8 @@
 ---
 title: Affiliate Disclosure
 slug: affiliate-disclosure
+metaDescription: >-
+  How bishal-biswas.github.io earns from affiliate links and advertising, and how that never affects which products are recommended.
 publishDate: 2026-08-27
 isDraft: false
 ---

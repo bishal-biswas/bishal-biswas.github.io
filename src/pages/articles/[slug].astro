@@ -67,6 +67,23 @@ BlogPosts.map(function (article, i) {
     }
 });
 
+
+// Prefer the article's own opening as the meta description - a generated
+// "X by Y on Z" line tells a searcher nothing. Falls back to that line if the
+// body is too short to make a usable excerpt.
+const plainBody = (entry.body ?? "")
+    .replace(/```[\s\S]*?```/g, " ")
+    .replace(/`[^`]*`/g, " ")
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, " ")
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/^\s*[#>*_~-]+\s*/gm, "")
+    .replace(/\s+/g, " ")
+    .trim();
+const articleDescription = plainBody.length > 80
+    ? plainBody.slice(0, 155).replace(/\s+\S*$/, "") + "…"
+    : `${entry.data.title} - an article by ${entry.data.author} on ${entry.data.category}.`;
+
 ---
 
 <PlainLayout
@@ -84,7 +101,7 @@ BlogPosts.map(function (article, i) {
   ogType="article"
   ogImage={getPaths("Article") + entry.data.featuredImage}
   heroImgTransitionName={`article-image-${entry.data.slug}`}
-  metaDescription={`${entry.data.title} - an article by ${entry.data.author} on ${entry.data.category}.`}
+  metaDescription={articleDescription}
 >
 
     <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5" >

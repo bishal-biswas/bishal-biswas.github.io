@@ -28,18 +28,89 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
     pageSmallText={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
     title="Portfolio"
+    metaDescription="Web and software development projects built by Bishal Biswas, with the tech stack, duration and live links for each one."
     backgroundImg={pageContent.backgroundImage}
 >
     <!-- Hero Content -->
 
     <div class="project-usertools sticky top-[10vh] z-[2] flex justify-between items-center w-full lg:mt-8 p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be] animate-on-scroll">
         <div id="categoryBox" class="project-Category relative flex justify-start items-center gap-4 flex-wrap w-11/12 font-semibold transition-all duration-500 ease-in-out"></div>
-        <span data-put-this-class="flex" class="hidden justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
-            <i class="fa-solid fa-table-layout"></i>
+        <span
+            id="viewToggleBtn"
+            role="button"
+            tabindex="0"
+            aria-pressed="false"
+            aria-controls="masonry tableView"
+            title="Switch to table view"
+            class="flex justify-center items-center size-10 cursor-pointer rounded-full relative dark:bg-body-bg-2 bg-body-bg-2 hover:bg-lite-green hover:scale-105 transition-all ease-in-out duration-300">
+            <i id="viewToggleIcon" class="fa-solid fa-list"></i>
         </span>
     </div>
     
     <div id="masonry" class="masonry-layout flex justify-center gap-7"></div>
+
+    <!-- Server-rendered table. The masonry above is built client-side, so this
+         is what crawlers and no-JS visitors actually see. Hidden by default via
+         the `hidden` class, toggled by #viewToggleBtn. -->
+    <div id="tableView" class="hidden w-full overflow-x-auto rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be] mt-4">
+        <table class="w-full text-left text-sm dark:text-font-white text-teal-white">
+            <caption class="sr-only">All projects, with type, tech stack, duration and links</caption>
+            <thead class="uppercase text-xs border-b border-[#ffffff26]">
+                <tr>
+                    <th scope="col" class="px-4 py-4">Project</th>
+                    <th scope="col" class="px-4 py-4">Type</th>
+                    <th scope="col" class="px-4 py-4">Tech Stack</th>
+                    <th scope="col" class="px-4 py-4 whitespace-nowrap">Duration</th>
+                    <th scope="col" class="px-4 py-4">Status</th>
+                    <th scope="col" class="px-4 py-4">Links</th>
+                </tr>
+            </thead>
+            <tbody>
+                {
+                    portfolioData.map((project) => (
+                        <tr class="border-b border-[#ffffff14] last:border-0 hover:bg-[#ffffff0d] transition-colors">
+                            <th scope="row" class="px-4 py-4 font-semibold">
+                                <a href={`/portfolio/${project.data.title.replaceAll(" ", "-").toLowerCase()}`}
+                                   class="hover:text-lite-green-2 transition-colors">
+                                    {project.data.title}
+                                </a>
+                                <p class="font-normal opacity-70 line-clamp-2 mt-1 max-w-[38ch]">
+                                    {project.data.projectBriefDescription}
+                                </p>
+                            </th>
+                            <td class="px-4 py-4 whitespace-nowrap">{project.data.projectType}</td>
+                            <td class="px-4 py-4">
+                                <span class="flex flex-wrap gap-1">
+                                    {project.data.techStack.map((tech) => (
+                                        <span class="px-2 py-[2px] text-xs rounded-full bg-[#183550d7] text-[#58ded6] whitespace-nowrap">{tech}</span>
+                                    ))}
+                                </span>
+                            </td>
+                            <td class="px-4 py-4 whitespace-nowrap">{project.data.projectDuration}</td>
+                            <td class="px-4 py-4 whitespace-nowrap">
+                                {project.data.isProjectCompleted ? "Completed" : "In Progress"}
+                                {project.data.isStatus && <span class="block text-xs opacity-70">{project.data.isStatus}</span>}
+                            </td>
+                            <td class="px-4 py-4">
+                                <span class="flex gap-3">
+                                    <a href={`/portfolio/${project.data.title.replaceAll(" ", "-").toLowerCase()}`}
+                                       class="hover:text-lite-green-2" title="Details"><i class="fa-solid fa-circle-info"></i></a>
+                                    {project.data.projectLiveLink && (
+                                        <a href={project.data.projectLiveLink} rel="noopener noreferrer" target="_blank"
+                                           class="hover:text-lite-green-2" title="Live site"><i class="fa-solid fa-arrow-up-right-from-square"></i></a>
+                                    )}
+                                    {project.data.projectRepoLink && (
+                                        <a href={project.data.projectRepoLink} rel="noopener noreferrer" target="_blank"
+                                           class="hover:text-lite-green-2" title="Repository"><i class="fa-brands fa-github"></i></a>
+                                    )}
+                                </span>
+                            </td>
+                        </tr>
+                    ))
+                }
+            </tbody>
+        </table>
+    </div>
     
     <div class="btnHolder grid place-items-center">
         <ButtonLinkUI isButton={true} id="loadMoreBtn" iconClass="fa-solid fa-ellipsis" isBgColored={true}>
@@ -106,7 +177,10 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
         }
 
         // Distribute items into columns (basic column distribution)
-        for (let i = 0; i < limit; i++) {
+        // Clamp: displayedTill starts at 3, so with fewer than 3 projects the
+        // loop would read past the end and throw, killing the whole script.
+        const upto = Math.min(limit, itemsList.length);
+        for (let i = 0; i < upto; i++) {
             const masonryItem = document.createElement('div');
             masonryItem.classList.add('masonry-item', "projectHolder", "relative", "items", "rounded-xl", "break-inside-avoid", "overflow-hidden", "shadow-lg", "dark:shadow-[#2ea8d454]", "shadow-dark-green",  "hover:shadow-lite-green");
             
@@ -162,6 +236,47 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
         }
     });
     createCategoryButtons();
+
+    // ---- masonry <-> table view -------------------------------------------
+    // The table is server-rendered for SEO and no-JS visitors; the masonry is
+    // built client-side. Only one is visible at a time.
+    (function () {
+        const toggleBtn = document.getElementById("viewToggleBtn");
+        const toggleIcon = document.getElementById("viewToggleIcon");
+        const tableView = document.getElementById("tableView");
+        const masonryView = document.getElementById("masonry");
+        const btnHolder = document.querySelector(".btnHolder");
+        if (!toggleBtn || !tableView || !masonryView) return;
+
+        // JS is running, so start on the masonry view.
+        let showingTable = false;
+
+        function render() {
+            tableView.classList.toggle("hidden", !showingTable);
+            masonryView.classList.toggle("hidden", showingTable);
+            categoryBoxContainer.classList.toggle("hidden", showingTable);
+            // Load More only applies to the masonry, and the table shows everything.
+            if (btnHolder) btnHolder.classList.toggle("hidden", showingTable);
+
+            toggleIcon.className = showingTable
+                ? "fa-solid fa-table-cells-large"
+                : "fa-solid fa-list";
+            toggleBtn.setAttribute("aria-pressed", String(showingTable));
+            toggleBtn.title = showingTable ? "Switch to card view" : "Switch to table view";
+        }
+
+        function toggle() {
+            showingTable = !showingTable;
+            render();
+        }
+
+        toggleBtn.addEventListener("click", toggle);
+        toggleBtn.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); }
+        });
+
+        render();
+    })();
 
     loadMoreBtn.addEventListener("click", ()=>{
         const loadProgressBtn = document.querySelector("#loadProgressBtn");

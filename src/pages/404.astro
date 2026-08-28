@@ -8,7 +8,8 @@ const pageContent = getPageContent("404");
 import PlainLayout from "../layouts/PlainLayout.astro";
 ---
 
-<PlainLayout backgroundImg={pageContent.backgroundImage} pageMainHeadingtagType="h1" isMainHeadingDoubleLined={true} pageHeadingText="404 Not Found" pageSmallText="Looks like the page you landed on is gone..." title="Page not found">
+<PlainLayout backgroundImg={pageContent.backgroundImage} pageMainHeadingtagType="h1" isMainHeadingDoubleLined={true} pageHeadingText="404 Not Found" pageSmallText="Looks like the page you landed on is gone..." title="Page not found"
+    metaDescription="This page does not exist or has been moved. Head back to the homepage to keep browsing.">
     
     <p slot="heroSection">The page you are looking for does not exist or it may be deleted...</p>
     

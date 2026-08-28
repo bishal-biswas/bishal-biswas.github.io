@@ -12,6 +12,6 @@ export async function getStaticPaths() {
 const { entry } = Astro.props;
 
 ---
-<SinglePageLayout title={entry.data.title} >
+<SinglePageLayout title={entry.data.title} metaDescription={entry.data.metaDescription || ""} >
     <div class="content" set:html={entry.rendered?.html}></div>
 </SinglePageLayout>

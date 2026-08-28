@@ -1,40 +1,101 @@
 ---
-
+// Toast notifications. Call from anywhere:
+//   showNotification("Saved")                      -> info
+//   showNotification("Message sent", "success")
+//   showNotification("Could not send", "error")
+//   showNotification("Heads up", "warning", { duration: 8000 })
+// Pass duration: 0 to make a toast stay until dismissed.
 ---
 
-<div id="notification" class="fixed bottom-4 right-4 translate-x-full z-[11] dark:bg-dark-teal dark:text-teal-white dark:text-font-white bg-white px-4 py-2 border-2 border-lite-green rounded shadow shadow-lite-green transition-transform transform opacity-0 scale-95">
-    <p id="notification-message">This is a notification message!</p>
+<div
+    id="notification-stack"
+    class="fixed bottom-4 right-4 z-[11] flex flex-col-reverse gap-2 items-end pointer-events-none max-h-screen"
+    role="region"
+    aria-label="Notifications"
+    aria-live="polite"
+>
 </div>
 
-<!-- <button
-    onclick="showNotification('Hello! This is your notification.')"
-    class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-> 
-    Show Notification
-</button>-->
+<template id="notification-template">
+    <div
+        class="notification pointer-events-auto flex items-start gap-3 w-[min(92vw,24rem)] px-4 py-3 rounded-lg border-2 shadow-lg shadow-[#0000005e] translate-x-[120%] opacity-0 transition-all duration-300 ease-out dark:bg-dark-teal bg-white dark:text-font-white text-body-bg"
+    >
+        <i class="notification-icon mt-[3px] shrink-0" aria-hidden="true"></i>
+        <p class="notification-message text-sm leading-snug grow break-words"></p>
+        <button
+            type="button"
+            class="notification-close shrink-0 -mr-1 -mt-1 size-6 grid place-items-center rounded-full opacity-60 hover:opacity-100 hover:bg-[#8888881f] transition-all"
+            aria-label="Dismiss notification"
+        >
+            <i class="fa-solid fa-xmark text-xs" aria-hidden="true"></i>
+        </button>
+    </div>
+</template>
 
 <script is:inline>
-    function showNotification(message) {
-        const notification = document.getElementById("notification");
-        const messageElement = document.getElementById("notification-message");
+    (function () {
+        // Guard against the script running twice (it ships in every layout).
+        if (window.showNotification) return;
 
-        // Update the notification message
-        messageElement.textContent = message;
+        var TYPES = {
+            success: { border: "border-lite-green", icon: "fa-solid fa-circle-check text-lite-green" },
+            error:   { border: "border-red-500",    icon: "fa-solid fa-circle-exclamation text-red-500" },
+            warning: { border: "border-amber-500",  icon: "fa-solid fa-triangle-exclamation text-amber-500" },
+            info:    { border: "border-lite-green", icon: "fa-solid fa-circle-info text-lite-green" },
+        };
+        var MAX_VISIBLE = 4;
 
-        // Show the notification with animation
-        notification.classList.remove("translate-x-full", "opacity-0", "scale-95");
-        notification.classList.add("opacity-100", "scale-100");
+        function dismiss(toast) {
+            if (toast.dataset.leaving) return;
+            toast.dataset.leaving = "1";
+            toast.classList.add("translate-x-[120%]", "opacity-0");
+            // Remove after the transition so the stack collapses smoothly.
+            setTimeout(function () {
+                if (toast.parentNode) toast.parentNode.removeChild(toast);
+            }, 320);
+        }
 
-        // Hide the notification after 3 seconds
-        setTimeout(() => {
-            notification.classList.remove("opacity-100", "scale-100");
-            notification.classList.add("translate-x-full", "opacity-0", "scale-95");
+        window.showNotification = function (message, type, options) {
+            if (!message) return;
+            var stack = document.getElementById("notification-stack");
+            var template = document.getElementById("notification-template");
+            if (!stack || !template) return;
 
-            // Fully hide the notification after animation ends
-            setTimeout(() => {
-                notification.classList.add("translate-x-full");
-            }, 300); // Match this duration with Tailwind transition duration
-        }, 3000);
-    }
-    showNotification("This Website is in Devlopment Phase.")
+            var config = TYPES[type] || TYPES.info;
+            var opts = options || {};
+            var duration = opts.duration === undefined ? 4000 : opts.duration;
+
+            var toast = template.content.firstElementChild.cloneNode(true);
+            toast.classList.add(config.border);
+            toast.querySelector(".notification-icon").className =
+                "notification-icon mt-[3px] shrink-0 " + config.icon;
+            // textContent, never innerHTML - messages can contain user input.
+            toast.querySelector(".notification-message").textContent = message;
+            if (type === "error") toast.setAttribute("role", "alert");
+
+            toast.querySelector(".notification-close").addEventListener("click", function () {
+                dismiss(toast);
+            });
+
+            stack.appendChild(toast);
+
+            // Drop the oldest if the stack gets too tall.
+            var live = stack.querySelectorAll(".notification:not([data-leaving])");
+            for (var i = 0; i < live.length - MAX_VISIBLE; i++) dismiss(live[i]);
+
+            // Next frame, so the transition actually runs.
+            requestAnimationFrame(function () {
+                requestAnimationFrame(function () {
+                    toast.classList.remove("translate-x-[120%]", "opacity-0");
+                });
+            });
+
+            if (duration > 0) setTimeout(function () { dismiss(toast); }, duration);
+            return toast;
+        };
+
+        // Convenience aliases.
+        window.notifySuccess = function (m, o) { return window.showNotification(m, "success", o); };
+        window.notifyError = function (m, o) { return window.showNotification(m, "error", o); };
+    })();
 </script>

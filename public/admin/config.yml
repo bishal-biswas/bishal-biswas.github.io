@@ -185,6 +185,7 @@ collections:
         required: true
         pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
         hint: 'Becomes the URL: /<slug>/ at the site root.'
+      - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Shown in search results and on social cards. Aim for 120-160 characters.' }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
       - { name: body, label: Body, widget: markdown }

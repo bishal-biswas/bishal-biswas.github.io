@@ -1,6 +1,8 @@
 ---
 title: Privacy Policy
 slug: privacy-policy
+metaDescription: >-
+  How bishal-biswas.github.io collects, uses and protects visitor information, including cookies, analytics and third-party advertising.
 publishDate: 2026-08-27
 isDraft: false
 ---

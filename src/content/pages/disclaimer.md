@@ -1,6 +1,8 @@
 ---
 title: Disclaimer
 slug: disclaimer
+metaDescription: >-
+  The terms under which content, code samples and tutorials on bishal-biswas.github.io are provided, and the limits of their accuracy and liability.
 publishDate: 2026-08-27
 isDraft: false
 ---

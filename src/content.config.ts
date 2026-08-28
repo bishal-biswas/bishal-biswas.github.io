@@ -61,6 +61,7 @@ const pagesCollection = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/content/pages" }),
     schema: z.object({
         title: z.string(),
+        metaDescription: z.string().optional(),
         publishDate: z.coerce.date(),
         isDraft: z.boolean().default(true),
         slug: z.string().optional(),

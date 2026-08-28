@@ -8,27 +8,179 @@ const pageContent = getPageContent("Search");
 
 <PlainLayout
     pageType="project"
+    title="Search"
+    metaDescription="Search articles, projects, code snippets and pages on bishal-biswas.github.io"
     pageSmallTextBelow=" "
     pageMainHeadingtagType="h1"
     pageHeadingText="Search Results"
     backgroundImgClass={pageContent.backgroundImageClass}
     backgroundImg={pageContent.backgroundImage}
 >
-    <div id="searchResultsContainer" class="searchResultsContainer">
+    <div class="searchPage w-full my-6">
+        <form id="searchPageForm" action="/search" class="relative flex gap-3 items-center w-full max-w-2xl mx-auto">
+            <label for="searchPageInput" class="sr-only">Search</label>
+            <input
+                type="text"
+                name="q"
+                id="searchPageInput"
+                autocomplete="off"
+                placeholder="Search articles, projects, snippets…"
+                class="w-full p-3 pl-6 pr-14 outline-none dark:text-white text-body-bg rounded-full backdrop-blur-sm shadow-xl dark:placeholder:text-gray-300 placeholder:text-gray-800 bg-[#cbd5e198]"
+            />
+            <button type="submit" aria-label="Search" class="absolute right-2 hover:bg-dark-green bg-lite-green rounded-full size-10">
+                <i class="fa-solid fa-magnifying-glass text-white"></i>
+            </button>
+        </form>
 
+        <div id="searchFilters" class="flex flex-wrap justify-center gap-2 mt-5 text-xs uppercase font-semibold"></div>
+
+        <p id="searchStatus" class="text-center mt-5 opacity-70" aria-live="polite">Loading search index…</p>
+
+        <div id="searchResultsContainer" class="searchResultsContainer flex flex-col gap-3 mt-6"></div>
     </div>
+
     <div class="wrapper grid place-items-center py-3">
         <ButtonLinkUI isBgColored={true} iconClass="fa-solid fa-house" isLeftIcon={true} action="/">Home</ButtonLinkUI>
     </div>
 </PlainLayout>
 
 <script is:inline>
-    const urlSearchParams = new URLSearchParams(window.location.search);
-    const params = Object.fromEntries(urlSearchParams.entries());
+    // Search runs entirely in the browser against a static index built at
+    // deploy time (/search-index.json). GitHub Pages has no server, so there
+    // is nothing to query - the whole index is fetched once and filtered here.
+    (function () {
+        const input = document.getElementById("searchPageInput");
+        const results = document.getElementById("searchResultsContainer");
+        const status = document.getElementById("searchStatus");
+        const filters = document.getElementById("searchFilters");
+        const form = document.getElementById("searchPageForm");
+        const heading = document.querySelector(".heroSection-content h1");
+        const sub = document.querySelector(".heroSection-content p");
+        if (sub) sub.textContent = "";
 
-    const headingTxt = document.querySelector(".heroSection-content h1");
-    const paraTxt = document.querySelector(".heroSection-content p");
+        let index = [];
+        let activeType = "";
 
-    headingTxt.textContent += ` for "${params.q}"`;
-    paraTxt.textContent = ``;
+        const params = new URLSearchParams(window.location.search);
+        const initial = (params.get("q") || "").trim();
+        if (initial) input.value = initial;
+
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, (c) => (
+                { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]
+            ));
+        }
+
+        // Title hits rank above tags, then excerpt, then body.
+        function score(item, terms) {
+            const title = item.title.toLowerCase();
+            const tags = (item.tags || []).join(" ").toLowerCase();
+            const excerpt = (item.excerpt || "").toLowerCase();
+            const body = (item.body || "").toLowerCase();
+            let total = 0;
+
+            for (const term of terms) {
+                let hit = 0;
+                if (title.includes(term)) hit += title.startsWith(term) ? 12 : 8;
+                if (tags.includes(term)) hit += 5;
+                if (excerpt.includes(term)) hit += 3;
+                if (body.includes(term)) hit += 1;
+                if (!hit) return 0;          // every term must match somewhere
+                total += hit;
+            }
+            return total;
+        }
+
+        function search(query) {
+            const terms = query.toLowerCase().split(/\s+/).filter(Boolean);
+            if (!terms.length) return [];
+            return index
+                .map((item) => ({ item, s: score(item, terms) }))
+                .filter((r) => r.s > 0)
+                .sort((a, b) => b.s - a.s || new Date(b.item.date) - new Date(a.item.date))
+                .map((r) => r.item);
+        }
+
+        function render() {
+            const query = input.value.trim();
+            if (heading) heading.textContent = query ? `Search Results for "${query}"` : "Search Results";
+
+            if (!query) {
+                results.innerHTML = "";
+                filters.innerHTML = "";
+                status.textContent = "Type something to search.";
+                return;
+            }
+
+            const all = search(query);
+            const counts = all.reduce((acc, i) => ((acc[i.type] = (acc[i.type] || 0) + 1), acc), {});
+            const shown = activeType ? all.filter((i) => i.type === activeType) : all;
+
+            // Type filter chips
+            const types = Object.keys(counts).sort();
+            filters.innerHTML = types.length
+                ? [`<button type="button" data-type="" class="search-chip px-3 py-1 rounded-full border-2 ${activeType === "" ? "border-lite-green" : "border-transparent"} dark:bg-dark-teal bg-dark-teal text-teal-white dark:text-font-white">All ${all.length}</button>`]
+                    .concat(types.map((t) =>
+                        `<button type="button" data-type="${esc(t)}" class="search-chip px-3 py-1 rounded-full border-2 ${activeType === t ? "border-lite-green" : "border-transparent"} dark:bg-dark-teal bg-dark-teal text-teal-white dark:text-font-white">${esc(t)} ${counts[t]}</button>`))
+                    .join("")
+                : "";
+
+            status.textContent = shown.length
+                ? `${shown.length} result${shown.length === 1 ? "" : "s"} for "${query}"`
+                : `No results for "${query}". Try a different word.`;
+
+            results.innerHTML = shown.map((item) => {
+                const img = item.image
+                    ? `<img src="${esc(item.imageBase + item.image)}" alt="" loading="lazy" class="size-20 rounded-md object-cover shrink-0 hidden sm:block">`
+                    : "";
+                const tags = (item.tags || []).filter(Boolean).slice(0, 4).map((t) =>
+                    `<span class="px-2 py-[2px] text-xs rounded-full bg-[#183550d7] text-[#58ded6]">${esc(t)}</span>`).join("");
+                return `
+                <a href="${esc(item.url)}" class="searchResult flex gap-4 items-start p-4 rounded-lg dark:bg-dark-teal bg-dark-teal text-teal-white dark:text-font-white shadow-sm shadow-[#000000be] hover:scale-[1.01] transition-transform">
+                    ${img}
+                    <span class="grow">
+                        <span class="block text-xs uppercase opacity-60">${esc(item.type)}</span>
+                        <span class="block font-semibold text-lg hover:text-lite-green-2">${esc(item.title)}</span>
+                        <span class="block text-sm opacity-80 mt-1 line-clamp-2">${esc(item.excerpt || "")}</span>
+                        <span class="flex flex-wrap gap-1 mt-2">${tags}</span>
+                    </span>
+                </a>`;
+            }).join("");
+        }
+
+        filters.addEventListener("click", (e) => {
+            const chip = e.target.closest(".search-chip");
+            if (!chip) return;
+            activeType = chip.dataset.type || "";
+            render();
+        });
+
+        input.addEventListener("input", () => {
+            activeType = "";
+            render();
+        });
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+            // Keep the URL shareable without reloading the page.
+            const url = new URL(window.location.href);
+            if (input.value.trim()) url.searchParams.set("q", input.value.trim());
+            else url.searchParams.delete("q");
+            history.replaceState(null, "", url);
+            render();
+        });
+
+        fetch("/search-index.json")
+            .then((r) => {
+                if (!r.ok) throw new Error("HTTP " + r.status);
+                return r.json();
+            })
+            .then((data) => {
+                index = data;
+                render();
+                input.focus();
+            })
+            .catch(() => {
+                status.textContent = "Search is unavailable right now. Please try again later.";
+            });
+    })();
 </script>

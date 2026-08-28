@@ -1,6 +1,8 @@
 ---
 title: Terms and Conditions
 slug: terms-condition
+metaDescription: >-
+  The terms and conditions governing your use of bishal-biswas.github.io, covering acceptable use, intellectual property and liability.
 publishDate: 2026-08-27
 isDraft: false
 ---

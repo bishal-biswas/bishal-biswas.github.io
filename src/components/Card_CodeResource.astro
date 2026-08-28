@@ -7,9 +7,16 @@ interface Props {
 }
 
 const {cardTitle, cardUrl, descriptionText, tags=[]} = Astro.props;
+
+// Lower-cased haystack for the client-side filter on /snippets.
+const searchText = [cardTitle, descriptionText, ...tags].join(" ").toLowerCase();
 ---
 
-<div class="codeCard lg:min-h-[200px] xl:max-w-[32%] lg:max-w-[48%] w-full backdrop-blur-sm rounded-md py-5 px-4 dark:bg-[#00283aa7] shadow-lg shadow-body-bg-2 border-t border-t-[#23314d] transition-all ease-in-out active:scale-95 animate-on-scroll">
+<div
+    data-snippet-card
+    data-search={searchText}
+    data-tags={tags.join("|").toLowerCase()}
+    class="codeCard lg:min-h-[200px] xl:max-w-[32%] lg:max-w-[48%] w-full backdrop-blur-sm rounded-md py-5 px-4 dark:bg-[#00283aa7] shadow-lg shadow-body-bg-2 border-t border-t-[#23314d] transition-all ease-in-out active:scale-95 animate-on-scroll">
     <a class="contents w-fit" href={`/snippets/${cardUrl}`}>
         <h2 class="dark:text-[#58ded6] text-[#183550d7] font-semibold text-lg w-fit line-clamp-2">{cardTitle}</h2>
     </a>

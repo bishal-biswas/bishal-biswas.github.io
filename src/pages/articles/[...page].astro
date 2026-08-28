@@ -49,6 +49,12 @@ const { data , ...paginationData} = page;
 
 const pageContent = pageData.filter(page => page.pageTitle == "Articles")[0];
 
+// Page 2+ needs its own description, otherwise every paginated page competes
+// with page 1 for the same snippet in search results.
+const metaDescription = page.currentPage > 1
+    ? `Articles and tutorials on web development, .NET and C# by Bishal Biswas - page ${page.currentPage} of ${page.lastPage}.`
+    : "Articles and tutorials on web development, .NET, C# and software engineering, written by Bishal Biswas.";
+
 ---
 
 <PlainLayout 
@@ -57,7 +63,9 @@ const pageContent = pageData.filter(page => page.pageTitle == "Articles")[0];
     isMainHeadingDoubleLined={true} 
     pageSmallText={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
-    title="Articles" 
+    title={page.currentPage > 1 ? `Articles - Page ${page.currentPage}` : "Articles"}
+    {metaDescription}
+    
     backgroundImg={pageContent.backgroundImage}
     >
 
