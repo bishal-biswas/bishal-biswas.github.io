@@ -10,6 +10,8 @@ tags:
   - HTML
   - Web Designing
 ---
+# What Is HTML? A Beginner's Complete Guide
+
 When I first started learning web development, HTML was one of the first technologies I came across. At that time, I thought HTML was a programming language because it was used to create websites.
 
 I later learned that HTML is not actually a programming language. It is a markup language that tells the browser how the content of a web page is structured.
@@ -26,24 +28,32 @@ It is the standard markup language used to create and structure content on the w
 
 For example, when I want to tell the browser that something is a heading, I can use an HTML heading element:
 
+```html
+<h1>Hello World</h1>
+```
+
 When I want to create a paragraph, I can use:
+
+```html
+<p>This is my first web page.</p>
+```
 
 The browser reads these HTML elements and uses them to understand the structure of the page.
 
 HTML can be used to create things such as:
 
-* Headings
-* Paragraphs
-* Links
-* Images
-* Lists
-* Tables
-* Forms
-* Buttons
-* Videos
-* Audio
-* Page sections
-* Navigation menus
+- Headings
+- Paragraphs
+- Links
+- Images
+- Lists
+- Tables
+- Forms
+- Buttons
+- Videos
+- Audio
+- Page sections
+- Navigation menus
 
 So, if you have ever wondered how a browser knows which text is a heading and which text is a paragraph, HTML is one of the main reasons.
 
@@ -57,11 +67,23 @@ HTML is a markup language, not a programming language.
 
 A programming language allows us to write logic and perform operations. For example, JavaScript can perform calculations:
 
+```javascript
+let price = 100;
+let quantity = 2;
+
+let total = price * quantity;
+```
+
 HTML does not work this way.
 
 Instead, HTML describes the structure and meaning of content.
 
 For example:
+
+```html
+<h1>My Blog</h1>
+<p>Welcome to my website.</p>
+```
 
 Here, I am not telling the browser to perform a calculation or make a decision. I am simply describing the content.
 
@@ -81,6 +103,10 @@ HTML works through elements and tags.
 
 Consider this example:
 
+```html
+<h1>My Website</h1>
+```
+
 Here, `<h1>` is the opening tag and `</h1>` is the closing tag.
 
 The text between them is the content.
@@ -90,6 +116,10 @@ Together, they form an HTML element.
 The browser reads this information and displays "My Website" as a heading.
 
 Another example is:
+
+```html
+<p>I am learning HTML.</p>
+```
 
 The browser understands that this content is a paragraph.
 
@@ -101,13 +131,29 @@ An HTML tag is a piece of markup enclosed inside angle brackets.
 
 For example:
 
+```html
+<h1>
+```
+
 and:
 
+```html
+<p>
+```
+
 Some tags normally have both an opening and closing tag:
+
+```html
+<p>Hello</p>
+```
 
 Others do not need a separate closing tag.
 
 For example:
+
+```html
+<img src="photo.jpg" alt="My photo">
+```
 
 The important thing to understand at the beginning is that HTML uses tags to describe different types of content.
 
@@ -117,7 +163,17 @@ An HTML element generally consists of an opening tag, content, and a closing tag
 
 For example:
 
+```html
+<p>Hello World</p>
+```
+
 We can break it down like this:
+
+```text
+<p>        Opening tag
+Hello World   Content
+</p>       Closing tag
+```
 
 The entire thing is the HTML element.
 
@@ -129,26 +185,60 @@ HTML elements can have additional information called attributes.
 
 For example:
 
+```html
+<a href="https://example.com">Visit Website</a>
+```
+
 Here, `href` is an attribute.
 
 It tells the browser where the link should go.
 
 Another example is an image:
 
+```html
+<img src="profile.jpg" alt="Profile picture">
+```
+
 This image element has two attributes:
 
-* `src` tells the browser where the image is located.
-* `alt` provides alternative text describing the image.
+- `src` tells the browser where the image is located.
+- `alt` provides alternative text describing the image.
 
 Attributes are normally written inside the opening tag.
 
 The general pattern looks like this:
+
+```html
+<tag attribute="value">Content</tag>
+```
 
 ## The Basic Structure of an HTML Document
 
 When I create an HTML page, I normally start with a standard document structure.
 
 Here is a simple example:
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My First Website</title>
+</head>
+
+<body>
+
+    <h1>Hello World</h1>
+
+    <p>This is my first web page.</p>
+
+</body>
+
+</html>
+```
 
 This might look complicated when you see it for the first time, but each part has a specific purpose.
 
@@ -157,6 +247,10 @@ Let's look at it one piece at a time.
 ## What Is `<!DOCTYPE html>`?
 
 The first line is:
+
+```html
+<!DOCTYPE html>
+```
 
 This tells the browser that the document is an HTML5 document.
 
@@ -172,7 +266,19 @@ Everything else on the page is placed inside it.
 
 For example:
 
+```html
+<html>
+    
+    <!-- Other HTML elements go here -->
+
+</html>
+```
+
 You will often see a `lang` attribute:
+
+```html
+<html lang="en">
+```
 
 This tells browsers and assistive technologies that the primary language of the document is English.
 
@@ -182,20 +288,37 @@ The `<head>` element contains information about the document that is not normall
 
 For example:
 
+```html
+<head>
+    <meta charset="UTF-8">
+    <title>My Website</title>
+</head>
+```
+
 The head can contain things such as:
 
-* Page title
-* Metadata
-* CSS references
-* Favicons
-* Search engine related information
-* Other resources required by the page
+- Page title
+- Metadata
+- CSS references
+- Favicons
+- Search engine related information
+- Other resources required by the page
 
 ## What Is the `<body>` Element?
 
 The `<body>` contains the visible content of the web page.
 
 For example:
+
+```html
+<body>
+
+    <h1>My Website</h1>
+
+    <p>Welcome to my website.</p>
+
+</body>
+```
 
 Headings, paragraphs, images, links, forms, buttons, and many other visible elements normally go inside the body.
 
@@ -209,6 +332,15 @@ I recommend learning the commonly used ones first.
 
 HTML provides six heading levels:
 
+```html
+<h1>Main Heading</h1>
+<h2>Section Heading</h2>
+<h3>Subsection Heading</h3>
+<h4>Heading 4</h4>
+<h5>Heading 5</h5>
+<h6>Heading 6</h6>
+```
+
 `<h1>` is the highest-level heading and `<h6>` is the lowest.
 
 I generally use headings to create a logical structure for the content rather than choosing them based only on how large they look.
@@ -219,11 +351,21 @@ CSS should be used when I want to change the visual appearance.
 
 Paragraphs are created using the `<p>` element:
 
+```html
+<p>
+    HTML is used to structure content on web pages.
+</p>
+```
+
 This is one of the most frequently used HTML elements.
 
 ### Links
 
 Links are created using the `<a>` element:
+
+```html
+<a href="https://example.com">Visit Example</a>
+```
 
 The `href` attribute specifies the destination.
 
@@ -232,6 +374,10 @@ Links are one of the most important parts of the web because they allow users to
 ### Images
 
 Images can be displayed using the `<img>` element:
+
+```html
+<img src="photo.jpg" alt="A photo of a mountain">
+```
 
 The `src` attribute specifies the image source.
 
@@ -245,7 +391,23 @@ HTML supports ordered and unordered lists.
 
 An unordered list looks like this:
 
+```html
+<ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+</ul>
+```
+
 An ordered list looks like this:
+
+```html
+<ol>
+    <li>Install a code editor</li>
+    <li>Create an HTML file</li>
+    <li>Open it in a browser</li>
+</ol>
+```
 
 `<li>` represents an individual list item.
 
@@ -257,17 +419,39 @@ Semantic elements describe the meaning or role of the content.
 
 For example:
 
+```html
+<header>
+    <h1>My Website</h1>
+</header>
+
+<nav>
+    <a href="/">Home</a>
+    <a href="/about">About</a>
+</nav>
+
+<main>
+    <article>
+        <h2>My First Article</h2>
+        <p>Article content goes here.</p>
+    </article>
+</main>
+
+<footer>
+    <p>Copyright 2026</p>
+</footer>
+```
+
 Instead of using generic containers everywhere, semantic elements help describe the structure of the page.
 
 Some commonly used semantic elements include:
 
-* `<header>`
-* `<nav>`
-* `<main>`
-* `<section>`
-* `<article>`
-* `<aside>`
-* `<footer>`
+- `<header>`
+- `<nav>`
+- `<main>`
+- `<section>`
+- `<article>`
+- `<aside>`
+- `<footer>`
 
 Semantic HTML can make websites easier to understand and can also help with accessibility and search engine understanding.
 
@@ -276,6 +460,10 @@ Semantic HTML can make websites easier to understand and can also help with acce
 Sometimes I need to leave notes inside my HTML code.
 
 For that, I can use comments:
+
+```html
+<!-- This is a comment -->
+```
 
 The browser does not display the comment as normal page content.
 
@@ -287,15 +475,27 @@ HTML can also be used to create forms.
 
 For example:
 
+```html
+<form>
+
+    <label for="name">Name:</label>
+
+    <input type="text" id="name" name="name">
+
+    <button type="submit">Submit</button>
+
+</form>
+```
+
 Forms are commonly used for:
 
-* Login pages
-* Registration
-* Contact forms
-* Search boxes
-* Newsletter subscriptions
-* Checkout pages
-* Data entry
+- Login pages
+- Registration
+- Contact forms
+- Search boxes
+- Newsletter subscriptions
+- Checkout pages
+- Data entry
 
 HTML creates the structure of the form, while JavaScript or a backend application can be used to process the submitted data.
 
@@ -305,9 +505,19 @@ HTML and CSS are usually used together.
 
 For example:
 
+```html
+<h1>My Website</h1>
+```
+
 HTML creates the heading.
 
 CSS can change how that heading looks:
+
+```css
+h1 {
+    font-size: 40px;
+}
+```
 
 I like to think about it this way:
 
@@ -317,6 +527,10 @@ I like to think about it this way:
 
 For example, HTML can tell the browser that something is a button:
 
+```html
+<button>Click Me</button>
+```
+
 CSS can then control its color, size, spacing, border, and other visual properties.
 
 ## HTML and JavaScript
@@ -324,6 +538,16 @@ CSS can then control its color, size, spacing, border, and other visual properti
 JavaScript adds behavior to HTML pages.
 
 For example:
+
+```html
+<button id="myButton">Click Me</button>
+
+<script>
+    document.getElementById("myButton").addEventListener("click", function () {
+        alert("Hello!");
+    });
+</script>
+```
 
 Here, HTML creates the button and JavaScript responds when the user clicks it.
 
@@ -351,6 +575,17 @@ That is not a good approach.
 
 React uses JSX, which looks very similar to HTML:
 
+```jsx
+function Welcome() {
+    return (
+        <div>
+            <h1>Welcome</h1>
+            <p>Hello from React.</p>
+        </div>
+    );
+}
+```
+
 If you understand HTML elements, attributes, nesting, forms, accessibility, and semantic structure, learning JSX becomes much easier.
 
 The same principle applies when working with Angular templates.
@@ -369,7 +604,34 @@ You can use a code editor such as Visual Studio Code.
 
 Create a file named:
 
+```text
+index.html
+```
+
 Then add:
+
+```html
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My First Web Page</title>
+</head>
+
+<body>
+
+    <h1>Hello World!</h1>
+
+    <p>I am learning HTML.</p>
+
+</body>
+
+</html>
+```
 
 Save the file and open it in your browser.
 
@@ -385,7 +647,35 @@ Once you are comfortable with the HTML basics, I recommend moving on to CSS.
 
 A simple learning path would be:
 
+```text
+HTML
+  ↓
+CSS
+  ↓
+JavaScript
+  ↓
+Git & GitHub
+  ↓
+React or Angular
+```
+
 If your goal is backend development with .NET, another path could be:
+
+```text
+HTML
+  ↓
+CSS
+  ↓
+JavaScript Basics
+  ↓
+C#
+  ↓
+.NET
+  ↓
+ASP.NET Core Web API
+  ↓
+Database
+```
 
 You don't need to master every HTML element before moving forward.
 
@@ -440,6 +730,22 @@ That's why I recommend learning HTML properly before jumping into JavaScript fra
 You don't need to learn hundreds of tags on your first day.
 
 Start with the basics:
+
+```text
+HTML document structure
+        ↓
+Headings and paragraphs
+        ↓
+Links and images
+        ↓
+Lists
+        ↓
+Forms
+        ↓
+Semantic HTML
+        ↓
+Accessibility basics
+```
 
 Then start building.
 
