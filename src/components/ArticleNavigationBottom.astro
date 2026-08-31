@@ -24,7 +24,7 @@ const {previousArticle , nextArticle} = Astro.props;
                 <ArticleNavigationLinks
                     navigationSide="left"
                     titleofArticle={previousArticle.data.title}
-                    urlToArticle={previousArticle.data.slug}
+                    urlToArticle={"/articles/"+ previousArticle.data.slug}
                 />
             ) : (
                 <span class="lg:w-[32%]" aria-label="no previous article" />
@@ -45,7 +45,7 @@ const {previousArticle , nextArticle} = Astro.props;
                 <ArticleNavigationLinks
                     navigationSide="right"
                     titleofArticle={nextArticle.data.title}
-                    urlToArticle={nextArticle.data.slug}
+                    urlToArticle={"/articles/"+ nextArticle.data.slug}
                 />
             ) : (
                 <span class="lg:w-[32%]" aria-label="no next article" />

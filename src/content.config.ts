@@ -8,7 +8,7 @@ import { z } from "astro/zod";
 // ([{ value: "Tailwind CSS" }]) rather than plain strings, so accept either
 // shape and hand the rest of the site a plain string[] as before.
 const stringList = z
-    .array(z.union([z.string(), z.record(z.string())]))
+    .array(z.union([z.string(), z.record(z.string(), z.string())]))
     .transform((items) =>
         items.map((item) => (typeof item === "string" ? item : Object.values(item)[0])),
     );
@@ -18,6 +18,7 @@ const articleCollection = defineCollection({
     schema: z.object({
         title: z.string(),
         featuredImage: z.string(),
+        metaDescription: z.string().optional(),
         author: z.string(),
         publishDate: z.coerce.date(),
         isDraft: z.boolean().default(true),
@@ -72,7 +73,7 @@ const codeHelpCollection = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/content/code-help" }),
     schema: z.object({
         title: z.string(),
-        metaDescription: z.string(),
+        metaDescription: z.string().optional(),
         featuredImage: z.string().optional(),
         publishDate: z.coerce.date(),
         isDraft: z.boolean().default(true),

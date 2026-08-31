@@ -1,0 +1,85 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="uuid-generator"
+    title="UUID Generator - Generate Random UUID v4 Online Free (Bulk)"
+    metaDescription="Generate UUID v4 online for free. Create one or hundreds of cryptographically random UUIDs (GUIDs) instantly, with uppercase and no-hyphen options."
+    pageHeadingText="UUID Generator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div class="tool-row">
+            <button id="uu-generate" class="tool-btn"><i class="fa-solid fa-dice"></i> Generate</button>
+            <label class="tool-note flex items-center gap-2">
+                Count
+                <input id="uu-count" type="number" min="1" max="1000" value="5" class="tool-input" style="width:5.5rem" />
+            </label>
+            <label class="tool-note flex items-center gap-2"><input type="checkbox" id="uu-upper" /> Uppercase</label>
+            <label class="tool-note flex items-center gap-2"><input type="checkbox" id="uu-nohyphen" /> No hyphens</label>
+            <button id="uu-copy" class="tool-btn-ghost ml-auto"><i class="fa-regular fa-copy"></i> Copy all</button>
+        </div>
+        <textarea id="uu-out" class="tool-input" style="min-height:14rem" readonly spellcheck="false"></textarea>
+    </div>
+
+    <h2>Generate random UUIDs (v4) online</h2>
+    <p>
+        This <strong>UUID generator</strong> creates version 4 UUIDs - also called <strong>GUIDs</strong> in the
+        Microsoft world - using the browser's cryptographically secure random number generator
+        (<code>crypto.randomUUID</code> / <code>crypto.getRandomValues</code>). Generate a single ID or up to a
+        thousand at once, in lowercase, uppercase, or without hyphens for systems that store them compactly.
+    </p>
+
+    <h2>What is a UUID v4?</h2>
+    <p>
+        A UUID (Universally Unique Identifier) is a 128-bit value written as 36 characters:
+        <code>xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx</code>. Version 4 UUIDs are generated from random data - 122
+        random bits after the fixed version and variant bits. The chance of two v4 UUIDs colliding is so
+        astronomically small (you'd need to generate billions per second for decades to reach a 50% chance) that
+        they are safely treated as unique without any central coordination.
+    </p>
+
+    <h2>Where UUIDs are used</h2>
+    <ul>
+        <li><strong>Database primary keys</strong> - IDs that can be created on any client or shard without conflicts.</li>
+        <li><strong>Distributed systems</strong> - correlation IDs, request tracing, message deduplication.</li>
+        <li><strong>File and resource names</strong> - collision-free names for uploads and temp files.</li>
+        <li><strong>API keys and references</strong> - opaque, unguessable public identifiers (though for secrets, use longer random tokens).</li>
+    </ul>
+
+    <h2>UUID v4 vs v1 vs v7</h2>
+    <p>
+        v1 embeds a timestamp and MAC address (a privacy leak); v4 is pure randomness; the newer v7 combines a
+        timestamp prefix with randomness so IDs sort by creation time - great for database index locality. For
+        general use, <strong>v4 remains the safe default</strong> and is what this tool generates. Need other random
+        values? Try the <a href="/tools/hash-generator">hash generator</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        function uuidv4() {
+            if (crypto.randomUUID) return crypto.randomUUID();
+            const b = crypto.getRandomValues(new Uint8Array(16));
+            b[6] = (b[6] & 0x0f) | 0x40;
+            b[8] = (b[8] & 0x3f) | 0x80;
+            const h = [...b].map(x => x.toString(16).padStart(2, "0")).join("");
+            return `${h.slice(0,8)}-${h.slice(8,12)}-${h.slice(12,16)}-${h.slice(16,20)}-${h.slice(20)}`;
+        }
+
+        function generate() {
+            const count = Math.min(1000, Math.max(1, Number($("uu-count").value) || 1));
+            let ids = Array.from({ length: count }, uuidv4);
+            if ($("uu-nohyphen").checked) ids = ids.map(u => u.replace(/-/g, ""));
+            if ($("uu-upper").checked) ids = ids.map(u => u.toUpperCase());
+            $("uu-out").value = ids.join("\n");
+        }
+
+        $("uu-generate").addEventListener("click", generate);
+        $("uu-copy").addEventListener("click", () => navigator.clipboard.writeText($("uu-out").value));
+        ["uu-upper", "uu-nohyphen"].forEach(id => $(id).addEventListener("change", generate));
+        generate();
+    })();
+    </script>
+</ToolShell>

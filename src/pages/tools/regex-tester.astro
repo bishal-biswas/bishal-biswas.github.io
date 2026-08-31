@@ -1,0 +1,110 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="regex-tester"
+    title="Regex Tester - Test Regular Expressions Online Free with Highlighting"
+    metaDescription="Test regular expressions online for free with live match highlighting, capture groups and flags. JavaScript regex tester that runs entirely in your browser."
+    pageHeadingText="Regex Tester"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div class="tool-row">
+            <span class="text-[#58ded6] font-mono text-lg">/</span>
+            <input id="rx-pattern" class="tool-input" style="flex:1;font-family:monospace" placeholder="\b\w+@\w+\.\w{2,}\b" spellcheck="false" />
+            <span class="text-[#58ded6] font-mono text-lg">/</span>
+            <input id="rx-flags" class="tool-input" style="width:6rem;font-family:monospace" value="g" placeholder="flags" spellcheck="false" />
+        </div>
+        <p id="rx-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="rx-text">Test string</label>
+            <textarea id="rx-text" class="tool-input" style="min-height:8rem" placeholder="Contact ada@example.com or linus@kernel.org for details." spellcheck="false"></textarea>
+        </div>
+        <div>
+            <label class="tool-label">Matches <span id="rx-count" class="normal-case font-normal"></span></label>
+            <div id="rx-out" class="tool-input" style="min-height:8rem;white-space:pre-wrap;overflow:auto;font-family:monospace;font-size:.85rem"></div>
+        </div>
+        <div id="rx-groups" class="tool-note" style="white-space:pre-wrap"></div>
+    </div>
+
+    <h2>Test regular expressions online with live highlighting</h2>
+    <p>
+        This <strong>regex tester</strong> evaluates your regular expression against sample text as you type,
+        highlighting every match in place and listing <strong>capture groups</strong> - including named groups -
+        below. It uses the browser's native JavaScript regex engine, so what matches here matches in your Node.js or
+        frontend code exactly.
+    </p>
+
+    <h2>Regex flags reference</h2>
+    <ul>
+        <li><code>g</code> - global: find all matches, not just the first.</li>
+        <li><code>i</code> - case-insensitive matching.</li>
+        <li><code>m</code> - multiline: <code>^</code> and <code>$</code> match at line boundaries.</li>
+        <li><code>s</code> - dotall: <code>.</code> also matches newlines.</li>
+        <li><code>u</code> - Unicode mode, enabling <code>\p{"{"}…{"}"}</code> property escapes.</li>
+        <li><code>y</code> - sticky: match only from <code>lastIndex</code>.</li>
+    </ul>
+
+    <h2>Handy patterns to try</h2>
+    <ul>
+        <li>Email: <code>[\w.+-]+@[\w-]+\.[\w.]{"{"}2,{"}"}</code></li>
+        <li>ISO date: <code>\d{"{"}4{"}"}-\d{"{"}2{"}"}-\d{"{"}2{"}"}</code></li>
+        <li>IPv4 address: <code>\b(?:\d{"{"}1,3{"}"}\.){"{"}3{"}"}\d{"{"}1,3{"}"}\b</code></li>
+        <li>Named group: <code>(?&lt;year&gt;\d{"{"}4{"}"})-(?&lt;month&gt;\d{"{"}2{"}"})</code></li>
+    </ul>
+    <p>
+        Regex testing locally in the browser means your sample data - logs, customer records, source code - is never
+        uploaded anywhere. Related tools: <a href="/tools/text-diff-checker">text diff checker</a> and
+        <a href="/tools/sql-formatter">SQL formatter</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const pattern = $("rx-pattern"), flags = $("rx-flags"), text = $("rx-text");
+        const out = $("rx-out"), msg = $("rx-msg"), count = $("rx-count"), groups = $("rx-groups");
+
+        const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        function run() {
+            msg.classList.add("hidden");
+            out.innerHTML = ""; count.textContent = ""; groups.textContent = "";
+            const src = text.value;
+            if (!pattern.value) { out.textContent = src; return; }
+
+            let re;
+            try {
+                let f = flags.value;
+                if (!f.includes("g")) f += "g"; // need g to iterate all matches
+                re = new RegExp(pattern.value, f);
+            } catch (e) {
+                msg.textContent = e.message;
+                msg.classList.remove("hidden");
+                return;
+            }
+
+            let html = "", last = 0, n = 0, groupLines = [];
+            for (const m of src.matchAll(re)) {
+                if (m[0] === "") { re.lastIndex++; if (n > 5000) break; continue; }
+                n++;
+                html += esc(src.slice(last, m.index));
+                html += '<mark style="background:#58ded6;color:#0b1a2a;border-radius:3px;padding:0 1px">' + esc(m[0]) + "</mark>";
+                last = m.index + m[0].length;
+                if (m.length > 1 || m.groups) {
+                    const parts = [];
+                    for (let i = 1; i < m.length; i++) parts.push(`$${i}=${JSON.stringify(m[i])}`);
+                    if (m.groups) for (const [k, v] of Object.entries(m.groups)) parts.push(`${k}=${JSON.stringify(v)}`);
+                    if (groupLines.length < 50) groupLines.push(`Match ${n} @${m.index}: ${parts.join(", ")}`);
+                }
+                if (n > 5000) break;
+            }
+            html += esc(src.slice(last));
+            out.innerHTML = html || '<span style="opacity:.5">No text</span>';
+            count.textContent = `(${n} match${n === 1 ? "" : "es"})`;
+            groups.textContent = groupLines.join("\n");
+        }
+
+        [pattern, flags, text].forEach(el => el.addEventListener("input", run));
+    })();
+    </script>
+</ToolShell>

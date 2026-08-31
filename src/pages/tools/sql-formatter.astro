@@ -1,0 +1,132 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="sql-formatter"
+    title="SQL Formatter - Beautify & Format SQL Queries Online Free"
+    metaDescription="Format SQL queries online for free. Beautify SELECT, JOIN, WHERE and nested queries with keyword casing and indentation. Works with MySQL, PostgreSQL, SQL Server."
+    pageHeadingText="SQL Formatter"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="sq-in">Paste your SQL</label>
+            <textarea id="sq-in" class="tool-input" placeholder="select u.id, u.name, count(o.id) as orders from users u left join orders o on o.user_id = u.id where u.active = 1 group by u.id, u.name order by orders desc" spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="sq-format" class="tool-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Format</button>
+            <select id="sq-case" class="tool-select" style="width:auto">
+                <option value="upper">UPPERCASE keywords</option>
+                <option value="lower">lowercase keywords</option>
+                <option value="keep">Keep casing</option>
+            </select>
+            <button id="sq-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="sq-clear" class="tool-btn-ghost">Clear</button>
+        </div>
+        <div>
+            <label class="tool-label" for="sq-out">Formatted SQL</label>
+            <textarea id="sq-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Format and beautify SQL queries online</h2>
+    <p>
+        This <strong>SQL formatter</strong> turns long single-line queries into readable, well-indented SQL. Major
+        clauses - <code>SELECT</code>, <code>FROM</code>, <code>WHERE</code>, <code>GROUP BY</code>,
+        <code>ORDER BY</code>, <code>HAVING</code> - each start a new line, joins are broken out with their
+        <code>ON</code> conditions, <code>AND</code>/<code>OR</code> chains are stacked, and keywords are uppercased
+        (or lowercased, your choice). String literals and quoted identifiers are preserved untouched.
+    </p>
+
+    <h2>Why formatted SQL matters</h2>
+    <p>
+        SQL copied out of ORMs, logs and monitoring tools usually arrives as one enormous line. Formatting it is the
+        first step of every optimization or debugging session: you can't reason about a query plan when you can't see
+        the query's shape. Consistently formatted SQL is also easier to code-review and diff - a one-clause change
+        shows as a one-line diff instead of an unreadable blob.
+    </p>
+
+    <h2>Works with any SQL dialect</h2>
+    <p>
+        The formatter is dialect-agnostic and handles the shared core of <strong>MySQL, PostgreSQL, SQL Server,
+        SQLite and Oracle</strong>: joins of every kind, subqueries, <code>CASE</code> expressions, CTEs
+        (<code>WITH</code>), <code>INSERT</code>/<code>UPDATE</code>/<code>DELETE</code>, and comments. Since it's a
+        formatter - not a parser - it never rewrites your logic; it only adds whitespace and adjusts keyword casing.
+    </p>
+    <p>
+        Everything runs locally in the browser, so production queries containing table names and business logic stay
+        private. Comparing two versions of a query? Format both here, then use the
+        <a href="/tools/text-diff-checker">text diff checker</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        const NEWLINE_KW = ["select", "from", "where", "group by", "order by", "having", "limit", "offset", "union all", "union", "intersect", "except", "insert into", "values", "update", "set", "delete from", "with"];
+        const JOIN_KW = ["left outer join", "right outer join", "full outer join", "left join", "right join", "inner join", "cross join", "full join", "join"];
+        const BREAK_BEFORE = ["and", "or", "on", "when", "then", "else", "end", "case"];
+        const KEYWORDS = [...NEWLINE_KW, ...JOIN_KW, ...BREAK_BEFORE, "as", "in", "not", "null", "is", "like", "between", "exists", "distinct", "asc", "desc", "count", "sum", "avg", "min", "max"];
+
+        function tokenize(sql) {
+            const tokens = [];
+            const re = /('(?:[^']|'')*'|"(?:[^"]|"")*"|`[^`]*`|--[^\n]*|\/\*[\s\S]*?\*\/|[(),;]|[^\s(),;]+)/g;
+            let m;
+            while ((m = re.exec(sql))) tokens.push(m[0]);
+            return tokens;
+        }
+
+        function format(sql, casing) {
+            const tokens = tokenize(sql);
+            // merge multi-word keywords
+            const merged = [];
+            for (let i = 0; i < tokens.length; i++) {
+                let matched = null;
+                for (const kw of [...NEWLINE_KW, ...JOIN_KW].sort((a, b) => b.length - a.length)) {
+                    const parts = kw.split(" ");
+                    if (parts.length > 1) {
+                        const slice = tokens.slice(i, i + parts.length).join(" ").toLowerCase();
+                        if (slice === kw) { matched = tokens.slice(i, i + parts.length).join(" "); i += parts.length - 1; break; }
+                    }
+                }
+                merged.push(matched ?? tokens[i]);
+            }
+
+            let out = "", depth = 0, lineStart = true;
+            const nl = extra => { out += "\n" + "    ".repeat(Math.max(0, depth + extra)); lineStart = true; };
+
+            for (let i = 0; i < merged.length; i++) {
+                let t = merged[i];
+                const low = t.toLowerCase();
+                const isQuoted = /^['"`]|^--|^\/\*/.test(t);
+                const word = !isQuoted && KEYWORDS.includes(low)
+                    ? (casing === "upper" ? t.toUpperCase() : casing === "lower" ? low : t)
+                    : t;
+
+                if (!isQuoted && NEWLINE_KW.includes(low)) {
+                    if (out.trim()) nl(0);
+                    out += word; lineStart = false;
+                    if (low !== "with") { nl(1); continue; }
+                    out += " "; continue;
+                }
+                if (!isQuoted && JOIN_KW.includes(low)) { if (out.trim()) nl(0); out += word + " "; lineStart = false; continue; }
+                if (!isQuoted && ["and", "or", "on", "when", "else"].includes(low)) { nl(1); out += word + " "; lineStart = false; continue; }
+                if (t === "(") { depth++; out += "("; lineStart = false; continue; }
+                if (t === ")") { depth = Math.max(0, depth - 1); out = out.replace(/\s+$/, ""); out += ")"; lineStart = false; continue; }
+                if (t === ",") { out = out.replace(/\s+$/, ""); out += ","; nl(1); continue; }
+                if (t === ";") { out = out.replace(/\s+$/, ""); out += ";"; nl(0); continue; }
+
+                out += (lineStart || out === "" || /[(\n]$/.test(out) ? "" : (/\s$/.test(out) ? "" : " ")) + word + " ";
+                lineStart = false;
+            }
+            return out.split("\n").map(l => l.replace(/\s+$/, "")).filter((l, idx, arr) => !(l === "" && arr[idx - 1] === "")).join("\n").trim();
+        }
+
+        $("sq-format").addEventListener("click", () => {
+            $("sq-out").value = format($("sq-in").value, $("sq-case").value);
+        });
+        $("sq-copy").addEventListener("click", () => navigator.clipboard.writeText($("sq-out").value));
+        $("sq-clear").addEventListener("click", () => { $("sq-in").value = ""; $("sq-out").value = ""; });
+    })();
+    </script>
+</ToolShell>

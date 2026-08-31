@@ -1,6 +1,6 @@
 # bishal-biswas.github.io
 
-Personal portfolio and blog of **Bishal Biswas** — Software Developer, Web
+Personal portfolio and blog of **Bishal Biswas** - Software Developer, Web
 Developer and Blogger.
 
 Live site: <https://bishal-biswas.github.io>
@@ -17,7 +17,7 @@ This repository is public so the work can be **viewed and reviewed**. It is
 **not** open source, and no licence to reuse it is granted.
 
 **You may not** copy, republish, redistribute, modify, or use this code,
-design, or content — in whole or in part — as the basis for another website,
+design, or content - in whole or in part - as the basis for another website,
 template, or product, whether free or commercial. This applies to the source
 code and the design as much as it does to the articles, images, photographs,
 resume, and project descriptions.

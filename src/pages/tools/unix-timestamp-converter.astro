@@ -1,0 +1,119 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="unix-timestamp-converter"
+    title="Unix Timestamp Converter - Epoch to Date & Date to Epoch Online"
+    metaDescription="Convert Unix timestamps to human-readable dates and dates back to epoch seconds or milliseconds, with a live current-timestamp clock. Free and browser-based."
+    pageHeadingText="Unix Timestamp Converter"
+>
+    <div slot="tool" class="flex flex-col gap-5">
+        <div class="text-center rounded-xl p-4 bg-[#0b1a2a] border border-[#58769149]">
+            <span class="tool-label" style="margin-bottom:0">Current Unix timestamp</span>
+            <div class="tool-row" style="justify-content:center">
+                <span id="ts-now" class="font-mono text-2xl text-[#58ded6]"></span>
+                <button id="ts-copynow" class="tool-btn-ghost" style="padding:.3rem .9rem"><i class="fa-regular fa-copy"></i></button>
+            </div>
+        </div>
+        <div class="tool-grid2">
+            <div class="flex flex-col gap-3">
+                <label class="tool-label" for="ts-epoch">Timestamp → Date</label>
+                <input id="ts-epoch" class="tool-input" placeholder="1735689600 or 1735689600000" spellcheck="false" />
+                <div id="ts-epoch-out" class="tool-note" style="white-space:pre-wrap;min-height:5rem"></div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <label class="tool-label" for="ts-date">Date → Timestamp</label>
+                <input id="ts-date" type="datetime-local" class="tool-input" step="1" />
+                <div id="ts-date-out" class="tool-note" style="white-space:pre-wrap;min-height:5rem"></div>
+            </div>
+        </div>
+    </div>
+
+    <h2>Convert Unix timestamps to dates - and back</h2>
+    <p>
+        This <strong>Unix timestamp converter</strong> (epoch converter) translates between machine time and human
+        time in both directions. Paste an epoch value in <strong>seconds or milliseconds</strong> - the tool detects
+        which automatically - and see the date in your local timezone, UTC and ISO 8601 format, plus a relative
+        "time ago" description. Or pick a date to get its epoch seconds and milliseconds.
+    </p>
+
+    <h2>What is Unix time?</h2>
+    <p>
+        Unix time counts the seconds elapsed since <strong>January 1, 1970, 00:00:00 UTC</strong> - the "Unix epoch".
+        It's the backbone of computing time: file modification stamps, JWT <code>exp</code> claims, database
+        <code>created_at</code> columns, log lines, cache TTLs and API timestamps all speak epoch. A single integer
+        with no timezone ambiguity makes arithmetic trivial: tomorrow is just <code>now + 86400</code>.
+    </p>
+
+    <h2>Seconds vs milliseconds</h2>
+    <p>
+        Unix convention uses seconds (10 digits today), while JavaScript's <code>Date.now()</code> and Java's
+        <code>System.currentTimeMillis()</code> use milliseconds (13 digits). Mixing them up is a classic bug -
+        interpreting milliseconds as seconds lands you in the year 56,000+. This converter checks the magnitude and
+        labels which unit it assumed.
+    </p>
+
+    <h2>Common epoch values</h2>
+    <ul>
+        <li><code>0</code> - the epoch itself: Jan 1, 1970 UTC.</li>
+        <li><code>86400</code> - one day of seconds.</li>
+        <li><code>2147483647</code> - Jan 19, 2038: the 32-bit signed integer overflow ("Year 2038 problem").</li>
+    </ul>
+    <p>
+        Everything computes locally in your browser. Debugging tokens with epoch claims? The
+        <a href="/tools/jwt-decoder">JWT decoder</a> translates <code>exp</code> and <code>iat</code> for you.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        function tick() { $("ts-now").textContent = Math.floor(Date.now() / 1000); }
+        tick(); setInterval(tick, 1000);
+        $("ts-copynow").addEventListener("click", () => navigator.clipboard.writeText($("ts-now").textContent));
+
+        function rel(ms) {
+            const diff = ms - Date.now();
+            const abs = Math.abs(diff);
+            const units = [[31557600000, "year"], [2629800000, "month"], [86400000, "day"], [3600000, "hour"], [60000, "minute"], [1000, "second"]];
+            for (const [size, name] of units) {
+                if (abs >= size) {
+                    const n = Math.round(abs / size);
+                    return diff < 0 ? `${n} ${name}${n > 1 ? "s" : ""} ago` : `in ${n} ${name}${n > 1 ? "s" : ""}`;
+                }
+            }
+            return "just now";
+        }
+
+        $("ts-epoch").addEventListener("input", () => {
+            const out = $("ts-epoch-out");
+            const raw = $("ts-epoch").value.trim();
+            if (!raw) { out.textContent = ""; return; }
+            const n = Number(raw);
+            if (!Number.isFinite(n)) { out.textContent = "Not a number."; return; }
+            const isMs = Math.abs(n) >= 1e12;
+            const ms = isMs ? n : n * 1000;
+            const d = new Date(ms);
+            if (isNaN(d)) { out.textContent = "Out of range."; return; }
+            out.textContent =
+                `Interpreted as: ${isMs ? "milliseconds" : "seconds"}\n` +
+                `Local:   ${d.toLocaleString()}\n` +
+                `UTC:     ${d.toUTCString()}\n` +
+                `ISO:     ${d.toISOString()}\n` +
+                `Relative: ${rel(ms)}`;
+        });
+
+        $("ts-date").addEventListener("input", () => {
+            const out = $("ts-date-out");
+            const v = $("ts-date").value;
+            if (!v) { out.textContent = ""; return; }
+            const d = new Date(v);
+            out.textContent =
+                `Seconds:      ${Math.floor(d.getTime() / 1000)}\n` +
+                `Milliseconds: ${d.getTime()}\n` +
+                `ISO (UTC):    ${d.toISOString()}`;
+        });
+    })();
+    </script>
+</ToolShell>

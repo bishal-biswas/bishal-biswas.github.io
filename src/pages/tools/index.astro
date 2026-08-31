@@ -1,0 +1,60 @@
+---
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import { toolsData, toolCategories } from "../../data/site-data/toolsData";
+---
+
+<PlainLayout
+    title="Free Online Developer Tools - JSON, Encoding, Converters & More"
+    metaDescription="A collection of free online developer tools: JSON formatter, JWT decoder, Base64 encoder, regex tester, UUID generator, WebP converter and more. 100% browser-based, no signup."
+    pageType="project"
+    pageSmallText="Free Developer Tools"
+    pageSmallTextBelow="Fast, free and private - every tool runs entirely in your browser. No uploads, no signup, no limits."
+    pageHeadingText="Developer Tools"
+    pageMainHeadingtagType="h1"
+    backgroundImg="/assets/images/gradient1.png"
+    isLargeWidth={true}
+>
+    <div class="flex flex-col gap-10 my-5">
+        {
+            toolCategories.map(category => (
+                <section>
+                    <h2 class="text-2xl font-bold mb-4 dark:text-white flex items-center gap-3">
+                        <span class="h-[2px] w-8 bg-[#58ded6] inline-block rounded-full"></span>
+                        {category}
+                    </h2>
+                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {
+                            toolsData.filter(t => t.category === category).map(tool => (
+                                <a href={`/tools/${tool.slug}`}
+                                    class="group flex flex-col gap-2 p-5 rounded-2xl dark:bg-dark-teal bg-dark-teal border border-[#58769135] hover:border-[#58ded6] hover:-translate-y-1 transition-all duration-200 shadow-lg shadow-body-bg-2">
+                                    <span class="size-10 flex items-center justify-center rounded-xl bg-[#183550d7] text-[#58ded6] text-lg group-hover:bg-[#58ded6] group-hover:text-[#0b1a2a] transition-colors">
+                                        <i class={`fa-solid ${tool.icon}`}></i>
+                                    </span>
+                                    <span class="font-semibold text-lg dark:text-white">{tool.name}</span>
+                                    <span class="text-sm opacity-70">{tool.blurb}</span>
+                                </a>
+                            ))
+                        }
+                    </div>
+                </section>
+            ))
+        }
+
+        <section class="rounded-3xl p-6 lg:p-10 bg-[#10273c] border border-[#58769135] leading-relaxed flex flex-col gap-4">
+            <h2 class="text-2xl font-bold dark:text-white">Free browser-based tools for developers</h2>
+            <p>
+                This is a growing toolbox of <strong>free online developer tools</strong> built with plain JavaScript - 
+                no servers, no accounts and no tracking of the data you paste. Everything from the
+                <a class="text-[#58ded6] underline underline-offset-4" href="/tools/json-formatter">JSON formatter</a> to the
+                <a class="text-[#58ded6] underline underline-offset-4" href="/tools/jwt-decoder">JWT decoder</a> and the
+                <a class="text-[#58ded6] underline underline-offset-4" href="/tools/webp-converter">WebP converter</a> runs
+                entirely inside your browser, so tokens, credentials, source code and images never leave your machine.
+            </p>
+            <p>
+                Whether you need to validate an API response, decode a Base64 string, test a regular expression,
+                generate UUIDs, build a cron schedule or convert colors between HEX, RGB and HSL - there is a fast,
+                distraction-free tool here for it. Bookmark this page and skip the ad-heavy alternatives.
+            </p>
+        </section>
+    </div>
+</PlainLayout>

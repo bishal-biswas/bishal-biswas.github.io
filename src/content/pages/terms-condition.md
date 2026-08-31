@@ -42,7 +42,7 @@ The source code of this website is published in a public repository for viewing 
 
 ### 3. User submissions
 
-If you send us a message, testimonial, or other content, you grant us a non-exclusive, royalty-free, worldwide licence to use, reproduce, and display that content in connection with the website — for example, publishing a testimonial you have submitted.
+If you send us a message, testimonial, or other content, you grant us a non-exclusive, royalty-free, worldwide licence to use, reproduce, and display that content in connection with the website - for example, publishing a testimonial you have submitted.
 
 You confirm that any content you submit is your own, is accurate, and does not infringe the rights of any third party. We reserve the right to edit for length or clarity, or to decline to publish any submission, at our sole discretion and without giving reasons.
 
@@ -64,7 +64,7 @@ We do not warrant that the site will be uninterrupted, timely, secure, or error-
 
 ### 7. Limitation of liability
 
-To the fullest extent permitted by applicable law, in no event shall Bishal Biswas be liable for any indirect, incidental, special, consequential, or punitive damages — including without limitation loss of profits, data, use, goodwill, or other intangible losses — resulting from your access to, use of, or inability to use the website.
+To the fullest extent permitted by applicable law, in no event shall Bishal Biswas be liable for any indirect, incidental, special, consequential, or punitive damages - including without limitation loss of profits, data, use, goodwill, or other intangible losses - resulting from your access to, use of, or inability to use the website.
 
 ### 8. Availability and changes to the site
 

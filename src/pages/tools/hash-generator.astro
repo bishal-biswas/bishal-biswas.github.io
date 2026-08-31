@@ -1,0 +1,96 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="hash-generator"
+    title="Hash Generator - SHA-256, SHA-512, SHA-1 Online Free"
+    metaDescription="Generate SHA-1, SHA-256, SHA-384 and SHA-512 hashes online for free. Hash any text instantly using the browser's Web Crypto API - nothing is uploaded."
+    pageHeadingText="Hash Generator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="hg-in">Text to hash</label>
+            <textarea id="hg-in" class="tool-input" style="min-height:7rem" placeholder="Type or paste text - hashes update live" spellcheck="false"></textarea>
+        </div>
+        <div class="flex flex-col gap-3" id="hg-results">
+            <!-- rows injected by JS -->
+        </div>
+        <p class="tool-note">Hashes are computed with the Web Crypto API (<code>crypto.subtle.digest</code>) - your text never leaves this page.</p>
+    </div>
+
+    <h2>Generate cryptographic hashes online</h2>
+    <p>
+        This <strong>hash generator</strong> computes <strong>SHA-1, SHA-256, SHA-384 and SHA-512</strong> digests of
+        any text, live as you type. It uses the browser's built-in Web Crypto API, which means the hashing is native,
+        fast, and completely offline - a safe way to hash strings that you'd never paste into a random server-side
+        tool.
+    </p>
+
+    <h2>What is a hash function?</h2>
+    <p>
+        A cryptographic hash function converts input of any length into a fixed-size fingerprint. The same input
+        always produces the same hash; a one-character change produces a completely different one (the avalanche
+        effect); and the function is one-way - you cannot recover the input from the digest. That makes hashes ideal
+        for <strong>integrity checks</strong> (does this file match its checksum?), <strong>deduplication</strong>,
+        cache keys, commit IDs and digital signatures.
+    </p>
+
+    <h2>Which algorithm should you use?</h2>
+    <ul>
+        <li><strong>SHA-256</strong> - the modern default. Used by Git (newer versions), TLS certificates, blockchain and most checksums.</li>
+        <li><strong>SHA-512</strong> - larger digest, often faster on 64-bit CPUs; also the basis of SHA-384.</li>
+        <li><strong>SHA-1</strong> - <em>broken for security</em> (collisions are practical) but still seen in legacy systems and old Git objects. Use only for compatibility.</li>
+        <li><strong>MD5</strong> - thoroughly broken; the Web Crypto API doesn't even offer it. Don't use it for anything security-related.</li>
+    </ul>
+
+    <h2>Hashing is not password storage</h2>
+    <p>
+        Plain SHA hashes are far too fast for passwords - attackers can try billions per second. Passwords need slow,
+        salted algorithms like bcrypt, scrypt or Argon2. Use this tool for checksums, fingerprints and debugging, and
+        a proper KDF for credentials. Related: <a href="/tools/base64-encoder-decoder">Base64 encoder</a> and
+        <a href="/tools/uuid-generator">UUID generator</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const ALGOS = ["SHA-1", "SHA-256", "SHA-384", "SHA-512"];
+        const container = $("hg-results");
+
+        for (const algo of ALGOS) {
+            const row = document.createElement("div");
+            row.innerHTML =
+                `<label class="tool-label">${algo}</label>
+                 <div class="tool-row">
+                    <input class="tool-input" style="flex:1;font-family:monospace;font-size:.8rem" readonly data-algo="${algo}" />
+                    <button class="tool-btn-ghost" data-copy="${algo}" style="padding:.4rem 1rem"><i class="fa-regular fa-copy"></i></button>
+                 </div>`;
+            container.appendChild(row);
+        }
+
+        async function digest(algo, text) {
+            const buf = await crypto.subtle.digest(algo, new TextEncoder().encode(text));
+            return [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+        }
+
+        let seq = 0;
+        async function update() {
+            const text = $("hg-in").value;
+            const mySeq = ++seq;
+            for (const algo of ALGOS) {
+                const hex = text ? await digest(algo, text) : "";
+                if (mySeq !== seq) return; // stale keystroke
+                container.querySelector(`input[data-algo="${algo}"]`).value = hex;
+            }
+        }
+
+        $("hg-in").addEventListener("input", update);
+        container.addEventListener("click", e => {
+            const btn = e.target.closest("[data-copy]");
+            if (btn) navigator.clipboard.writeText(container.querySelector(`input[data-algo="${btn.dataset.copy}"]`).value);
+        });
+        update();
+    })();
+    </script>
+</ToolShell>

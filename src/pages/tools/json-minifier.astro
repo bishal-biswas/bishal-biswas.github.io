@@ -1,0 +1,78 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-minifier"
+    title="JSON Minifier - Compress & Minify JSON Online Free"
+    metaDescription="Minify JSON online for free. Remove whitespace and line breaks to compress JSON payloads, see the size savings instantly. 100% browser-based, private and fast."
+    pageHeadingText="JSON Minifier"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="jm-in">Paste JSON to minify</label>
+            <textarea id="jm-in" class="tool-input" placeholder='{ "compress": "me" }' spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="jm-minify" class="tool-btn"><i class="fa-solid fa-minimize"></i> Minify</button>
+            <button id="jm-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="jm-clear" class="tool-btn-ghost">Clear</button>
+            <span id="jm-stats" class="tool-note ml-auto"></span>
+        </div>
+        <p id="jm-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="jm-out">Minified output</label>
+            <textarea id="jm-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Minify and compress JSON online</h2>
+    <p>
+        This <strong>JSON minifier</strong> strips every unnecessary space, tab and line break from your JSON while
+        keeping it perfectly valid. The result is the smallest possible representation of the same data - ideal for
+        API payloads, config embedded in query strings, localStorage values and anywhere bytes matter. The tool also
+        shows you the before/after size and the percentage saved.
+    </p>
+
+    <h2>Why minify JSON?</h2>
+    <ul>
+        <li><strong>Smaller payloads</strong> - pretty-printed JSON can be 20–40% larger than minified JSON. Less data means faster API responses and lower bandwidth bills.</li>
+        <li><strong>Faster parsing</strong> - smaller strings download and parse quicker, especially on mobile networks.</li>
+        <li><strong>Cleaner embedding</strong> - one-line JSON fits neatly into environment variables, HTML data attributes and shell commands.</li>
+    </ul>
+
+    <h2>How it works</h2>
+    <p>
+        The minifier parses your input with the browser's native <code>JSON.parse</code> and re-serializes it with
+        <code>JSON.stringify</code> without an indentation argument. That guarantees the output is valid JSON - it is
+        not a naive whitespace stripper that could corrupt strings containing spaces. Because parsing happens locally
+        in JavaScript, your data never leaves the browser.
+    </p>
+    <p>
+        Need to go the other way? The <a href="/tools/json-formatter">JSON formatter</a> pretty-prints minified JSON,
+        and the <a href="/tools/json-validator">JSON validator</a> pinpoints syntax errors before you compress.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const input = $("jm-in"), out = $("jm-out"), msg = $("jm-msg"), stats = $("jm-stats");
+        $("jm-minify").addEventListener("click", () => {
+            msg.classList.add("hidden"); stats.textContent = "";
+            try {
+                const minified = JSON.stringify(JSON.parse(input.value));
+                out.value = minified;
+                const before = new Blob([input.value]).size, after = new Blob([minified]).size;
+                const saved = before > 0 ? Math.max(0, Math.round((1 - after / before) * 100)) : 0;
+                stats.textContent = `${before.toLocaleString()} B → ${after.toLocaleString()} B (−${saved}%)`;
+            } catch (e) {
+                out.value = "";
+                msg.textContent = "Invalid JSON: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+        $("jm-copy").addEventListener("click", () => navigator.clipboard.writeText(out.value));
+        $("jm-clear").addEventListener("click", () => { input.value = ""; out.value = ""; stats.textContent = ""; msg.classList.add("hidden"); });
+    })();
+    </script>
+</ToolShell>

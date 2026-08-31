@@ -1,0 +1,87 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="url-encoder-decoder"
+    title="URL Encoder / Decoder - Percent Encode & Decode URLs Online Free"
+    metaDescription="URL encode or decode text online for free. Percent-encode query strings, decode %20 and other escapes, choose between encodeURIComponent and encodeURI modes."
+    pageHeadingText="URL Encoder / Decoder"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="url-plain">Plain text / URL</label>
+            <textarea id="url-plain" class="tool-input" placeholder="https://example.com/search?q=hello world&lang=en" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="url-encode" class="tool-btn">Encode <i class="fa-solid fa-arrow-right"></i></button>
+                <select id="url-mode" class="tool-select" style="width:auto">
+                    <option value="component">Component (encodeURIComponent)</option>
+                    <option value="full">Full URL (encodeURI)</option>
+                </select>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="url-encoded">Encoded</label>
+            <textarea id="url-encoded" class="tool-input" placeholder="https%3A%2F%2Fexample.com%2Fsearch%3Fq%3Dhello%20world" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="url-decode" class="tool-btn"><i class="fa-solid fa-arrow-left"></i> Decode</button>
+                <button id="url-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+    <p slot="tool" id="url-msg" class="tool-error hidden" style="margin-top:.75rem"></p>
+
+    <h2>URL encode and decode online</h2>
+    <p>
+        This <strong>URL encoder/decoder</strong> converts text to percent-encoded form and back. URLs can only carry
+        a limited set of ASCII characters - spaces, ampersands, question marks, slashes and non-Latin characters must
+        be escaped as <code>%XX</code> hex sequences (with UTF-8 characters becoming multiple bytes, e.g.
+        <code>é</code> → <code>%C3%A9</code>). Get it wrong and query parameters break, links 404, and APIs
+        misinterpret your data.
+    </p>
+
+    <h2>Component vs full-URL encoding</h2>
+    <p>
+        The tool offers both JavaScript encoding modes, and picking the right one matters:
+    </p>
+    <ul>
+        <li><strong>Component mode</strong> (<code>encodeURIComponent</code>) - escapes everything reserved, including <code>/ ? & = #</code>. Use it for a single query-string <em>value</em>, like a search term or a redirect URL inside a parameter.</li>
+        <li><strong>Full URL mode</strong> (<code>encodeURI</code>) - keeps URL structure characters intact and only escapes what's invalid. Use it to sanitize a complete URL without destroying its path and query separators.</li>
+    </ul>
+
+    <h2>Common uses</h2>
+    <ul>
+        <li>Building query strings by hand: <code>?q=hello%20world&city=S%C3%A3o%20Paulo</code>.</li>
+        <li>Decoding tracking URLs and <code>redirect_uri</code> parameters to see where they actually point.</li>
+        <li>Debugging webhooks and form posts sent as <code>application/x-www-form-urlencoded</code> (where spaces may appear as <code>+</code> - this decoder handles that too).</li>
+    </ul>
+    <p>
+        Everything happens locally in your browser. Working with encoded payloads inside URLs? Pair this with the
+        <a href="/tools/base64-encoder-decoder">Base64 decoder</a> or the <a href="/tools/jwt-decoder">JWT decoder</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const msg = $("url-msg");
+
+        $("url-encode").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            const v = $("url-plain").value;
+            $("url-encoded").value = $("url-mode").value === "full" ? encodeURI(v) : encodeURIComponent(v);
+        });
+
+        $("url-decode").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            try {
+                $("url-plain").value = decodeURIComponent($("url-encoded").value.replace(/\+/g, "%20"));
+            } catch (e) {
+                msg.textContent = "Invalid percent-encoding: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+
+        $("url-copy").addEventListener("click", () => navigator.clipboard.writeText($("url-encoded").value));
+    })();
+    </script>
+</ToolShell>

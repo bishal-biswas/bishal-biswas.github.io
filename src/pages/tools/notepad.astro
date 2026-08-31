@@ -1,0 +1,148 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="notepad"
+    title="Online Notepad - Free Notes with Autosave, No Signup"
+    metaDescription="Free online notepad that autosaves as you type. Multiple notes, word and character count, download as .txt - private, browser-based, no account needed."
+    pageHeadingText="Notepad"
+>
+    <div slot="tool" class="flex flex-col gap-3">
+        <div class="tool-row">
+            <select id="np-list" class="tool-select" style="width:auto;max-width:14rem"></select>
+            <button id="np-new" class="tool-btn-ghost"><i class="fa-solid fa-plus"></i> New note</button>
+            <button id="np-delete" class="tool-btn-ghost"><i class="fa-regular fa-trash-can"></i> Delete</button>
+            <span id="np-status" class="tool-note ml-auto"></span>
+        </div>
+        <input id="np-title" class="tool-input" placeholder="Note title" style="font-weight:700" />
+        <textarea id="np-text" class="tool-input" style="min-height:18rem;font-family:inherit;font-size:1rem;line-height:1.7" placeholder="Start typing - everything is saved automatically in this browser…"></textarea>
+        <div class="tool-row">
+            <span id="np-stats" class="tool-note"></span>
+            <span class="ml-auto"></span>
+            <button id="np-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="np-download" class="tool-btn"><i class="fa-solid fa-download"></i> Download .txt</button>
+        </div>
+    </div>
+
+    <h2>A free online notepad that saves as you type</h2>
+    <p>
+        This <strong>online notepad</strong> is the fastest way to jot something down: open the page and start typing.
+        Every keystroke is <strong>autosaved to your browser's local storage</strong> - close the tab, restart your
+        computer, come back next week, and your notes are still here. No account, no signup, no sync servers, and
+        nothing you write ever leaves your device.
+    </p>
+
+    <h2>Features</h2>
+    <ul>
+        <li><strong>Multiple notes</strong> - create, switch between and delete as many notes as you need.</li>
+        <li><strong>Autosave</strong> - saved locally a moment after you stop typing, with a visible "Saved" indicator.</li>
+        <li><strong>Live statistics</strong> - word count, character count, line count and estimated reading time.</li>
+        <li><strong>Export</strong> - download any note as a <code>.txt</code> file or copy it to the clipboard.</li>
+        <li><strong>Private by design</strong> - notes exist only in this browser; there is no server to breach.</li>
+    </ul>
+
+    <h2>When a browser notepad beats a notes app</h2>
+    <p>
+        Sometimes you don't want an app - you want a scratchpad. Pasting text to clean up formatting, drafting a
+        tricky reply before committing it to email, keeping a running log during a debugging session, taking meeting
+        notes on a borrowed machine: a <strong>browser-based notepad with no login</strong> is instant, disposable
+        when you want it to be, and persistent when you don't.
+    </p>
+
+    <h2>Good to know</h2>
+    <p>
+        Notes are tied to this browser and device - they won't follow you to another computer, and clearing your
+        browser's site data will remove them. For anything irreplaceable, use the download button and keep a
+        <code>.txt</code> copy. Drafting an article for the web instead? The
+        <a href="/tools/seo-article-writer">SEO article writer</a> adds headings, structure and a Yoast-style
+        optimization score on top of this same local-first approach.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const KEY = "tools-notepad-v1";
+
+        let store = (() => {
+            try { const s = JSON.parse(localStorage.getItem(KEY)); if (s && Array.isArray(s.notes) && s.notes.length) return s; } catch {}
+            return { current: 0, notes: [{ title: "My first note", text: "" }] };
+        })();
+
+        function persist(showStatus) {
+            try {
+                localStorage.setItem(KEY, JSON.stringify(store));
+                if (showStatus) {
+                    $("np-status").textContent = "Saved ✓";
+                    setTimeout(() => { if ($("np-status").textContent === "Saved ✓") $("np-status").textContent = ""; }, 1500);
+                }
+            } catch { $("np-status").textContent = "Storage full - download your notes!"; }
+        }
+
+        function renderList() {
+            $("np-list").innerHTML = store.notes.map((n, i) =>
+                `<option value="${i}" ${i === store.current ? "selected" : ""}>${(n.title || "Untitled").replace(/</g, "&lt;").slice(0, 40)}</option>`).join("");
+        }
+
+        function load() {
+            const n = store.notes[store.current];
+            $("np-title").value = n.title;
+            $("np-text").value = n.text;
+            renderList();
+            stats();
+        }
+
+        function stats() {
+            const t = $("np-text").value;
+            const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+            const mins = Math.max(1, Math.round(words / 200));
+            $("np-stats").textContent = `${words} words · ${t.length} chars · ${t.split("\n").length} lines · ~${words ? mins : 0} min read`;
+        }
+
+        let timer;
+        function onEdit() {
+            const n = store.notes[store.current];
+            n.title = $("np-title").value;
+            n.text = $("np-text").value;
+            stats();
+            $("np-status").textContent = "Saving…";
+            clearTimeout(timer);
+            timer = setTimeout(() => { renderList(); persist(true); }, 500);
+        }
+
+        $("np-title").addEventListener("input", onEdit);
+        $("np-text").addEventListener("input", onEdit);
+
+        $("np-list").addEventListener("change", () => { store.current = Number($("np-list").value); persist(); load(); });
+
+        $("np-new").addEventListener("click", () => {
+            store.notes.push({ title: "Untitled", text: "" });
+            store.current = store.notes.length - 1;
+            persist(); load();
+            $("np-title").focus(); $("np-title").select();
+        });
+
+        $("np-delete").addEventListener("click", () => {
+            if (!confirm(`Delete "${store.notes[store.current].title || "Untitled"}"?`)) return;
+            store.notes.splice(store.current, 1);
+            if (!store.notes.length) store.notes.push({ title: "My first note", text: "" });
+            store.current = Math.min(store.current, store.notes.length - 1);
+            persist(); load();
+        });
+
+        $("np-copy").addEventListener("click", () => navigator.clipboard.writeText($("np-text").value));
+
+        $("np-download").addEventListener("click", () => {
+            const n = store.notes[store.current];
+            const blob = new Blob([n.text], { type: "text/plain;charset=utf-8" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = (n.title || "note").replace(/[\\/:*?"<>|]/g, "_") + ".txt";
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+
+        load();
+    })();
+    </script>
+</ToolShell>

@@ -1,0 +1,144 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="cron-expression-generator"
+    title="Cron Expression Generator - Build Cron Schedules Online Free"
+    metaDescription="Generate cron expressions online for free with a visual builder and plain-English preview. Create schedules for crontab, Kubernetes CronJobs, GitHub Actions and more."
+    pageHeadingText="Cron Expression Generator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+            <div><label class="tool-label" for="cr-min">Minute</label><select id="cr-min" class="tool-select"></select></div>
+            <div><label class="tool-label" for="cr-hour">Hour</label><select id="cr-hour" class="tool-select"></select></div>
+            <div><label class="tool-label" for="cr-dom">Day of month</label><select id="cr-dom" class="tool-select"></select></div>
+            <div><label class="tool-label" for="cr-mon">Month</label><select id="cr-mon" class="tool-select"></select></div>
+            <div><label class="tool-label" for="cr-dow">Day of week</label><select id="cr-dow" class="tool-select"></select></div>
+        </div>
+        <div class="rounded-xl p-4 bg-[#0b1a2a] border border-[#58769149] text-center">
+            <div class="tool-row" style="justify-content:center">
+                <input id="cr-expr" class="tool-input" style="max-width:20rem;text-align:center;font-family:monospace;font-size:1.2rem;color:#58ded6" spellcheck="false" />
+                <button id="cr-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+            <p id="cr-human" class="mt-3 text-sm"></p>
+        </div>
+        <div class="tool-row" id="cr-presets">
+            <span class="tool-note">Presets:</span>
+            <button class="tool-btn-ghost" data-cron="* * * * *" style="padding:.3rem .8rem;font-size:.8rem">Every minute</button>
+            <button class="tool-btn-ghost" data-cron="0 * * * *" style="padding:.3rem .8rem;font-size:.8rem">Hourly</button>
+            <button class="tool-btn-ghost" data-cron="0 0 * * *" style="padding:.3rem .8rem;font-size:.8rem">Daily at midnight</button>
+            <button class="tool-btn-ghost" data-cron="0 9 * * 1-5" style="padding:.3rem .8rem;font-size:.8rem">Weekdays 9am</button>
+            <button class="tool-btn-ghost" data-cron="0 0 1 * *" style="padding:.3rem .8rem;font-size:.8rem">Monthly</button>
+        </div>
+    </div>
+
+    <h2>Build cron expressions visually</h2>
+    <p>
+        This <strong>cron expression generator</strong> lets you assemble a schedule from dropdowns - minute, hour,
+        day of month, month, day of week - and instantly shows both the resulting expression and a
+        <strong>plain-English description</strong> of when it fires. You can also type or paste an expression directly
+        into the box (or click a preset) and the tool explains it back to you.
+    </p>
+
+    <h2>Cron syntax refresher</h2>
+    <p>A standard cron expression has five fields, left to right:</p>
+    <ul>
+        <li><strong>Minute</strong> (0–59), <strong>Hour</strong> (0–23), <strong>Day of month</strong> (1–31), <strong>Month</strong> (1–12), <strong>Day of week</strong> (0–6, Sunday = 0).</li>
+        <li><code>*</code> means "every"; <code>*/15</code> means "every 15th"; <code>1-5</code> is a range; <code>1,15</code> is a list.</li>
+    </ul>
+    <p>
+        So <code>0 9 * * 1-5</code> reads: minute 0, hour 9, any day of month, any month, Monday through Friday -
+        "at 9:00 AM on weekdays".
+    </p>
+
+    <h2>Where cron schedules are used</h2>
+    <ul>
+        <li><strong>Linux crontab</strong> - the original: scheduled scripts and maintenance jobs.</li>
+        <li><strong>Kubernetes CronJobs</strong> and <strong>GitHub Actions</strong> (<code>on: schedule</code>) - same five-field syntax.</li>
+        <li><strong>Cloud schedulers</strong> - AWS EventBridge, GCP Cloud Scheduler, Azure Functions timers (note: some add a seconds field at the front).</li>
+    </ul>
+    <p>
+        Watch out for the classic gotcha: setting both day-of-month and day-of-week restricts to days matching
+        <em>either</em> field in standard cron, not both. And cron runs in the server's timezone - schedule
+        accordingly. Need to inspect timestamps your jobs produce? Try the
+        <a href="/tools/unix-timestamp-converter">Unix timestamp converter</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const MONTHS = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        const DAYS = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+
+        function fill(sel, max, labels, steps) {
+            const opts = ['<option value="*">Every</option>'];
+            for (const s of steps) opts.push(`<option value="*/${s}">Every ${s}</option>`);
+            const start = labels === DAYS || max === 23 || max === 59 ? 0 : 1;
+            for (let i = start; i <= max; i++)
+                opts.push(`<option value="${i}">${labels ? labels[labels === MONTHS ? i - 1 : i] : i}</option>`);
+            sel.innerHTML = opts.join("");
+        }
+        fill($("cr-min"), 59, null, [5, 10, 15, 30]);
+        fill($("cr-hour"), 23, null, [2, 3, 6, 12]);
+        fill($("cr-dom"), 31, null, []);
+        fill($("cr-mon"), 12, MONTHS, []);
+        fill($("cr-dow"), 6, DAYS, []);
+
+        const fields = ["cr-min", "cr-hour", "cr-dom", "cr-mon", "cr-dow"].map($);
+
+        function describePart(v, unit, names) {
+            if (v === "*") return null;
+            if (v.startsWith("*/")) return `every ${v.slice(2)} ${unit}s`;
+            if (v.includes("-")) {
+                const [a, b] = v.split("-");
+                return `${unit} ${name(a)} through ${name(b)}`;
+            }
+            if (v.includes(",")) return `${unit}s ${v.split(",").map(name).join(", ")}`;
+            return `${unit} ${name(v)}`;
+            function name(x) { return names ? (names === MONTHS ? MONTHS[x - 1] : DAYS[x]) ?? x : x; }
+        }
+
+        function describe(expr) {
+            const p = expr.trim().split(/\s+/);
+            if (p.length !== 5) return "Expected 5 fields: minute hour day-of-month month day-of-week.";
+            const [min, hr, dom, mon, dow] = p;
+            const bits = [];
+            if (min === "*" && hr === "*") bits.push("every minute");
+            else if (min.startsWith("*/") && hr === "*") bits.push(`every ${min.slice(2)} minutes`);
+            else if (/^\d+$/.test(min) && hr === "*") bits.push(`at minute ${min} of every hour`);
+            else if (/^\d+$/.test(min) && /^\d+$/.test(hr)) bits.push(`at ${String(hr).padStart(2, "0")}:${String(min).padStart(2, "0")}`);
+            else bits.push([describePart(min, "minute"), describePart(hr, "hour")].filter(Boolean).join(", ") || "every minute");
+            const domD = describePart(dom, "day");
+            const monD = describePart(mon, "month", MONTHS);
+            const dowD = dow === "*" ? null : (describePart(dow, "", DAYS) || "").replace(/^ /, "");
+            if (domD) bits.push("on " + domD.replace("day", "day-of-month"));
+            if (dowD) bits.push("on " + dowD.trim());
+            if (monD) bits.push("in " + monD.replace(/^month /, ""));
+            return "Runs " + bits.join(", ") + ".";
+        }
+
+        function fromSelects() {
+            $("cr-expr").value = fields.map(f => f.value).join(" ");
+            $("cr-human").textContent = describe($("cr-expr").value);
+        }
+
+        function toSelects(expr) {
+            const p = expr.trim().split(/\s+/);
+            if (p.length === 5) p.forEach((v, i) => {
+                if ([...fields[i].options].some(o => o.value === v)) fields[i].value = v;
+            });
+            $("cr-human").textContent = describe(expr);
+        }
+
+        fields.forEach(f => f.addEventListener("change", fromSelects));
+        $("cr-expr").addEventListener("input", () => toSelects($("cr-expr").value));
+        $("cr-copy").addEventListener("click", () => navigator.clipboard.writeText($("cr-expr").value));
+        $("cr-presets").addEventListener("click", e => {
+            const b = e.target.closest("[data-cron]");
+            if (b) { $("cr-expr").value = b.dataset.cron; toSelects(b.dataset.cron); }
+        });
+        fromSelects();
+    })();
+    </script>
+</ToolShell>

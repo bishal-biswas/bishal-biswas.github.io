@@ -21,7 +21,7 @@ We’ll go topic by topic with **explanation + examples + small practice task** 
 You can declare variables using:
 
 <pre><code  class="language-js">
-var name = "Bishal"; // old way — avoid using this
+var name = "Bishal"; // old way - avoid using this
 let age = 24; // preferred for mutable variables
 const country = "India"; // preferred for constants
 </code></pre>
@@ -65,7 +65,7 @@ Create variables for your profile (name, age, skills, country) and log them in a
 
 ## Functions
 
-React components are functions — so this is _crucial_.
+React components are functions - so this is _crucial_.
 
 ### Basic Function
 <pre><code  class="language-js">
@@ -215,7 +215,7 @@ const user = {
 
 user.greet(); // undefined (because arrow doesn’t have its own `this`)`` 
 
-✅ **Remember:** Avoid `this` when possible — React functional components handle scope differently.
+✅ **Remember:** Avoid `this` when possible - React functional components handle scope differently.
 
 ----------
 
@@ -266,7 +266,7 @@ console.log(greet("Bishal"));
 </code></pre>
 
 ✅ **Practice Task:**  
-Create two JS files — one with a function, another that imports and uses it.
+Create two JS files - one with a function, another that imports and uses it.
 
 ----------
 
@@ -282,7 +282,7 @@ btn.addEventListener('click', () => {
 
 ----------
 
-## Summary — Before React You Should Know
+## Summary - Before React You Should Know
 
 Comfortable with:
 

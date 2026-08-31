@@ -1,0 +1,120 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-to-csv"
+    title="JSON to CSV Converter - Convert & Download CSV Online Free"
+    metaDescription="Convert JSON arrays to CSV online for free. Flatten nested objects, choose your delimiter and download the result as a .csv file for Excel or Google Sheets."
+    pageHeadingText="JSON to CSV"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="jcsv-in">JSON array of objects</label>
+            <textarea id="jcsv-in" class="tool-input" placeholder='[{"name":"Ada","age":36},{"name":"Linus","age":54}]' spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="jcsv-convert" class="tool-btn"><i class="fa-solid fa-table"></i> Convert</button>
+            <select id="jcsv-delim" class="tool-select" style="width:auto">
+                <option value=",">Comma (,)</option>
+                <option value=";">Semicolon (;)</option>
+                <option value="&#9;">Tab</option>
+            </select>
+            <label class="tool-note flex items-center gap-2">
+                <input type="checkbox" id="jcsv-flatten" checked /> Flatten nested objects
+            </label>
+            <button id="jcsv-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="jcsv-download" class="tool-btn-ghost"><i class="fa-solid fa-download"></i> Download .csv</button>
+        </div>
+        <p id="jcsv-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="jcsv-out">CSV output</label>
+            <textarea id="jcsv-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Convert JSON to CSV online</h2>
+    <p>
+        This <strong>JSON to CSV converter</strong> takes an array of JSON objects and turns it into a spreadsheet-ready
+        CSV file. It collects every key across all rows to build the header, optionally
+        <strong>flattens nested objects</strong> into dot-notation columns (<code>address.city</code>), escapes values
+        correctly per RFC 4180, and lets you download the result as a <code>.csv</code> you can open directly in
+        Excel, Google Sheets or Numbers.
+    </p>
+
+    <h2>When do you need JSON to CSV?</h2>
+    <ul>
+        <li><strong>Reporting</strong> - export API data into a spreadsheet for analysts and stakeholders.</li>
+        <li><strong>Data migration</strong> - many databases and CRMs import CSV but not JSON.</li>
+        <li><strong>Quick analysis</strong> - pivot tables and charts are one paste away once data is tabular.</li>
+    </ul>
+
+    <h2>Handling nested JSON</h2>
+    <p>
+        CSV is flat; JSON often isn't. With flattening enabled, a nested object like
+        <code>{"{"}"user": {"{"}"name": "Ada"{"}"}{"}"}</code> becomes a <code>user.name</code> column. Arrays inside
+        rows are serialized as JSON strings so no data is lost. If your objects have inconsistent keys, missing values
+        simply become empty cells - every row always lines up with the full header.
+    </p>
+    <p>
+        Your data never leaves the browser: parsing, flattening and file generation all happen locally in JavaScript.
+        Validate your input first with the <a href="/tools/json-validator">JSON validator</a> if the conversion
+        reports a syntax error.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        function flatten(obj, prefix, out) {
+            for (const [k, v] of Object.entries(obj)) {
+                const key = prefix ? prefix + "." + k : k;
+                if (v && typeof v === "object" && !Array.isArray(v)) flatten(v, key, out);
+                else out[key] = v;
+            }
+            return out;
+        }
+
+        function cell(v, delim) {
+            if (v === null || v === undefined) return "";
+            let s = typeof v === "object" ? JSON.stringify(v) : String(v);
+            if (s.includes('"') || s.includes(delim) || s.includes("\n")) s = '"' + s.replace(/"/g, '""') + '"';
+            return s;
+        }
+
+        function convert() {
+            const msg = $("jcsv-msg");
+            msg.classList.add("hidden");
+            try {
+                let data = JSON.parse($("jcsv-in").value);
+                if (!Array.isArray(data)) data = [data];
+                if (!data.length) throw new Error("The array is empty.");
+                const delim = $("jcsv-delim").value;
+                const doFlatten = $("jcsv-flatten").checked;
+                const rows = data.map(r => (r && typeof r === "object" && !Array.isArray(r))
+                    ? (doFlatten ? flatten(r, "", {}) : r)
+                    : { value: r });
+                const headers = [...new Set(rows.flatMap(r => Object.keys(r)))];
+                const lines = [headers.map(h => cell(h, delim)).join(delim)];
+                for (const r of rows) lines.push(headers.map(h => cell(r[h], delim)).join(delim));
+                $("jcsv-out").value = lines.join("\n");
+            } catch (e) {
+                $("jcsv-out").value = "";
+                msg.textContent = "Error: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        }
+
+        $("jcsv-convert").addEventListener("click", convert);
+        $("jcsv-copy").addEventListener("click", () => navigator.clipboard.writeText($("jcsv-out").value));
+        $("jcsv-download").addEventListener("click", () => {
+            const blob = new Blob([$("jcsv-out").value], { type: "text/csv;charset=utf-8" });
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(blob);
+            a.download = "data.csv";
+            a.click();
+            URL.revokeObjectURL(a.href);
+        });
+    })();
+    </script>
+</ToolShell>

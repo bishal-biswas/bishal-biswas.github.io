@@ -1,5 +1,5 @@
 // Data lives in ./json/*.json so the CMS can edit it. These re-exports keep the
-// existing import paths working — nothing that consumes this file changed.
+// existing import paths working - nothing that consumes this file changed.
 import { normalizeList } from "./normalizeList";
 import personaInfoData from "./json/persona-info.json";
 import aboutMeSectionData from "./json/about-me-section.json";

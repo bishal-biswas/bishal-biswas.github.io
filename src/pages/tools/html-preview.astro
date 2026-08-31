@@ -1,0 +1,80 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="html-preview"
+    title="HTML Preview - Live HTML Editor & Renderer Online Free"
+    metaDescription="Preview HTML online for free. Type or paste HTML with CSS and see it rendered live in a sandboxed frame - a lightweight browser-based HTML playground."
+    pageHeadingText="HTML Preview"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="hp-in">HTML source</label>
+            <textarea id="hp-in" class="tool-input" style="min-height:16rem" spellcheck="false">&lt;style&gt;
+  body {"{"} font-family: sans-serif; padding: 1rem; {"}"}
+  .card {"{"} border: 2px solid #58ded6; border-radius: 12px; padding: 1rem; {"}"}
+&lt;/style&gt;
+
+&lt;div class="card"&gt;
+  &lt;h2&gt;Hello 👋&lt;/h2&gt;
+  &lt;p&gt;Edit the HTML and watch this update &lt;strong&gt;live&lt;/strong&gt;.&lt;/p&gt;
+  &lt;button onclick="this.textContent='Clicked!'"&gt;Try me&lt;/button&gt;
+&lt;/div&gt;</textarea>
+            <div class="tool-row">
+                <label class="tool-note flex items-center gap-2"><input type="checkbox" id="hp-js" checked /> Allow JavaScript</label>
+                <button id="hp-refresh" class="tool-btn-ghost"><i class="fa-solid fa-rotate-right"></i> Re-run</button>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label">Live preview</label>
+            <iframe id="hp-frame" title="HTML preview" style="min-height:16rem;flex:1;background:#fff;border-radius:.75rem;border:1px solid #58769149;width:100%"></iframe>
+        </div>
+    </div>
+
+    <h2>Preview HTML live in your browser</h2>
+    <p>
+        This <strong>HTML preview tool</strong> renders your markup as you type - a zero-setup playground for testing
+        snippets of <strong>HTML, CSS and JavaScript</strong> without creating a file or spinning up a dev server.
+        Paste an email template, a component snippet from documentation, or generated markup from a CMS and see
+        exactly how a browser displays it.
+    </p>
+
+    <h2>Sandboxed and safe</h2>
+    <p>
+        The preview runs inside a <strong>sandboxed iframe</strong>: the rendered page cannot navigate this tab,
+        access your cookies for this site, or reach outside its frame. JavaScript execution is opt-in via the
+        checkbox - untick it to safely inspect markup from untrusted sources with scripts disabled entirely.
+    </p>
+
+    <h2>What to use it for</h2>
+    <ul>
+        <li><strong>Learning HTML & CSS</strong> - instant feedback beats save-and-refresh cycles.</li>
+        <li><strong>Email templates</strong> - sanity-check table-based layouts and inline styles.</li>
+        <li><strong>Debugging generated markup</strong> - paste HTML from a CMS, scraper or AI and see what it actually looks like.</li>
+        <li><strong>Sharing quick demos</strong> - reproduce a layout bug in a few lines before filing an issue.</li>
+    </ul>
+    <p>
+        Your code never leaves the page - rendering happens locally via an iframe <code>srcdoc</code>. If your
+        snippet contains entities like <code>&amp;lt;</code> that should be real tags, decode them first with the
+        <a href="/tools/html-entity-encoder">HTML entity decoder</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const frame = $("hp-frame"), input = $("hp-in");
+
+        function render() {
+            frame.setAttribute("sandbox", $("hp-js").checked ? "allow-scripts" : "");
+            frame.srcdoc = input.value;
+        }
+
+        let t;
+        input.addEventListener("input", () => { clearTimeout(t); t = setTimeout(render, 300); });
+        $("hp-js").addEventListener("change", render);
+        $("hp-refresh").addEventListener("click", render);
+        render();
+    })();
+    </script>
+</ToolShell>

@@ -1,0 +1,257 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    isLargeTools = {true}
+    slug="seo-article-writer"
+    title="SEO Article Writer - Free Online Editor with Yoast-Style Analysis"
+    metaDescription="Write SEO-optimized articles online for free. Block-based editor with real-time SEO analysis: focus keyword checks, title and meta description scoring, readability - like Yoast or Rank Math, without WordPress."
+    pageHeadingText="SEO Article Writer"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div class="tool-grid2">
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="tool-label" for="sw-keyword">Focus keyword</label>
+                    <input id="sw-keyword" class="tool-input" placeholder="e.g. best coffee grinder" spellcheck="false" />
+                </div>
+                <div>
+                    <label class="tool-label" for="sw-title">SEO title <span id="sw-title-count" class="normal-case font-normal"></span></label>
+                    <input id="sw-title" class="tool-input" placeholder="Your page title as it appears in Google" />
+                </div>
+            </div>
+            <div class="flex flex-col gap-3">
+                <div>
+                    <label class="tool-label" for="sw-slug">URL slug</label>
+                    <input id="sw-slug" class="tool-input" placeholder="best-coffee-grinder" spellcheck="false" />
+                </div>
+                <div>
+                    <label class="tool-label" for="sw-meta">Meta description <span id="sw-meta-count" class="normal-case font-normal"></span></label>
+                    <input id="sw-meta" class="tool-input" placeholder="The snippet shown under your title in search results" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Google SERP preview -->
+        <div class="rounded-xl p-4 bg-white text-left" style="font-family: arial, sans-serif">
+            <div id="sw-serp-title" style="color:#1a0dab;font-size:1.1rem;line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">Your SEO title appears here</div>
+            <div id="sw-serp-url" style="color:#006621;font-size:.8rem;margin:.15rem 0">example.com › your-slug</div>
+            <div id="sw-serp-desc" style="color:#545454;font-size:.85rem;line-height:1.4">Your meta description appears here…</div>
+        </div>
+
+        <div>
+            <label class="tool-label">Article <span id="sw-words" class="normal-case font-normal"></span></label>
+            <div id="sw-editor" class="rounded-xl bg-white text-[#1c2733] px-4 py-2" style="min-height:16rem;max-height:26rem;overflow-y:auto"></div>
+        </div>
+
+        <div class="tool-row">
+            <button id="sw-analyze" class="tool-btn"><i class="fa-solid fa-chart-simple"></i> Analyze</button>
+            <button id="sw-copyhtml" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy HTML</button>
+            <button id="sw-clear" class="tool-btn-ghost">Clear draft</button>
+            <span class="tool-note ml-auto">Draft autosaves to this browser</span>
+        </div>
+
+        <div class="rounded-xl p-4 bg-[#0b1a2a] border border-[#58769149]">
+            <div class="tool-row" style="justify-content:space-between">
+                <span class="tool-label" style="margin:0">SEO analysis</span>
+                <span id="sw-score" class="font-mono font-bold text-lg">–</span>
+            </div>
+            <ul id="sw-checks" class="mt-3 flex flex-col gap-1 text-sm" style="list-style:none;padding:0">
+                <li class="tool-note">Set a focus keyword and click Analyze.</li>
+            </ul>
+        </div>
+    </div>
+
+    <h2>Write SEO-optimized articles - Yoast-style analysis without WordPress</h2>
+    <p>
+        This free <strong>SEO article writer</strong> combines a clean block-based editor (powered by Editor.js - the
+        same paragraph/heading/list/quote blocks you know from modern CMSs) with the real-time
+        <strong>SEO analysis you'd get from Yoast SEO or Rank Math</strong> in WordPress. Set a focus keyword, write
+        your SEO title and meta description, draft your article, and get a scored checklist telling you exactly what
+        to improve - plus a live <strong>Google SERP preview</strong> showing how your result will look in search.
+    </p>
+
+    <h2>What the SEO analysis checks</h2>
+    <ul>
+        <li><strong>Focus keyword placement</strong> - in the SEO title (ideally near the start), meta description, URL slug, first paragraph, and at least one subheading.</li>
+        <li><strong>Keyword density</strong> - flags stuffing above ~2.5% and under-use below ~0.5%.</li>
+        <li><strong>Title & meta length</strong> - titles around 40–60 characters and descriptions around 120–160 characters avoid truncation in Google.</li>
+        <li><strong>Content length</strong> - 300+ words minimum, with higher scores for in-depth content.</li>
+        <li><strong>Readability</strong> - long-sentence percentage, paragraph length, and whether subheadings break up your text often enough.</li>
+    </ul>
+
+    <h2>Why on-page SEO still matters</h2>
+    <p>
+        Search engines rank pages, but they rank them for <em>queries</em> - and on-page signals are how they match
+        the two. A focus keyword in your title, URL and opening paragraph tells Google what the page is about;
+        scannable structure (short paragraphs, descriptive subheadings) keeps readers on the page, which feeds
+        engagement signals back into rankings. Tools like Yoast made this checklist famous; this page gives you the
+        same discipline for any platform - Astro, Next.js, plain HTML, or a client's CMS.
+    </p>
+
+    <h2>Tips for a green score</h2>
+    <ol>
+        <li>Pick <strong>one</strong> specific focus keyword per article and use natural variations elsewhere.</li>
+        <li>Front-load the keyword: title, slug and first 100 words.</li>
+        <li>Write the meta description as ad copy - it doesn't affect ranking directly, but it decides your click-through rate.</li>
+        <li>Add an H2 every 300 words or less; nobody reads walls of text.</li>
+        <li>When you're done, <strong>Copy HTML</strong> and paste the markup straight into your site.</li>
+    </ol>
+    <p>
+        Your draft autosaves to this browser's local storage and is never uploaded. Polishing the technical side too?
+        Check your markup in the <a href="/tools/html-preview">HTML preview</a> or tidy structured data with the <a href="/tools/json-formatter">JSON formatter</a>.
+    </p>
+
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@editorjs/editorjs@2/dist/editorjs.umd.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@editorjs/header@2/dist/header.umd.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@editorjs/list@1/dist/list.umd.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@editorjs/quote@2/dist/quote.umd.min.js"></script>
+    <script is:inline src="https://cdn.jsdelivr.net/npm/@editorjs/marker@1/dist/marker.umd.min.js"></script>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const KEY = "tools-seo-article";
+        const saved = (() => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch { return {}; } })();
+
+        ["keyword", "title", "slug", "meta"].forEach(f => { if (saved[f]) $("sw-" + f).value = saved[f]; });
+
+        const editor = new EditorJS({
+            holder: "sw-editor",
+            placeholder: "Start writing your article…",
+            data: saved.article || undefined,
+            tools: {
+                header: { class: Header, inlineToolbar: true, config: { levels: [2, 3, 4], defaultLevel: 2 } },
+                list: { class: List, inlineToolbar: true },
+                quote: { class: Quote, inlineToolbar: true },
+                marker: Marker,
+            },
+            onChange: () => scheduleSave(),
+        });
+
+        let saveTimer;
+        function scheduleSave() { clearTimeout(saveTimer); saveTimer = setTimeout(persist, 600); }
+        async function persist() {
+            const article = await editor.save().catch(() => null);
+            const data = { keyword: $("sw-keyword").value, title: $("sw-title").value, slug: $("sw-slug").value, meta: $("sw-meta").value, article };
+            try { localStorage.setItem(KEY, JSON.stringify(data)); } catch {}
+        }
+
+        /* ---- SERP preview + field counters ---- */
+        function slugify(s) { return s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, ""); }
+        function refreshMetaUI() {
+            const t = $("sw-title").value, m = $("sw-meta").value, sl = $("sw-slug").value;
+            $("sw-serp-title").textContent = t || "Your SEO title appears here";
+            $("sw-serp-desc").textContent = m || "Your meta description appears here…";
+            $("sw-serp-url").textContent = "example.com › " + (slugify(sl) || "your-slug");
+            $("sw-title-count").textContent = `(${t.length}/60)`;
+            $("sw-meta-count").textContent = `(${m.length}/160)`;
+        }
+        ["sw-title", "sw-meta", "sw-slug", "sw-keyword"].forEach(id => $(id).addEventListener("input", () => { refreshMetaUI(); scheduleSave(); }));
+        refreshMetaUI();
+
+        /* ---- Analysis ---- */
+        const strip = html => { const d = document.createElement("div"); d.innerHTML = html || ""; return d.textContent || ""; };
+
+        function extract(blocks) {
+            const paras = [], headings = [];
+            let text = "";
+            for (const b of blocks) {
+                if (b.type === "paragraph") { const t = strip(b.data.text); paras.push(t); text += t + "\n"; }
+                else if (b.type === "header") { const t = strip(b.data.text); headings.push(t); text += t + "\n"; }
+                else if (b.type === "list") { const t = (b.data.items || []).map(i => strip(i.content ?? i)).join("\n"); text += t + "\n"; }
+                else if (b.type === "quote") { const t = strip(b.data.text); text += t + "\n"; }
+            }
+            return { paras, headings, text };
+        }
+
+        function occurrences(text, kw) {
+            if (!kw) return 0;
+            const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "gi");
+            return (text.match(re) || []).length;
+        }
+
+        async function analyze() {
+            const kw = $("sw-keyword").value.trim().toLowerCase();
+            const title = $("sw-title").value.trim();
+            const meta = $("sw-meta").value.trim();
+            const slug = slugify($("sw-slug").value);
+            const data = await editor.save();
+            const { paras, headings, text } = extract(data.blocks);
+            const words = text.trim() ? text.trim().split(/\s+/) : [];
+            $("sw-words").textContent = `(${words.length} words)`;
+
+            const checks = [];
+            const add = (status, label) => checks.push({ status, label }); // good | ok | bad
+
+            if (!kw) add("bad", "No focus keyword set - the keyword checks can't run.");
+            else {
+                add(title.toLowerCase().includes(kw) ? "good" : "bad", "Focus keyword in SEO title");
+                if (title.toLowerCase().includes(kw))
+                    add(title.toLowerCase().indexOf(kw) <= Math.max(0, title.length / 2 - kw.length / 2) ? "good" : "ok", "Keyword near the beginning of the title");
+                add(meta.toLowerCase().includes(kw) ? "good" : "bad", "Focus keyword in meta description");
+                add(slug.includes(slugify(kw)) ? "good" : "bad", "Focus keyword in URL slug");
+                add(paras.length && paras[0].toLowerCase().includes(kw) ? "good" : "bad", "Focus keyword in the first paragraph");
+                add(headings.some(h => h.toLowerCase().includes(kw)) ? "good" : "ok", "Focus keyword in at least one subheading");
+                if (words.length >= 50) {
+                    const density = occurrences(text, kw) / words.length * 100;
+                    add(density >= 0.5 && density <= 2.5 ? "good" : (density === 0 ? "bad" : "ok"),
+                        `Keyword density ${density.toFixed(1)}% (aim for 0.5–2.5%)`);
+                }
+            }
+
+            add(title.length >= 40 && title.length <= 60 ? "good" : (title.length ? "ok" : "bad"), `SEO title length ${title.length} chars (40–60 recommended)`);
+            add(meta.length >= 120 && meta.length <= 160 ? "good" : (meta.length ? "ok" : "bad"), `Meta description length ${meta.length} chars (120–160 recommended)`);
+            add(words.length >= 900 ? "good" : words.length >= 300 ? "ok" : "bad", `Content length ${words.length} words (300 minimum, 900+ ideal)`);
+            add(headings.length ? "good" : "bad", `Subheadings used (${headings.length})`);
+            if (headings.length && words.length)
+                add(words.length / (headings.length + 1) <= 300 ? "good" : "ok", "A subheading at least every 300 words");
+
+            const longParas = paras.filter(p => p.split(/\s+/).length > 150).length;
+            add(longParas === 0 ? "good" : "ok", longParas ? `${longParas} paragraph(s) over 150 words - split them up` : "No overly long paragraphs");
+
+            const sentences = text.split(/[.!?]+\s/).filter(s => s.trim().split(/\s+/).length > 2);
+            if (sentences.length >= 3) {
+                const longPct = sentences.filter(s => s.split(/\s+/).length > 20).length / sentences.length * 100;
+                add(longPct <= 25 ? "good" : "ok", `${Math.round(longPct)}% of sentences over 20 words (keep under 25%)`);
+            }
+
+            const score = Math.round(checks.reduce((a, c) => a + (c.status === "good" ? 1 : c.status === "ok" ? 0.5 : 0), 0) / checks.length * 100);
+            const color = score >= 80 ? "#7df0a1" : score >= 50 ? "#ffcf6e" : "#ff8a8a";
+            $("sw-score").textContent = score + "/100";
+            $("sw-score").style.color = color;
+            const icons = { good: '<i class="fa-solid fa-circle-check" style="color:#7df0a1"></i>', ok: '<i class="fa-solid fa-circle-minus" style="color:#ffcf6e"></i>', bad: '<i class="fa-solid fa-circle-xmark" style="color:#ff8a8a"></i>' };
+            $("sw-checks").innerHTML = checks.map(c => `<li class="flex gap-2 items-baseline">${icons[c.status]} <span>${c.label}</span></li>`).join("");
+            persist();
+        }
+
+        $("sw-analyze").addEventListener("click", analyze);
+
+        /* ---- Export & clear ---- */
+        function blocksToHtml(blocks) {
+            return blocks.map(b => {
+                if (b.type === "header") return `<h${b.data.level}>${b.data.text}</h${b.data.level}>`;
+                if (b.type === "paragraph") return `<p>${b.data.text}</p>`;
+                if (b.type === "list") {
+                    const tag = b.data.style === "ordered" ? "ol" : "ul";
+                    return `<${tag}>` + (b.data.items || []).map(i => `<li>${i.content ?? i}</li>`).join("") + `</${tag}>`;
+                }
+                if (b.type === "quote") return `<blockquote><p>${b.data.text}</p>${b.data.caption ? `<cite>${b.data.caption}</cite>` : ""}</blockquote>`;
+                return "";
+            }).join("\n");
+        }
+        $("sw-copyhtml").addEventListener("click", async () => {
+            const data = await editor.save();
+            navigator.clipboard.writeText(blocksToHtml(data.blocks));
+        });
+        $("sw-clear").addEventListener("click", () => {
+            if (!confirm("Clear the draft? This removes the saved article from this browser.")) return;
+            localStorage.removeItem(KEY);
+            editor.clear();
+            ["keyword", "title", "slug", "meta"].forEach(f => $("sw-" + f).value = "");
+            refreshMetaUI();
+        });
+    })();
+    </script>
+</ToolShell>

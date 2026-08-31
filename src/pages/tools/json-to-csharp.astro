@@ -1,0 +1,147 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-to-csharp"
+    title="JSON to C# Converter - Generate C# Classes Online Free"
+    metaDescription="Convert JSON to C# classes online for free. Generate POCO classes with properties, nested types and JsonPropertyName attributes from any JSON - instantly, in your browser."
+    pageHeadingText="JSON to C#"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="jc-in">JSON input</label>
+            <textarea id="jc-in" class="tool-input" placeholder='{"id":1,"user_name":"ada","roles":["admin"]}' spellcheck="false"></textarea>
+            <div class="tool-row">
+                <input id="jc-root" class="tool-input" style="width:11rem" value="Root" title="Root class name" />
+                <label class="tool-note flex items-center gap-2">
+                    <input type="checkbox" id="jc-attrs" checked /> JsonPropertyName attributes
+                </label>
+                <button id="jc-convert" class="tool-btn"><i class="fa-solid fa-arrow-right"></i> Convert</button>
+            </div>
+            <p id="jc-msg" class="tool-error hidden"></p>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="jc-out">C# classes</label>
+            <textarea id="jc-out" class="tool-input" readonly spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="jc-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Convert JSON to C# classes online</h2>
+    <p>
+        This <strong>JSON to C# converter</strong> turns any JSON payload into ready-to-use C# POCO classes. It maps
+        JSON types to idiomatic C# types (<code>int</code>, <code>double</code>, <code>string</code>,
+        <code>bool</code>, <code>List&lt;T&gt;</code>), creates a separate class for every nested object, converts
+        snake_case keys to PascalCase properties, and can add
+        <code>[JsonPropertyName]</code> attributes for <code>System.Text.Json</code> so deserialization just works.
+    </p>
+
+    <h2>Deserializing JSON in .NET</h2>
+    <p>
+        Once you've pasted the generated classes into your project, deserializing an API response is one line:
+    </p>
+    <p><code>var data = JsonSerializer.Deserialize&lt;Root&gt;(json);</code></p>
+    <p>
+        The attributes keep the original JSON key names intact, so <code>user_name</code> in the payload still binds
+        to the <code>UserName</code> property. If you prefer Newtonsoft.Json, replace the attribute with
+        <code>[JsonProperty("user_name")]</code> - the class shapes are identical.
+    </p>
+
+    <h2>Type mapping rules</h2>
+    <ul>
+        <li>Whole numbers → <code>int</code> (or <code>long</code> when they exceed int range).</li>
+        <li>Decimals → <code>double</code>.</li>
+        <li><code>null</code> → nullable <code>object?</code> so you can refine the type yourself.</li>
+        <li>Arrays → <code>List&lt;T&gt;</code> typed from the first element.</li>
+        <li>Nested objects → their own generated class.</li>
+    </ul>
+    <p>
+        Everything runs in your browser - no JSON is sent anywhere. Working on the frontend too? Generate matching
+        types with the <a href="/tools/json-to-typescript">JSON to TypeScript converter</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        function pascal(s) {
+            return (s.replace(/[^a-zA-Z0-9]+(.)?/g, (_, c) => c ? c.toUpperCase() : "")
+                .replace(/^./, c => c.toUpperCase())) || "Prop";
+        }
+
+        function convert(json, rootName, withAttrs) {
+            const classes = [];
+            const used = new Set();
+
+            function uniqueName(base) {
+                let n = base, i = 2;
+                while (used.has(n)) n = base + i++;
+                used.add(n);
+                return n;
+            }
+
+            function csType(value, nameHint) {
+                if (value === null) return "object?";
+                if (Array.isArray(value)) {
+                    const inner = value.length ? csType(value[0], nameHint) : "object";
+                    return `List<${inner}>`;
+                }
+                switch (typeof value) {
+                    case "string": return "string";
+                    case "boolean": return "bool";
+                    case "number":
+                        if (!Number.isInteger(value)) return "double";
+                        return (value > 2147483647 || value < -2147483648) ? "long" : "int";
+                    case "object": {
+                        const name = uniqueName(pascal(nameHint));
+                        emit(name, value);
+                        return name;
+                    }
+                    default: return "object";
+                }
+            }
+
+            function emit(name, obj) {
+                const lines = Object.entries(obj).map(([k, v]) => {
+                    const attr = withAttrs ? `    [JsonPropertyName(${JSON.stringify(k)})]\n` : "";
+                    return `${attr}    public ${csType(v, k)} ${pascal(k)} { get; set; }`;
+                });
+                classes.push(`public class ${name}\n{\n${lines.join("\n\n")}\n}`);
+            }
+
+            const root = JSON.parse(json);
+            const header = withAttrs ? "using System.Text.Json.Serialization;\n\n" : "";
+            if (Array.isArray(root)) {
+                if (root.length && typeof root[0] === "object" && root[0] !== null) {
+                    used.add(pascal(rootName));
+                    emit(pascal(rootName), root[0]);
+                    return header + `// Deserialize as List<${pascal(rootName)}>\n\n` + classes.reverse().join("\n\n");
+                }
+                return header + `// Deserialize as List<${root.length ? csType(root[0], rootName) : "object"}>`;
+            }
+            if (root && typeof root === "object") {
+                used.add(pascal(rootName));
+                emit(pascal(rootName), root);
+                return header + classes.reverse().join("\n\n");
+            }
+            return header + `// Root value is a ${typeof root}`;
+        }
+
+        $("jc-convert").addEventListener("click", () => {
+            const msg = $("jc-msg");
+            msg.classList.add("hidden");
+            try {
+                $("jc-out").value = convert($("jc-in").value, $("jc-root").value.trim() || "Root", $("jc-attrs").checked);
+            } catch (e) {
+                $("jc-out").value = "";
+                msg.textContent = "Invalid JSON: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+        $("jc-copy").addEventListener("click", () => navigator.clipboard.writeText($("jc-out").value));
+    })();
+    </script>
+</ToolShell>

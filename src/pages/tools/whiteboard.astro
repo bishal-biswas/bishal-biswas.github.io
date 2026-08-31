@@ -1,0 +1,350 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="whiteboard"
+    title="Online Whiteboard - Free Drawing & Sketching Board, No Signup"
+    metaDescription="Free online whiteboard for sketching, diagramming and brainstorming. Pen, shapes, arrows, text, eraser, undo/redo and PNG export - runs fully in your browser."
+    pageHeadingText="Whiteboard"
+>
+    <div slot="tool" class="flex flex-col gap-3">
+        <div class="tool-row" id="wb-toolbar">
+            <button class="wb-tool tool-btn-ghost" data-tool="pen" title="Pen (P)" aria-pressed="true"><i class="fa-solid fa-pen"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="line" title="Line (L)"><i class="fa-solid fa-slash"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="arrow" title="Arrow (A)"><i class="fa-solid fa-arrow-right"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="rect" title="Rectangle (R)"><i class="fa-regular fa-square"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="ellipse" title="Ellipse (O)"><i class="fa-regular fa-circle"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="text" title="Text (T)"><i class="fa-solid fa-font"></i></button>
+            <button class="wb-tool tool-btn-ghost" data-tool="eraser" title="Eraser (E)"><i class="fa-solid fa-eraser"></i></button>
+            <span style="width:1px;align-self:stretch;background:#58769149"></span>
+            <input id="wb-color" type="color" value="#1c2733" title="Stroke color" style="width:2.6rem;height:2.4rem;border:none;background:none;cursor:pointer" />
+            <label class="tool-note flex items-center gap-2">Size <input id="wb-size" type="range" min="1" max="16" value="3" style="width:6rem" /></label>
+            <span class="ml-auto"></span>
+            <button id="wb-undo" class="tool-btn-ghost" title="Undo (Ctrl+Z)"><i class="fa-solid fa-rotate-left"></i></button>
+            <button id="wb-redo" class="tool-btn-ghost" title="Redo (Ctrl+Y)"><i class="fa-solid fa-rotate-right"></i></button>
+            <button id="wb-theme" class="tool-btn-ghost" title="Toggle white/black board"><i class="fa-solid fa-circle-half-stroke"></i></button>
+            <button id="wb-clear" class="tool-btn-ghost" title="Clear board"><i class="fa-regular fa-trash-can"></i></button>
+            <button id="wb-export" class="tool-btn" title="Export as PNG"><i class="fa-solid fa-download"></i> PNG</button>
+        </div>
+        <div id="wb-wrap" style="position:relative;border-radius:1rem;overflow:hidden;border:1px solid #58769149">
+            <canvas id="wb-canvas" style="display:block;width:100%;touch-action:none;cursor:crosshair"></canvas>
+            <input id="wb-textinput" spellcheck="false"
+                style="position:absolute;display:none;background:transparent;border:1px dashed #888;outline:none;font-family:sans-serif;padding:2px 4px;min-width:8rem" />
+        </div>
+        <p class="tool-note">Tip: keyboard shortcuts - P pen, L line, A arrow, R rectangle, O ellipse, T text, E eraser, Ctrl+Z undo. The board autosaves to this browser.</p>
+    </div>
+
+    <h2>A free online whiteboard in your browser</h2>
+    <p>
+        This <strong>online whiteboard</strong> is a lightweight, tldraw-style drawing board built with plain
+        JavaScript and the HTML5 canvas - no installs, no account, no upload. Sketch freehand with the pen, drop in
+        <strong>rectangles, ellipses, lines and arrows</strong> for quick diagrams, add text labels, erase mistakes,
+        undo and redo without limits, and export the result as a <strong>PNG image</strong> when you're done.
+    </p>
+
+    <h2>Whiteboard or blackboard - your choice</h2>
+    <p>
+        Toggle between a classic <strong>white board</strong> and a <strong>black board</strong> with one click -
+        handy for dark-mode screenshots, teaching-style chalk diagrams, or simply matching the rest of your slides.
+        Drawings are preserved when you switch, and the PNG export uses whichever background is active.
+    </p>
+
+    <h2>What people use it for</h2>
+    <ul>
+        <li><strong>System diagrams</strong> - boxes, arrows and labels are all you need for an architecture sketch.</li>
+        <li><strong>Brainstorming</strong> - dump ideas visually during a call, then export and share the PNG.</li>
+        <li><strong>Teaching and explaining</strong> - draw while screen-sharing instead of waving the cursor around.</li>
+        <li><strong>Quick annotation drafts</strong> - plan markup before annotating a real screenshot.</li>
+    </ul>
+
+    <h2>Private and persistent</h2>
+    <p>
+        Everything you draw stays in your browser - the board autosaves to local storage, so an accidental tab close
+        won't destroy your sketch, and nothing is ever sent to a server. Need to share it? Export the PNG. Need a
+        text-first scratchpad instead? Try the <a href="/tools/notepad">online notepad</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const canvas = $("wb-canvas"), wrap = $("wb-wrap"), textInput = $("wb-textinput");
+        const ctx = canvas.getContext("2d");
+        const KEY = "tools-whiteboard-v1";
+        const CANVAS_H = 520;
+
+        let shapes = [], undoStack = [], redoStack = [];
+        let tool = "pen", drawing = false, current = null;
+        let dark = false;
+
+        try {
+            const s = JSON.parse(localStorage.getItem(KEY));
+            if (s) { shapes = s.shapes || []; dark = !!s.dark; }
+        } catch {}
+
+        function persist() { try { localStorage.setItem(KEY, JSON.stringify({ shapes, dark })); } catch {} }
+
+        /* ---- sizing ---- */
+        function resize() {
+            const w = wrap.clientWidth;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = w * dpr;
+            canvas.height = CANVAS_H * dpr;
+            canvas.style.height = CANVAS_H + "px";
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            redraw();
+        }
+        window.addEventListener("resize", resize);
+
+        /* ---- drawing primitives ---- */
+        function drawShape(s) {
+            ctx.strokeStyle = s.color;
+            ctx.fillStyle = s.color;
+            ctx.lineWidth = s.size;
+            ctx.lineCap = "round";
+            ctx.lineJoin = "round";
+            if (s.type === "pen") {
+                if (s.points.length < 2) {
+                    ctx.beginPath();
+                    ctx.arc(s.points[0][0], s.points[0][1], s.size / 2, 0, Math.PI * 2);
+                    ctx.fill();
+                    return;
+                }
+                ctx.beginPath();
+                ctx.moveTo(s.points[0][0], s.points[0][1]);
+                for (let i = 1; i < s.points.length - 1; i++) {
+                    const [x0, y0] = s.points[i], [x1, y1] = s.points[i + 1];
+                    ctx.quadraticCurveTo(x0, y0, (x0 + x1) / 2, (y0 + y1) / 2);
+                }
+                const last = s.points[s.points.length - 1];
+                ctx.lineTo(last[0], last[1]);
+                ctx.stroke();
+            } else if (s.type === "line" || s.type === "arrow") {
+                ctx.beginPath();
+                ctx.moveTo(s.x1, s.y1);
+                ctx.lineTo(s.x2, s.y2);
+                ctx.stroke();
+                if (s.type === "arrow") {
+                    const ang = Math.atan2(s.y2 - s.y1, s.x2 - s.x1);
+                    const len = Math.max(10, s.size * 3.5);
+                    ctx.beginPath();
+                    ctx.moveTo(s.x2, s.y2);
+                    ctx.lineTo(s.x2 - len * Math.cos(ang - 0.45), s.y2 - len * Math.sin(ang - 0.45));
+                    ctx.moveTo(s.x2, s.y2);
+                    ctx.lineTo(s.x2 - len * Math.cos(ang + 0.45), s.y2 - len * Math.sin(ang + 0.45));
+                    ctx.stroke();
+                }
+            } else if (s.type === "rect") {
+                ctx.strokeRect(Math.min(s.x1, s.x2), Math.min(s.y1, s.y2), Math.abs(s.x2 - s.x1), Math.abs(s.y2 - s.y1));
+            } else if (s.type === "ellipse") {
+                ctx.beginPath();
+                ctx.ellipse((s.x1 + s.x2) / 2, (s.y1 + s.y2) / 2, Math.abs(s.x2 - s.x1) / 2, Math.abs(s.y2 - s.y1) / 2, 0, 0, Math.PI * 2);
+                ctx.stroke();
+            } else if (s.type === "text") {
+                ctx.font = `${s.fontSize}px sans-serif`;
+                ctx.textBaseline = "top";
+                ctx.fillText(s.text, s.x1, s.y1);
+            }
+        }
+
+        function redraw() {
+            ctx.save();
+            ctx.setTransform(1, 0, 0, 1, 0, 0);
+            ctx.fillStyle = dark ? "#111418" : "#ffffff";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.restore();
+            for (const s of shapes) drawShape(s);
+            if (current) drawShape(current);
+        }
+
+        /* ---- hit testing (eraser) ---- */
+        function bounds(s) {
+            if (s.type === "pen") {
+                const xs = s.points.map(p => p[0]), ys = s.points.map(p => p[1]);
+                return [Math.min(...xs), Math.min(...ys), Math.max(...xs), Math.max(...ys)];
+            }
+            if (s.type === "text") {
+                ctx.font = `${s.fontSize}px sans-serif`;
+                return [s.x1, s.y1, s.x1 + ctx.measureText(s.text).width, s.y1 + s.fontSize * 1.3];
+            }
+            return [Math.min(s.x1, s.x2), Math.min(s.y1, s.y2), Math.max(s.x1, s.x2), Math.max(s.y1, s.y2)];
+        }
+        function hits(s, x, y) {
+            const pad = Math.max(8, s.size || 0);
+            const [bx1, by1, bx2, by2] = bounds(s);
+            if (x < bx1 - pad || x > bx2 + pad || y < by1 - pad || y > by2 + pad) return false;
+            if (s.type === "pen") return s.points.some(p => Math.hypot(p[0] - x, p[1] - y) <= pad + s.size);
+            if (s.type === "line" || s.type === "arrow") {
+                const d = distToSeg(x, y, s.x1, s.y1, s.x2, s.y2);
+                return d <= pad;
+            }
+            return true; // rect/ellipse/text: bbox hit is enough
+        }
+        function distToSeg(px, py, x1, y1, x2, y2) {
+            const dx = x2 - x1, dy = y2 - y1;
+            const t = Math.max(0, Math.min(1, ((px - x1) * dx + (py - y1) * dy) / (dx * dx + dy * dy || 1)));
+            return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
+        }
+
+        /* ---- undo/redo ---- */
+        function pushUndo(action) { undoStack.push(action); if (undoStack.length > 200) undoStack.shift(); redoStack = []; }
+        function undo() {
+            const a = undoStack.pop();
+            if (!a) return;
+            if (a.op === "add") { shapes.pop(); }
+            else if (a.op === "del") { shapes.splice(a.index, 0, a.shape); }
+            else if (a.op === "clear") { shapes = a.shapes; }
+            redoStack.push(a);
+            redraw(); persist();
+        }
+        function redo() {
+            const a = redoStack.pop();
+            if (!a) return;
+            if (a.op === "add") shapes.push(a.shape);
+            else if (a.op === "del") shapes.splice(a.index, 1);
+            else if (a.op === "clear") shapes = [];
+            undoStack.push(a);
+            redraw(); persist();
+        }
+
+        /* ---- pointer handling ---- */
+        function pos(e) {
+            const r = canvas.getBoundingClientRect();
+            return [e.clientX - r.left, e.clientY - r.top];
+        }
+
+        canvas.addEventListener("pointerdown", e => {
+            if (textInput.style.display === "block") { commitText(); return; }
+            const [x, y] = pos(e);
+            const color = $("wb-color").value, size = Number($("wb-size").value);
+
+            if (tool === "text") { openTextInput(x, y, color, size); return; }
+            if (tool === "eraser") {
+                drawing = true;
+                eraseAt(x, y);
+                canvas.setPointerCapture(e.pointerId);
+                return;
+            }
+            drawing = true;
+            canvas.setPointerCapture(e.pointerId);
+            current = tool === "pen"
+                ? { type: "pen", points: [[x, y]], color, size }
+                : { type: tool, x1: x, y1: y, x2: x, y2: y, color, size };
+            redraw();
+        });
+
+        canvas.addEventListener("pointermove", e => {
+            if (!drawing) return;
+            const [x, y] = pos(e);
+            if (tool === "eraser") { eraseAt(x, y); return; }
+            if (current.type === "pen") current.points.push([x, y]);
+            else { current.x2 = x; current.y2 = y; }
+            redraw();
+        });
+
+        function endStroke() {
+            if (!drawing) return;
+            drawing = false;
+            if (current) {
+                const isDot = current.type !== "pen" && Math.abs(current.x2 - current.x1) < 2 && Math.abs(current.y2 - current.y1) < 2;
+                if (!isDot) { shapes.push(current); pushUndo({ op: "add", shape: current }); }
+                current = null;
+                redraw(); persist();
+            }
+        }
+        canvas.addEventListener("pointerup", endStroke);
+        canvas.addEventListener("pointercancel", endStroke);
+
+        function eraseAt(x, y) {
+            for (let i = shapes.length - 1; i >= 0; i--) {
+                if (hits(shapes[i], x, y)) {
+                    pushUndo({ op: "del", shape: shapes[i], index: i });
+                    shapes.splice(i, 1);
+                    redraw(); persist();
+                    return;
+                }
+            }
+        }
+
+        /* ---- text tool ---- */
+        function openTextInput(x, y, color, size) {
+            const fontSize = 10 + size * 2.5;
+            textInput.style.display = "block";
+            textInput.style.left = x + "px";
+            textInput.style.top = y + "px";
+            textInput.style.color = color;
+            textInput.style.fontSize = fontSize + "px";
+            textInput.dataset.x = x; textInput.dataset.y = y;
+            textInput.dataset.color = color; textInput.dataset.fontSize = fontSize;
+            textInput.value = "";
+            setTimeout(() => textInput.focus(), 0);
+        }
+        function commitText() {
+            const t = textInput.value.trim();
+            textInput.style.display = "none";
+            if (!t) return;
+            const shape = {
+                type: "text", text: t,
+                x1: Number(textInput.dataset.x), y1: Number(textInput.dataset.y),
+                color: textInput.dataset.color, fontSize: Number(textInput.dataset.fontSize), size: 1,
+            };
+            shapes.push(shape);
+            pushUndo({ op: "add", shape });
+            redraw(); persist();
+        }
+        textInput.addEventListener("keydown", e => {
+            if (e.key === "Enter") commitText();
+            if (e.key === "Escape") textInput.style.display = "none";
+            e.stopPropagation();
+        });
+        textInput.addEventListener("blur", commitText);
+
+        /* ---- toolbar ---- */
+        const toolButtons = document.querySelectorAll(".wb-tool");
+        function setTool(t) {
+            tool = t;
+            toolButtons.forEach(b => {
+                const on = b.dataset.tool === t;
+                b.setAttribute("aria-pressed", String(on));
+                b.style.background = on ? "#58ded6" : "";
+                b.style.color = on ? "#0b1a2a" : "";
+            });
+            canvas.style.cursor = t === "text" ? "text" : t === "eraser" ? "cell" : "crosshair";
+        }
+        toolButtons.forEach(b => b.addEventListener("click", () => setTool(b.dataset.tool)));
+        setTool("pen");
+
+        function applyTheme() {
+            $("wb-color").value = dark ? "#f5f5f5" : "#1c2733";
+            redraw();
+        }
+        $("wb-theme").addEventListener("click", () => { dark = !dark; applyTheme(); persist(); });
+
+        $("wb-undo").addEventListener("click", undo);
+        $("wb-redo").addEventListener("click", redo);
+        $("wb-clear").addEventListener("click", () => {
+            if (!shapes.length) return;
+            pushUndo({ op: "clear", shapes: shapes.slice() });
+            shapes = [];
+            redraw(); persist();
+        });
+        $("wb-export").addEventListener("click", () => {
+            const a = document.createElement("a");
+            a.href = canvas.toDataURL("image/png");
+            a.download = "whiteboard.png";
+            a.click();
+        });
+
+        document.addEventListener("keydown", e => {
+            if (e.target.matches("input, textarea, select, [contenteditable]")) return;
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "z") { e.preventDefault(); e.shiftKey ? redo() : undo(); return; }
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "y") { e.preventDefault(); redo(); return; }
+            const map = { p: "pen", l: "line", a: "arrow", r: "rect", o: "ellipse", t: "text", e: "eraser" };
+            if (!e.ctrlKey && !e.metaKey && !e.altKey && map[e.key.toLowerCase()]) setTool(map[e.key.toLowerCase()]);
+        });
+
+        resize();
+        applyTheme();
+    })();
+    </script>
+</ToolShell>

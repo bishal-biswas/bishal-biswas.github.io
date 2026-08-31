@@ -1,0 +1,133 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-to-typescript"
+    title="JSON to TypeScript Converter - Generate Interfaces Online Free"
+    metaDescription="Convert JSON to TypeScript interfaces online for free. Paste any JSON object and instantly generate typed TypeScript interfaces with nested types and arrays."
+    pageHeadingText="JSON to TypeScript"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="jt-in">JSON input</label>
+            <textarea id="jt-in" class="tool-input" placeholder='{"id":1,"name":"Ada","tags":["dev"],"address":{"city":"London"}}' spellcheck="false"></textarea>
+            <div class="tool-row">
+                <input id="jt-root" class="tool-input" style="width:11rem" value="Root" title="Root interface name" />
+                <button id="jt-convert" class="tool-btn"><i class="fa-solid fa-arrow-right"></i> Convert</button>
+            </div>
+            <p id="jt-msg" class="tool-error hidden"></p>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="jt-out">TypeScript interfaces</label>
+            <textarea id="jt-out" class="tool-input" readonly spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="jt-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Convert JSON to TypeScript interfaces online</h2>
+    <p>
+        This <strong>JSON to TypeScript converter</strong> generates clean, ready-to-paste TypeScript
+        <code>interface</code> definitions from any JSON sample. Nested objects become their own named interfaces,
+        arrays are typed from their elements, and <code>null</code> values are typed as nullable. It's the fastest way
+        to add type safety around an API response without writing every property by hand.
+    </p>
+
+    <h2>Why generate TypeScript types from JSON?</h2>
+    <p>
+        Hand-writing interfaces for large API payloads is slow and error-prone - one typo in a property name and your
+        compiler happily accepts broken code. Generating <strong>TypeScript types from a real JSON response</strong>
+        guarantees the shape matches what the server actually sends. That gives you autocomplete in your editor,
+        compile-time checks on refactors, and self-documenting code for teammates.
+    </p>
+
+    <h2>What the generator handles</h2>
+    <ul>
+        <li>Nested objects - each becomes a separate named interface.</li>
+        <li>Arrays of objects, primitives and mixed values.</li>
+        <li><code>null</code> values - typed as <code>| null</code> so you remember to handle them.</li>
+        <li>Property names that need quoting (e.g. <code>"first-name"</code>).</li>
+    </ul>
+    <p>
+        Everything runs locally in your browser using plain JavaScript - the JSON you paste is never uploaded.
+        Building a .NET backend too? Try the <a href="/tools/json-to-csharp">JSON to C# converter</a>, or validate
+        your payload first with the <a href="/tools/json-validator">JSON validator</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        function pascal(s) {
+            return (s.replace(/[^a-zA-Z0-9]+(.)?/g, (_, c) => c ? c.toUpperCase() : "")
+                .replace(/^./, c => c.toUpperCase())) || "Prop";
+        }
+        function needsQuotes(k) { return !/^[A-Za-z_$][A-Za-z0-9_$]*$/.test(k); }
+
+        function convert(json, rootName) {
+            const interfaces = [];
+            const used = new Set();
+
+            function uniqueName(base) {
+                let n = base, i = 2;
+                while (used.has(n)) n = base + i++;
+                used.add(n);
+                return n;
+            }
+
+            function typeOf(value, nameHint) {
+                if (value === null) return "null";
+                if (Array.isArray(value)) {
+                    if (!value.length) return "unknown[]";
+                    const types = [...new Set(value.map(v => typeOf(v, nameHint)))];
+                    const t = types.join(" | ");
+                    return types.length > 1 ? `(${t})[]` : `${t}[]`;
+                }
+                if (typeof value === "object") {
+                    const name = uniqueName(pascal(nameHint));
+                    emit(name, value);
+                    return name;
+                }
+                return typeof value;
+            }
+
+            function emit(name, obj) {
+                const lines = Object.entries(obj).map(([k, v]) => {
+                    const key = needsQuotes(k) ? JSON.stringify(k) : k;
+                    let t = typeOf(v, k);
+                    if (t === "null") t = "unknown | null";
+                    return `    ${key}: ${t};`;
+                });
+                interfaces.push(`export interface ${name} {\n${lines.join("\n")}\n}`);
+            }
+
+            const root = JSON.parse(json);
+            if (Array.isArray(root)) {
+                const t = typeOf(root, rootName);
+                interfaces.push(`export type ${pascal(rootName)}List = ${t};`);
+            } else if (root && typeof root === "object") {
+                used.add(pascal(rootName));
+                emit(pascal(rootName), root);
+            } else {
+                interfaces.push(`export type ${pascal(rootName)} = ${typeof root};`);
+            }
+            return interfaces.reverse().join("\n\n");
+        }
+
+        $("jt-convert").addEventListener("click", () => {
+            const msg = $("jt-msg");
+            msg.classList.add("hidden");
+            try {
+                $("jt-out").value = convert($("jt-in").value, $("jt-root").value.trim() || "Root");
+            } catch (e) {
+                $("jt-out").value = "";
+                msg.textContent = "Invalid JSON: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+        $("jt-copy").addEventListener("click", () => navigator.clipboard.writeText($("jt-out").value));
+    })();
+    </script>
+</ToolShell>

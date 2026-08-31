@@ -91,7 +91,7 @@ collections:
     format: yaml-frontmatter
     slug: '{{title}}'
     identifier_field: title
-    summary: '{{title}} — {{projectType}}'
+    summary: '{{title}} - {{projectType}}'
     sortable_fields: [publishDate, title]
     media_folder: /public/uploads/portfolios
     public_folder: ''
@@ -106,7 +106,7 @@ collections:
         media_folder: /public/uploads/portfolios/screenshots
         public_folder: ''
         field: { name: screenshot, label: Screenshot, widget: image }
-        hint: 'Stored in /assets/images/screenshots/ — a different folder from the featured image.'
+        hint: 'Stored in /assets/images/screenshots/ - a different folder from the featured image.'
       - { name: projectType, label: Project Type, widget: string }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
@@ -124,7 +124,7 @@ collections:
       - { name: projectRepoLink, label: Repo Link, widget: string, required: false }
       - { name: clientName, label: Client Name, widget: string, required: false }
       - { name: clientProfession, label: Client Profession, widget: string, required: false }
-      - { name: clientPic, label: Client Photo URL, widget: string, required: false, hint: 'Full URL — this one is not a repo file.' }
+      - { name: clientPic, label: Client Photo URL, widget: string, required: false, hint: 'Full URL - this one is not a repo file.' }
       - { name: clientReview, label: Client Review, widget: text, required: false }
       - { name: body, label: Body, widget: markdown }
 

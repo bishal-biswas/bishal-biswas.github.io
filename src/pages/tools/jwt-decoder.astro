@@ -1,0 +1,109 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="jwt-decoder"
+    title="JWT Decoder - Decode JSON Web Tokens Online Free & Offline"
+    metaDescription="Decode JWT tokens online for free. View the header, payload and claims of any JSON Web Token, check expiry dates - 100% client-side, your token never leaves the browser."
+    pageHeadingText="JWT Decoder"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="jwt-in">Paste your JWT</label>
+            <textarea id="jwt-in" class="tool-input" style="min-height:6rem" placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0.signature" spellcheck="false"></textarea>
+        </div>
+        <p id="jwt-msg" class="tool-error hidden"></p>
+        <div class="tool-grid2">
+            <div>
+                <label class="tool-label">Header <span class="normal-case font-normal">(algorithm & type)</span></label>
+                <textarea id="jwt-header" class="tool-input" style="min-height:8rem" readonly spellcheck="false"></textarea>
+            </div>
+            <div>
+                <label class="tool-label">Payload <span class="normal-case font-normal">(claims)</span></label>
+                <textarea id="jwt-payload" class="tool-input" style="min-height:8rem" readonly spellcheck="false"></textarea>
+            </div>
+        </div>
+        <div id="jwt-times" class="tool-note"></div>
+    </div>
+
+    <h2>Decode JSON Web Tokens online - without sending them anywhere</h2>
+    <p>
+        This <strong>JWT decoder</strong> splits a JSON Web Token into its three parts, Base64Url-decodes the header
+        and payload, and pretty-prints the claims - instantly, as you type. Crucially, it is
+        <strong>100% client-side</strong>: pasting a production token into a website that uploads it to a server is a
+        security risk, and this tool never makes a network request with your input.
+    </p>
+
+    <h2>What's inside a JWT?</h2>
+    <p>A JWT is three Base64Url-encoded segments joined by dots:</p>
+    <ul>
+        <li><strong>Header</strong> - the signing algorithm (<code>alg</code>, e.g. HS256 or RS256) and token type.</li>
+        <li><strong>Payload</strong> - the claims: standard ones like <code>sub</code> (subject), <code>iss</code> (issuer), <code>exp</code> (expiry), <code>iat</code> (issued at), plus any custom data.</li>
+        <li><strong>Signature</strong> - a cryptographic signature over the first two parts.</li>
+    </ul>
+    <p>
+        The decoder also translates <code>exp</code>, <code>iat</code> and <code>nbf</code> timestamps into
+        human-readable dates and tells you whether the token has <strong>expired</strong>.
+    </p>
+
+    <h2>Decoding is not verifying</h2>
+    <p>
+        Anyone can decode a JWT - the payload is only encoded, not encrypted. What makes a token trustworthy is its
+        <strong>signature</strong>, which must be verified server-side with the secret or public key. Never put
+        sensitive data in a JWT payload, and never trust claims from a token whose signature you haven't checked.
+        This tool is for inspection and debugging: reading claims, checking expiry, and diagnosing
+        <code>401 Unauthorized</code> errors. Related: <a href="/tools/base64-encoder-decoder">Base64 encoder/decoder</a>
+        and <a href="/tools/hash-generator">hash generator</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const input = $("jwt-in"), msg = $("jwt-msg");
+
+        function b64urlDecode(s) {
+            s = s.replace(/-/g, "+").replace(/_/g, "/");
+            while (s.length % 4) s += "=";
+            const bin = atob(s);
+            const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+            return new TextDecoder().decode(bytes);
+        }
+
+        function decode() {
+            msg.classList.add("hidden");
+            $("jwt-header").value = $("jwt-payload").value = "";
+            $("jwt-times").textContent = "";
+            const token = input.value.trim();
+            if (!token) return;
+            const parts = token.split(".");
+            if (parts.length < 2) {
+                msg.textContent = "Not a JWT - expected at least two dot-separated segments.";
+                msg.classList.remove("hidden");
+                return;
+            }
+            try {
+                const header = JSON.parse(b64urlDecode(parts[0]));
+                const payload = JSON.parse(b64urlDecode(parts[1]));
+                $("jwt-header").value = JSON.stringify(header, null, 2);
+                $("jwt-payload").value = JSON.stringify(payload, null, 2);
+
+                const bits = [];
+                const fmt = t => new Date(t * 1000).toLocaleString();
+                if (payload.iat) bits.push(`Issued: ${fmt(payload.iat)}`);
+                if (payload.nbf) bits.push(`Not before: ${fmt(payload.nbf)}`);
+                if (payload.exp) {
+                    const expired = payload.exp * 1000 < Date.now();
+                    bits.push(`Expires: ${fmt(payload.exp)} - ` + (expired ? "⚠️ EXPIRED" : "✅ still valid"));
+                }
+                $("jwt-times").textContent = bits.join("  ·  ");
+            } catch (e) {
+                msg.textContent = "Could not decode token: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        }
+
+        input.addEventListener("input", decode);
+    })();
+    </script>
+</ToolShell>

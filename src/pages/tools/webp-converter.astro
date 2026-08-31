@@ -1,0 +1,148 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="webp-converter"
+    title="WebP Converter - Convert PNG & JPG to WebP Online Free"
+    metaDescription="Convert PNG and JPG images to WebP online for free. Adjustable quality, batch conversion, size comparison - everything happens in your browser, no uploads."
+    pageHeadingText="WebP Converter"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <label id="wc-drop" for="wc-file"
+            class="flex flex-col items-center justify-center gap-2 rounded-2xl border-2 border-dashed border-[#587691] p-8 cursor-pointer hover:border-[#58ded6] transition-colors text-center">
+            <i class="fa-solid fa-cloud-arrow-up text-3xl text-[#58ded6]"></i>
+            <span class="font-semibold">Drop images here or click to browse</span>
+            <span class="tool-note">PNG, JPG, GIF, BMP - converted locally, never uploaded</span>
+            <input id="wc-file" type="file" accept="image/*" multiple class="hidden" />
+        </label>
+        <div class="tool-row">
+            <label class="tool-note flex items-center gap-2" style="flex:1">
+                Quality: <span id="wc-qval" class="text-[#58ded6] font-mono">80%</span>
+                <input id="wc-quality" type="range" min="1" max="100" value="80" style="flex:1" />
+            </label>
+        </div>
+        <p id="wc-msg" class="tool-error hidden"></p>
+        <div id="wc-results" class="flex flex-col gap-3"></div>
+    </div>
+
+    <h2>Convert images to WebP online - without uploading them</h2>
+    <p>
+        This <strong>WebP converter</strong> turns PNG, JPG, GIF and BMP images into WebP entirely inside your
+        browser using the HTML5 canvas API. Your photos are <strong>never uploaded to a server</strong> - which makes
+        it safe for screenshots, client work and private images, and means conversion is instant with no file-size
+        limits imposed by an upload form. Drop in multiple files, tune the quality slider, and download each
+        converted image with a size comparison shown next to it.
+    </p>
+
+    <h2>Why convert to WebP?</h2>
+    <p>
+        WebP is Google's modern image format, supported by every current browser. Compared to older formats it
+        delivers <strong>25–34% smaller files than JPEG</strong> at equivalent visual quality, and dramatically
+        smaller files than PNG for photographic content - while still supporting transparency (alpha channel) like
+        PNG. Smaller images mean faster page loads, better Core Web Vitals (especially LCP) and improved SEO
+        rankings, which is why PageSpeed Insights explicitly recommends "serving images in next-gen formats".
+    </p>
+
+    <h2>Choosing the right quality</h2>
+    <ul>
+        <li><strong>90–100</strong> - near-lossless; use for hero images and photography portfolios.</li>
+        <li><strong>75–85</strong> - the sweet spot for most web images; visually indistinguishable at a fraction of the size.</li>
+        <li><strong>50–70</strong> - thumbnails, backgrounds and previews where small artifacts are acceptable.</li>
+    </ul>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Does WebP support transparency?</h3>
+    <p>Yes - alpha transparency converts cleanly from PNG, usually at a much smaller file size.</p>
+    <h3>Is WebP supported everywhere?</h3>
+    <p>
+        All modern browsers (Chrome, Firefox, Safari 14+, Edge) support WebP. For very old browsers, serve a fallback
+        with the <code>&lt;picture&gt;</code> element.
+    </p>
+    <h3>Why is my WebP sometimes larger than the original?</h3>
+    <p>
+        Already heavily-compressed JPEGs or tiny images can occasionally re-encode larger. The size badge on each
+        result shows exactly what you saved, so you can keep the original when conversion doesn't pay off.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const drop = $("wc-drop"), fileInput = $("wc-file"), results = $("wc-results"), msg = $("wc-msg");
+        let files = [];
+
+        $("wc-quality").addEventListener("input", () => {
+            $("wc-qval").textContent = $("wc-quality").value + "%";
+        });
+        $("wc-quality").addEventListener("change", () => { if (files.length) convertAll(); });
+
+        ["dragover", "dragenter"].forEach(ev => drop.addEventListener(ev, e => {
+            e.preventDefault();
+            drop.classList.add("border-[#58ded6]");
+        }));
+        ["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => {
+            e.preventDefault();
+            drop.classList.remove("border-[#58ded6]");
+        }));
+        drop.addEventListener("drop", e => {
+            files = [...e.dataTransfer.files].filter(f => f.type.startsWith("image/"));
+            convertAll();
+        });
+        fileInput.addEventListener("change", () => {
+            files = [...fileInput.files];
+            convertAll();
+        });
+
+        function fmtSize(b) {
+            return b > 1048576 ? (b / 1048576).toFixed(2) + " MB" : (b / 1024).toFixed(1) + " KB";
+        }
+
+        async function convertOne(file, quality) {
+            const url = URL.createObjectURL(file);
+            try {
+                const img = await new Promise((res, rej) => {
+                    const i = new Image();
+                    i.onload = () => res(i);
+                    i.onerror = () => rej(new Error("Could not read " + file.name));
+                    i.src = url;
+                });
+                const canvas = document.createElement("canvas");
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                canvas.getContext("2d").drawImage(img, 0, 0);
+                const blob = await new Promise(res => canvas.toBlob(res, "image/webp", quality));
+                if (!blob) throw new Error("WebP encoding failed for " + file.name);
+                return blob;
+            } finally {
+                URL.revokeObjectURL(url);
+            }
+        }
+
+        async function convertAll() {
+            msg.classList.add("hidden");
+            results.innerHTML = "";
+            const quality = Number($("wc-quality").value) / 100;
+            for (const file of files) {
+                const row = document.createElement("div");
+                row.className = "tool-row";
+                row.style.cssText = "background:#0b1a2a;border:1px solid #58769149;border-radius:.75rem;padding:.75rem";
+                row.innerHTML = `<span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${file.name}</span><span class="tool-note">converting…</span>`;
+                results.appendChild(row);
+                try {
+                    const blob = await convertOne(file, quality);
+                    const saved = Math.round((1 - blob.size / file.size) * 100);
+                    const outName = file.name.replace(/\.[^.]+$/, "") + ".webp";
+                    const dlUrl = URL.createObjectURL(blob);
+                    row.innerHTML =
+                        `<img src="${dlUrl}" alt="" style="width:44px;height:44px;object-fit:cover;border-radius:.5rem" />
+                         <span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${outName}</span>
+                         <span class="tool-note">${fmtSize(file.size)} → ${fmtSize(blob.size)} (${saved >= 0 ? "−" + saved : "+" + (-saved)}%)</span>
+                         <a class="tool-btn" style="text-decoration:none" href="${dlUrl}" download="${outName}"><i class="fa-solid fa-download"></i> Save</a>`;
+                } catch (e) {
+                    row.innerHTML = `<span style="flex:1">${file.name}</span><span class="tool-error">${e.message}</span>`;
+                }
+            }
+        }
+    })();
+    </script>
+</ToolShell>

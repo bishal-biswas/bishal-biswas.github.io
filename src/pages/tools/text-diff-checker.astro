@@ -1,0 +1,105 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="text-diff-checker"
+    title="Text Diff Checker - Compare Two Texts Online Free"
+    metaDescription="Compare two texts online for free and see line-by-line differences highlighted. Free diff tool for code, documents and configs - runs fully in your browser."
+    pageHeadingText="Text Diff Checker"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div class="tool-grid2">
+            <div>
+                <label class="tool-label" for="df-a">Original text</label>
+                <textarea id="df-a" class="tool-input" placeholder="Paste the original version…" spellcheck="false"></textarea>
+            </div>
+            <div>
+                <label class="tool-label" for="df-b">Changed text</label>
+                <textarea id="df-b" class="tool-input" placeholder="Paste the modified version…" spellcheck="false"></textarea>
+            </div>
+        </div>
+        <div class="tool-row">
+            <button id="df-compare" class="tool-btn"><i class="fa-solid fa-code-compare"></i> Compare</button>
+            <label class="tool-note flex items-center gap-2"><input type="checkbox" id="df-trim" /> Ignore trailing whitespace</label>
+            <span id="df-stats" class="tool-note ml-auto"></span>
+        </div>
+        <div>
+            <label class="tool-label">Differences</label>
+            <div id="df-out" class="tool-input" style="min-height:10rem;white-space:pre-wrap;overflow:auto;font-family:monospace;font-size:.82rem;line-height:1.6"></div>
+        </div>
+    </div>
+
+    <h2>Compare two texts online and spot every change</h2>
+    <p>
+        This <strong>text diff checker</strong> compares two blocks of text line by line and highlights what was
+        <span style="color:#7df0a1">added</span> and what was <span style="color:#ff8a8a">removed</span> - the same
+        unified-diff view you know from Git, generated instantly in your browser. Use it to compare code snippets,
+        config files, contracts, SQL dumps, translations or two versions of an article.
+    </p>
+
+    <h2>How the diff is computed</h2>
+    <p>
+        The tool uses the <strong>longest common subsequence (LCS)</strong> algorithm - the classic approach behind
+        <code>git diff</code> and <code>diff -u</code>. It finds the largest set of lines the two texts share in
+        order, then reports everything outside that set as an insertion or deletion. That gives minimal, readable
+        diffs rather than naive position-by-position comparison, which flags every subsequent line after a single
+        insertion.
+    </p>
+
+    <h2>When a diff tool saves the day</h2>
+    <ul>
+        <li><strong>Code review without a repo</strong> - compare a snippet from chat with what's actually deployed.</li>
+        <li><strong>Config drift</strong> - spot the one changed line between staging and production configs.</li>
+        <li><strong>Document versions</strong> - see edits between contract or policy revisions.</li>
+        <li><strong>Data debugging</strong> - find the record that differs between two exports.</li>
+    </ul>
+    <p>
+        Both texts stay on your device - nothing is uploaded, so it's safe for proprietary code and confidential
+        documents. Also useful alongside the <a href="/tools/json-formatter">JSON formatter</a>: format both payloads
+        first, then diff them to see exactly which fields changed.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+        function diff(a, b) {
+            // LCS over lines with a size guard for very large inputs
+            const n = a.length, m = b.length;
+            if (n * m > 4_000_000) return null;
+            const dp = Array.from({ length: n + 1 }, () => new Uint32Array(m + 1));
+            for (let i = n - 1; i >= 0; i--)
+                for (let j = m - 1; j >= 0; j--)
+                    dp[i][j] = a[i] === b[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+            const ops = [];
+            let i = 0, j = 0;
+            while (i < n && j < m) {
+                if (a[i] === b[j]) { ops.push(["=", a[i]]); i++; j++; }
+                else if (dp[i + 1][j] >= dp[i][j + 1]) { ops.push(["-", a[i]]); i++; }
+                else { ops.push(["+", b[j]]); j++; }
+            }
+            while (i < n) ops.push(["-", a[i++]]);
+            while (j < m) ops.push(["+", b[j++]]);
+            return ops;
+        }
+
+        $("df-compare").addEventListener("click", () => {
+            const trim = $("df-trim").checked;
+            const prep = t => t.split("\n").map(l => trim ? l.replace(/\s+$/, "") : l);
+            const ops = diff(prep($("df-a").value), prep($("df-b").value));
+            const out = $("df-out"), stats = $("df-stats");
+            if (!ops) { out.textContent = "Texts too large to diff in the browser."; return; }
+            let add = 0, del = 0, html = "";
+            for (const [op, line] of ops) {
+                if (op === "+") { add++; html += `<div style="background:#0f3d2a;color:#7df0a1">+ ${esc(line)}</div>`; }
+                else if (op === "-") { del++; html += `<div style="background:#42222a;color:#ff8a8a">− ${esc(line)}</div>`; }
+                else html += `<div style="opacity:.65">&nbsp; ${esc(line)}</div>`;
+            }
+            out.innerHTML = html || '<span style="opacity:.5">Both inputs are empty.</span>';
+            stats.textContent = add || del ? `+${add} added, −${del} removed` : "No differences ✓";
+        });
+    })();
+    </script>
+</ToolShell>

@@ -19,7 +19,7 @@ projectRepoLink : "-"
 ---
 ## Project Overview
 
-The Online Election System is a comprehensive web-based platform designed to digitalize and streamline the election process in India. This project effectively incorporates various types of elections, such as Lok Sabha and Vidhan Sabha, providing citizens with a secure and accessible way to participate in democratic processes online. It enables voters to register for a Voter ID Card, cast votes, and allows political parties and candidates to register through an official, structured documentation process—replicating real-world procedures.
+The Online Election System is a comprehensive web-based platform designed to digitalize and streamline the election process in India. This project effectively incorporates various types of elections, such as Lok Sabha and Vidhan Sabha, providing citizens with a secure and accessible way to participate in democratic processes online. It enables voters to register for a Voter ID Card, cast votes, and allows political parties and candidates to register through an official, structured documentation process-replicating real-world procedures.
 
 ## Key Features
 

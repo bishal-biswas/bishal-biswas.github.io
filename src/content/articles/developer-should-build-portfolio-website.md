@@ -11,9 +11,9 @@ tags : [Portfolio, Blog, Developer Website]
 ---
 ## Why Every Developer Should Build a Portfolio Website &amp; Why I Chose Astro
 
-As developers, we often focus on improving our technical skills—writing cleaner code, understanding frameworks, and optimizing performance. But one aspect that is just as important, yet often overlooked, is personal branding. That’s where a portfolio website comes in.
+As developers, we often focus on improving our technical skills-writing cleaner code, understanding frameworks, and optimizing performance. But one aspect that is just as important, yet often overlooked, is personal branding. That’s where a portfolio website comes in.
 
-I recently launched my own portfolio blog, built with Astro, hosted on Vercel, and powered by Supabase. It’s not just a personal project—it’s my digital identity as a developer. In this article, I’ll break down why having a portfolio is invaluable, why I chose Astro over frameworks like React or Next.js, and the type of content I’ll be posting.
+I recently launched my own portfolio blog, built with Astro, hosted on Vercel, and powered by Supabase. It’s not just a personal project-it’s my digital identity as a developer. In this article, I’ll break down why having a portfolio is invaluable, why I chose Astro over frameworks like React or Next.js, and the type of content I’ll be posting.
 
 ## Why a Portfolio Website Is Essential for Developers
 
@@ -27,11 +27,11 @@ Here’s why every developer should consider building one:
 - It gives you full creative control – Unlike social platforms, you have the freedom to design your website your way.
 - It creates opportunities – Whether it’s freelance gigs, networking, or potential job offers, a portfolio opens doors.
 
-This site is more than just a showcase for my skills—it’s where I’ll share insights, projects, and my perspective on web development.
+This site is more than just a showcase for my skills-it’s where I’ll share insights, projects, and my perspective on web development.
 
 ## Why I Chose Astro Over React/Next.js
 
-Choosing the right framework for my portfolio was a critical decision. React and Next.js are incredibly popular choices for building websites, but after careful consideration, I decided to go with Astro—and here’s why.
+Choosing the right framework for my portfolio was a critical decision. React and Next.js are incredibly popular choices for building websites, but after careful consideration, I decided to go with Astro-and here’s why.
 
 - Performance Matters – Astro’s static rendering ensures lightning-fast page loads, unlike React/Next.js, which can add unnecessary complexity when handling static content.
 - Less JavaScript, More Speed – Astro loads only the essential JavaScript, making my site incredibly efficient and improving SEO rankings.
@@ -53,13 +53,13 @@ Here’s what you can expect:
 - Personal Growth as a Developer – Lessons learned, career advice, and reflections on my journey.
 - Behind-the-Scenes of This Portfolio – How I built and optimized my Astro-based site.
 
-This blog is not just a place for me to share knowledge—it’s a way to connect with fellow developers and contribute to the tech community.
+This blog is not just a place for me to share knowledge-it’s a way to connect with fellow developers and contribute to the tech community.
 
 ## Conclusion
 
-Creating a portfolio website is one of the best decisions a developer can make. It’s not just a personal project—it’s an investment in your career and growth. By choosing Astro, hosting on Vercel, and integrating with Supabase, I’ve built a site that reflects my passion for performance-driven development.
+Creating a portfolio website is one of the best decisions a developer can make. It’s not just a personal project-it’s an investment in your career and growth. By choosing Astro, hosting on Vercel, and integrating with Supabase, I’ve built a site that reflects my passion for performance-driven development.
 
-If you’re considering building your own portfolio, just start. You don’t need a perfect design or advanced tech stack—just something that represents who you are as a developer. Your future self will thank you.
+If you’re considering building your own portfolio, just start. You don’t need a perfect design or advanced tech stack-just something that represents who you are as a developer. Your future self will thank you.
 
-Stay tuned for more updates and articles—I’m just getting started! 🚀
+Stay tuned for more updates and articles-I’m just getting started! 🚀
 

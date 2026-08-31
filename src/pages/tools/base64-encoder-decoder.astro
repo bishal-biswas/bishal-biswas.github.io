@@ -1,0 +1,100 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="base64-encoder-decoder"
+    title="Base64 Encoder / Decoder - Encode & Decode Base64 Online Free"
+    metaDescription="Encode text to Base64 or decode Base64 to text online for free. Full UTF-8 and emoji support, URL-safe Base64 option, instant results in your browser."
+    pageHeadingText="Base64 Encoder / Decoder"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="b64-plain">Plain text</label>
+            <textarea id="b64-plain" class="tool-input" placeholder="Hello, world! 👋" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="b64-encode" class="tool-btn">Encode <i class="fa-solid fa-arrow-right"></i></button>
+                <label class="tool-note flex items-center gap-2">
+                    <input type="checkbox" id="b64-urlsafe" /> URL-safe
+                </label>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="b64-encoded">Base64</label>
+            <textarea id="b64-encoded" class="tool-input" placeholder="SGVsbG8sIHdvcmxkIQ==" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="b64-decode" class="tool-btn"><i class="fa-solid fa-arrow-left"></i> Decode</button>
+                <button id="b64-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy Base64</button>
+            </div>
+        </div>
+    </div>
+    <p slot="tool" id="b64-msg" class="tool-error hidden" style="margin-top:.75rem"></p>
+
+    <h2>Encode and decode Base64 online</h2>
+    <p>
+        This free <strong>Base64 encoder and decoder</strong> converts text to Base64 and back with full
+        <strong>UTF-8 support</strong> - accents, CJK characters and emoji all round-trip correctly, unlike naive
+        tools built on <code>btoa()</code> alone. There's also a <strong>URL-safe Base64</strong> mode
+        (<code>+</code> → <code>-</code>, <code>/</code> → <code>_</code>) for tokens and query-string values.
+    </p>
+
+    <h2>What is Base64?</h2>
+    <p>
+        Base64 is a binary-to-text encoding that represents any byte sequence using 64 printable ASCII characters.
+        It exists so binary data can travel through channels designed for text: email attachments (MIME), data URIs
+        for inline images, HTTP Basic Authentication headers, JWT segments and XML/JSON payloads. Every 3 bytes of
+        input become 4 characters of output, so Base64 is roughly <strong>33% larger</strong> than the original data.
+    </p>
+
+    <h2>Base64 is encoding, not encryption</h2>
+    <p>
+        A common security mistake is treating Base64 as protection. It isn't - decoding requires no key and takes
+        microseconds, exactly what this page does. Never "hide" passwords or secrets with Base64; use real encryption
+        or hashing instead (see the <a href="/tools/hash-generator">hash generator</a> for one-way digests).
+    </p>
+
+    <h2>Frequently asked questions</h2>
+    <h3>Why does my decoded output look garbled?</h3>
+    <p>
+        Either the input isn't valid Base64, or it encodes binary data (like an image) rather than text. This tool
+        decodes to UTF-8 text; binary content won't display meaningfully.
+    </p>
+    <h3>What are the = signs at the end?</h3>
+    <p>
+        Padding. Base64 output length must be a multiple of 4, so <code>=</code> characters fill the remainder.
+        URL-safe variants often omit them - this decoder accepts input with or without padding.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const msg = $("b64-msg");
+
+        $("b64-encode").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            const bytes = new TextEncoder().encode($("b64-plain").value);
+            let bin = "";
+            bytes.forEach(b => bin += String.fromCharCode(b));
+            let b64 = btoa(bin);
+            if ($("b64-urlsafe").checked) b64 = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+            $("b64-encoded").value = b64;
+        });
+
+        $("b64-decode").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            try {
+                let s = $("b64-encoded").value.trim().replace(/-/g, "+").replace(/_/g, "/");
+                while (s.length % 4) s += "=";
+                const bin = atob(s);
+                const bytes = Uint8Array.from(bin, c => c.charCodeAt(0));
+                $("b64-plain").value = new TextDecoder("utf-8", { fatal: false }).decode(bytes);
+            } catch (e) {
+                msg.textContent = "Invalid Base64 input: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+
+        $("b64-copy").addEventListener("click", () => navigator.clipboard.writeText($("b64-encoded").value));
+    })();
+    </script>
+</ToolShell>

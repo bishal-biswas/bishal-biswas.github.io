@@ -1,0 +1,87 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-formatter"
+    title="JSON Formatter - Free Online JSON Beautifier & Pretty Printer"
+    metaDescription="Format and beautify JSON online for free. Pretty-print minified JSON with 2 or 4 space indentation instantly. 100% browser-based JSON formatter - no data leaves your device."
+    pageHeadingText="JSON Formatter"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="jf-in">Paste your JSON</label>
+            <textarea id="jf-in" class="tool-input" placeholder='{"name":"Ada","skills":["math","code"]}' spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="jf-format" class="tool-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Format</button>
+            <select id="jf-indent" class="tool-select" style="width:auto">
+                <option value="2">2 spaces</option>
+                <option value="4">4 spaces</option>
+                <option value="tab">Tabs</option>
+            </select>
+            <button id="jf-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="jf-clear" class="tool-btn-ghost">Clear</button>
+        </div>
+        <p id="jf-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="jf-out">Formatted output</label>
+            <textarea id="jf-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Free online JSON formatter and beautifier</h2>
+    <p>
+        This <strong>JSON formatter</strong> takes minified, compressed or messy JSON and pretty-prints it with clean,
+        consistent indentation so you can actually read it. Paste any JSON - an API response, a config file, a log
+        entry - choose 2 spaces, 4 spaces or tabs, and hit <em>Format</em>. The tool runs entirely in your browser with
+        plain JavaScript, so your data is never uploaded to a server.
+    </p>
+
+    <h2>Why format JSON?</h2>
+    <p>
+        JSON (JavaScript Object Notation) is the standard data format for REST APIs, configuration files and data
+        interchange. Servers usually send it minified to save bandwidth, which makes deeply nested objects nearly
+        impossible to scan by eye. A <strong>JSON beautifier</strong> restores structure: each key on its own line,
+        nesting shown through indentation, arrays expanded. That makes debugging API payloads, reviewing webhook
+        bodies and editing config files dramatically faster.
+    </p>
+
+    <h2>How to pretty-print JSON online</h2>
+    <ol>
+        <li>Paste your raw or minified JSON into the input box above.</li>
+        <li>Pick your preferred indentation - 2 spaces is the most common convention.</li>
+        <li>Click <strong>Format</strong>. If your JSON has a syntax error, the tool shows you the exact problem instead of silently failing.</li>
+        <li>Click <strong>Copy</strong> to grab the formatted result.</li>
+    </ol>
+
+    <h2>Is it safe to paste sensitive JSON here?</h2>
+    <p>
+        Yes. Unlike many online JSON viewers, this formatter performs no network requests with your data. Parsing and
+        formatting happen locally via the browser's native <code>JSON.parse</code> and <code>JSON.stringify</code>,
+        so API keys, tokens and personal data stay on your machine. Need the opposite? Use the
+        <a href="/tools/json-minifier">JSON minifier</a> to compress JSON, or the
+        <a href="/tools/json-validator">JSON validator</a> for detailed error checking.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const input = $("jf-in"), out = $("jf-out"), msg = $("jf-msg");
+        $("jf-format").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            try {
+                const v = $("jf-indent").value;
+                const indent = v === "tab" ? "\t" : Number(v);
+                out.value = JSON.stringify(JSON.parse(input.value), null, indent);
+            } catch (e) {
+                out.value = "";
+                msg.textContent = "Invalid JSON: " + e.message;
+                msg.classList.remove("hidden");
+            }
+        });
+        $("jf-copy").addEventListener("click", () => navigator.clipboard.writeText(out.value));
+        $("jf-clear").addEventListener("click", () => { input.value = ""; out.value = ""; msg.classList.add("hidden"); });
+    })();
+    </script>
+</ToolShell>

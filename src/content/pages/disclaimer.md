@@ -25,7 +25,7 @@ This website publishes articles, tutorials, and code snippets about software and
 
 - Code samples are **not guaranteed to be secure, complete, bug-free, or suitable for production use**.
 - Technology changes quickly; content that was accurate when published may become outdated, and we are under no obligation to update it.
-- You are responsible for reviewing, testing, and validating any code before using it, and for any consequences of doing so — including data loss, downtime, security issues, or financial loss.
+- You are responsible for reviewing, testing, and validating any code before using it, and for any consequences of doing so - including data loss, downtime, security issues, or financial loss.
 
 ### External links disclaimer
 

@@ -6,9 +6,12 @@
       "runtimeExecutable": "npm",
       "runtimeArgs": [
         "run",
-        "dev"
+        "dev",
+        "--",
+        "--port",
+        "4331"
       ],
-      "port": 4321,
+      "port": 4331,
       "autoPort": false
     }
   ]

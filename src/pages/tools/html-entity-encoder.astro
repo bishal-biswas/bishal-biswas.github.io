@@ -1,0 +1,84 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="html-entity-encoder"
+    title="HTML Entity Encoder / Decoder - Escape HTML Online Free"
+    metaDescription="Encode and decode HTML entities online for free. Escape <, >, &, quotes and special characters for safe display, or decode &amp;lt; back to readable text."
+    pageHeadingText="HTML Entity Encoder"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="he-plain">Raw text / HTML</label>
+            <textarea id="he-plain" class="tool-input" placeholder={`<a href="/">Tom & Jerry</a>`} spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="he-encode" class="tool-btn">Encode <i class="fa-solid fa-arrow-right"></i></button>
+                <label class="tool-note flex items-center gap-2">
+                    <input type="checkbox" id="he-all" /> Encode all non-ASCII too
+                </label>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="he-encoded">Encoded entities</label>
+            <textarea id="he-encoded" class="tool-input" placeholder="&amp;lt;a href=&amp;quot;/&amp;quot;&amp;gt;Tom &amp;amp; Jerry&amp;lt;/a&amp;gt;" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="he-decode" class="tool-btn"><i class="fa-solid fa-arrow-left"></i> Decode</button>
+                <button id="he-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Encode and decode HTML entities online</h2>
+    <p>
+        This <strong>HTML entity encoder/decoder</strong> escapes the characters that have special meaning in HTML -
+        <code>&lt;</code>, <code>&gt;</code>, <code>&amp;</code>, <code>"</code> and <code>'</code> - into their
+        entity forms (<code>&amp;lt;</code>, <code>&amp;gt;</code>, <code>&amp;amp;</code>, <code>&amp;quot;</code>,
+        <code>&amp;#39;</code>), and decodes any entity - named, decimal or hex - back to plain text. An optional
+        mode also converts every non-ASCII character (accents, emoji, symbols) to numeric entities for maximum
+        compatibility.
+    </p>
+
+    <h2>Why escaping HTML matters: XSS prevention</h2>
+    <p>
+        Injecting user input into a page without escaping is the root cause of <strong>cross-site scripting
+        (XSS)</strong>. If a username like <code>&lt;script&gt;steal()&lt;/script&gt;</code> lands in your HTML
+        unescaped, the browser executes it. Entity-encoding turns that markup into inert text the browser merely
+        displays. Every template engine's "escape by default" behavior is doing exactly what this tool shows you.
+    </p>
+
+    <h2>Common uses</h2>
+    <ul>
+        <li>Displaying <strong>code samples</strong> on a web page without the browser interpreting the tags.</li>
+        <li>Decoding scraped or exported content full of <code>&amp;amp;</code> and <code>&amp;#8217;</code>.</li>
+        <li>Embedding text in <strong>XML/RSS feeds</strong>, where the same five characters must be escaped.</li>
+        <li>Writing HTML inside HTML - like the placeholder examples on this very page.</li>
+    </ul>
+    <p>
+        Encoding and decoding run entirely in your browser using the DOM's own parser, so the output matches exactly
+        what browsers understand. Want to see your markup rendered instead? Open the
+        <a href="/tools/html-preview">HTML preview</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        $("he-encode").addEventListener("click", () => {
+            let s = $("he-plain").value
+                .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+            if ($("he-all").checked)
+                s = s.replace(/[\u0080-\uFFFF]/g, c => "&#" + c.charCodeAt(0) + ";");
+            $("he-encoded").value = s;
+        });
+
+        $("he-decode").addEventListener("click", () => {
+            const doc = new DOMParser().parseFromString($("he-encoded").value, "text/html");
+            $("he-plain").value = doc.documentElement.textContent;
+        });
+
+        $("he-copy").addEventListener("click", () => navigator.clipboard.writeText($("he-encoded").value));
+    })();
+    </script>
+</ToolShell>

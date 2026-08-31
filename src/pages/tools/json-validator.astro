@@ -1,0 +1,96 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="json-validator"
+    title="JSON Validator - Check & Lint JSON Syntax Online Free"
+    metaDescription="Validate JSON online for free. Instantly check JSON syntax, find missing commas, unquoted keys and trailing commas with exact line and column error positions."
+    pageHeadingText="JSON Validator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="jv-in">Paste JSON to validate</label>
+            <textarea id="jv-in" class="tool-input" placeholder='{"valid": true}' spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="jv-validate" class="tool-btn"><i class="fa-solid fa-circle-check"></i> Validate</button>
+            <button id="jv-clear" class="tool-btn-ghost">Clear</button>
+            <label class="tool-note flex items-center gap-2 ml-auto">
+                <input type="checkbox" id="jv-live" checked /> Validate as I type
+            </label>
+        </div>
+        <div id="jv-result" class="rounded-xl p-4 bg-[#0b1a2a] border border-[#58769149] text-sm min-h-[4rem]">
+            <span class="tool-note">Result will appear here…</span>
+        </div>
+    </div>
+
+    <h2>Free online JSON validator and syntax checker</h2>
+    <p>
+        This <strong>JSON validator</strong> checks whether your JSON is syntactically correct and, when it isn't,
+        tells you exactly where the problem is - including the <strong>line and column</strong> of the error whenever
+        the browser reports a position. It catches the classic mistakes: trailing commas, single quotes instead of
+        double quotes, unquoted property names, missing brackets and stray control characters.
+    </p>
+
+    <h2>Common JSON syntax errors</h2>
+    <ul>
+        <li><strong>Trailing commas</strong> - <code>{"{"}"a": 1,{"}"}</code> is valid JavaScript but invalid JSON.</li>
+        <li><strong>Single quotes</strong> - JSON strings and keys must use double quotes.</li>
+        <li><strong>Unquoted keys</strong> - <code>{"{"}name: "x"{"}"}</code> fails; keys need quotes.</li>
+        <li><strong>Comments</strong> - JSON does not allow <code>//</code> or <code>/* */</code> comments.</li>
+        <li><strong>NaN / undefined</strong> - only <code>null</code>, numbers, strings, booleans, arrays and objects are allowed.</li>
+    </ul>
+
+    <h2>Why validate JSON before shipping?</h2>
+    <p>
+        A single malformed character can break an API integration, a CI pipeline reading a config file, or a mobile
+        app parsing a response. Running a quick <strong>JSON lint</strong> before you commit a config or publish an
+        endpoint saves debugging time downstream. This checker runs 100% locally in your browser - nothing you paste
+        is uploaded - so it is safe for payloads containing tokens or personal data.
+    </p>
+    <p>
+        Once your JSON is valid, pretty-print it with the <a href="/tools/json-formatter">JSON formatter</a>, compress
+        it with the <a href="/tools/json-minifier">JSON minifier</a>, or generate typed models with the
+        <a href="/tools/json-to-typescript">JSON to TypeScript converter</a>.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const input = $("jv-in"), result = $("jv-result");
+
+        function posToLineCol(text, pos) {
+            const upTo = text.slice(0, pos);
+            const line = upTo.split("\n").length;
+            const col = pos - upTo.lastIndexOf("\n");
+            return { line, col };
+        }
+
+        function validate() {
+            const text = input.value;
+            if (!text.trim()) {
+                result.innerHTML = '<span class="tool-note">Result will appear here…</span>';
+                return;
+            }
+            try {
+                const parsed = JSON.parse(text);
+                const type = Array.isArray(parsed) ? `array (${parsed.length} items)` : typeof parsed;
+                result.innerHTML = '<span class="tool-success"><i class="fa-solid fa-circle-check"></i> Valid JSON - root is ' + type + '.</span>';
+            } catch (e) {
+                let extra = "";
+                const m = /position (\d+)/.exec(e.message);
+                if (m && !/line \d+/.test(e.message)) {
+                    const { line, col } = posToLineCol(text, Number(m[1]));
+                    extra = ` (line ${line}, column ${col})`;
+                }
+                result.innerHTML = '<span class="tool-error"><i class="fa-solid fa-circle-xmark"></i> ' + e.message + extra + '</span>';
+            }
+        }
+
+        $("jv-validate").addEventListener("click", validate);
+        $("jv-clear").addEventListener("click", () => { input.value = ""; validate(); });
+        input.addEventListener("input", () => { if ($("jv-live").checked) validate(); });
+    })();
+    </script>
+</ToolShell>

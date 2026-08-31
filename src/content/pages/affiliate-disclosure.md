@@ -15,7 +15,7 @@ This disclosure explains how **bishal-biswas.github.io** ("this website"), opera
 
 ### The short version
 
-**Some links on this website are affiliate links.** If you click one and make a purchase, we may earn a small commission — **at no additional cost to you**. You never pay more because you used our link.
+**Some links on this website are affiliate links.** If you click one and make a purchase, we may earn a small commission - **at no additional cost to you**. You never pay more because you used our link.
 
 ### What is an affiliate link?
 
@@ -55,7 +55,7 @@ Please do your own research before buying anything. See our [Disclaimer](/discla
 
 ### Why we disclose this
 
-We disclose these relationships because it is the right thing to do, and because it is required — including by the **U.S. Federal Trade Commission (FTC)** guidelines on endorsements and testimonials, and by the terms of the affiliate and advertising programmes we take part in.
+We disclose these relationships because it is the right thing to do, and because it is required - including by the **U.S. Federal Trade Commission (FTC)** guidelines on endorsements and testimonials, and by the terms of the affiliate and advertising programmes we take part in.
 
 Your trust matters more than any commission.
 

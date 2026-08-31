@@ -1,0 +1,152 @@
+---
+// Shared shell for every /tools/* page.
+// The tool UI (slot="tool") stays pinned on screen while the SEO article
+// (default slot) scrolls up and overlaps it - the article card is opaque
+// and sits on a higher z-index than the sticky tool stage.
+import PlainLayout from "../layouts/PlainLayout.astro";
+import { toolsData } from "../data/site-data/toolsData";
+
+interface Props {
+    title: string,
+    metaDescription: string,
+    pageHeadingText: string,
+    pageSmallText?: string,
+    slug: string,
+    isLargeTools? : boolean
+}
+
+const { title, metaDescription, pageHeadingText, pageSmallText = "Free Developer Tool - runs 100% in your browser", slug, isLargeTools = false } = Astro.props;
+
+// A few sibling tools for internal linking (SEO + discovery).
+const related = toolsData.filter(t => t.slug !== slug).slice(0, 4);
+const current = toolsData.find(t => t.slug === slug);
+const relatedPool = current
+    ? [...toolsData.filter(t => t.slug !== slug && t.category === current.category),
+       ...toolsData.filter(t => t.slug !== slug && t.category !== current.category)].slice(0, 4)
+    : related;
+---
+
+<PlainLayout
+    {title}
+    {metaDescription}
+    pageType="project"
+    pageSmallText={pageSmallText}
+    pageHeadingText={pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImg="/assets/images/gradient1.png"
+    isLargeWidth={true}
+>
+    <div class="relative">
+
+        <!-- Sticky stage: the tool stays fixed while you scroll -->
+        <div class="tool-stage sticky top-4 z-0" class:list={[
+            isLargeTools ? "lg:-top-36 " : "lg:top-6 "
+        ]}>
+            <div class="tool-panel">
+                <slot name="tool" />
+            </div>
+            <p class="text-center text-xs opacity-60 mt-3 flex items-center justify-center gap-2">
+                <i class="fa-solid fa-angles-down animate-bounce"></i>
+                Scroll down to learn more about this tool
+                <i class="fa-solid fa-angles-down animate-bounce"></i>
+            </p>
+        </div>
+
+        <!-- SEO article: opaque card that slides over the pinned tool -->
+        <section class="seo-prose relative z-10 mt-16 lg:mt-24 rounded-3xl p-6 lg:p-12 shadow-2xl">
+            <slot />
+
+            <h2>More free developer tools</h2>
+            <ul class="related-tools">
+                {relatedPool.map(t => (
+                    <li>
+                        <a href={`/tools/${t.slug}`}>
+                            <i class={`fa-solid ${t.icon}`}></i> {t.name}
+                        </a> - {t.blurb}
+                    </li>
+                ))}
+                <li><a href="/tools"><i class="fa-solid fa-toolbox"></i> Browse all tools</a> - the full collection of free online developer tools.</li>
+            </ul>
+        </section>
+    </div>
+</PlainLayout>
+
+<style is:global>
+    /* ---- Tool panel ---- */
+    .tool-panel {
+        background: linear-gradient(160deg, #12283dd9, #0d1f30ee);
+        border: 1px solid #58769149;
+        backdrop-filter: blur(8px);
+        border-radius: 1.25rem;
+        padding: 1.25rem;
+        box-shadow: 0 20px 50px #00000059;
+    }
+    @media (min-width: 1024px) { .tool-panel { padding: 2rem; } }
+
+    .tool-label { display:block; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: #8fb3c9; margin-bottom: .35rem; font-weight: 600; }
+
+    .tool-input, .tool-select {
+        width: 100%;
+        background: #0b1a2a;
+        color: #d9f3f1;
+        border: 1px solid #58769149;
+        border-radius: .75rem;
+        padding: .7rem .9rem;
+        font-size: .9rem;
+        outline: none;
+        transition: border-color .15s ease;
+    }
+    .tool-input:focus, .tool-select:focus { border-color: #58ded6; }
+    textarea.tool-input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; min-height: 10rem; resize: vertical; line-height: 1.5; }
+
+    .tool-btn {
+        background: #58ded6;
+        color: #0b1a2a;
+        font-weight: 700;
+        border: none;
+        border-radius: 9999px;
+        padding: .6rem 1.4rem;
+        cursor: pointer;
+        font-size: .9rem;
+        transition: transform .12s ease, background .15s ease;
+    }
+    .tool-btn:hover { background: #7ff0e9; transform: translateY(-1px); }
+
+    .tool-btn-ghost {
+        background: #183550;
+        color: #58ded6;
+        border: 1px solid #58769149;
+        border-radius: 9999px;
+        padding: .6rem 1.4rem;
+        cursor: pointer;
+        font-size: .9rem;
+        transition: background .15s ease;
+    }
+    .tool-btn-ghost:hover { background: #1e4160; }
+
+    .tool-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
+    .tool-grid2 { display: grid; gap: 1rem; }
+    @media (min-width: 1024px) { .tool-grid2 { grid-template-columns: 1fr 1fr; } }
+
+    .tool-note { font-size: .8rem; color: #8fb3c9; }
+    .tool-error { color: #ff8a8a; font-size: .85rem; white-space: pre-wrap; }
+    .tool-success { color: #7df0a1; font-size: .85rem; }
+
+    /* ---- SEO article ---- */
+    .seo-prose {
+        background: #10273c;
+        border: 1px solid #58769135;
+        color: #cfe6e4;
+        line-height: 1.75;
+    }
+    .seo-prose h2 { font-size: 1.5rem; font-weight: 700; color: #e9fbfa; margin: 2rem 0 .75rem; }
+    .seo-prose h2:first-child { margin-top: 0; }
+    .seo-prose h3 { font-size: 1.15rem; font-weight: 700; color: #d9f3f1; margin: 1.5rem 0 .5rem; }
+    .seo-prose p { margin-bottom: 1rem; }
+    .seo-prose a { color: #58ded6; text-decoration: underline; text-underline-offset: 3px; }
+    .seo-prose ul { list-style: disc; padding-left: 1.4rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: .4rem; }
+    .seo-prose ol { list-style: decimal; padding-left: 1.4rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: .4rem; }
+    .seo-prose code { background: #0b1a2a; border: 1px solid #58769135; border-radius: .35rem; padding: .1rem .4rem; font-size: .85em; color: #58ded6; }
+    .seo-prose .related-tools { list-style: none; padding-left: 0; }
+    .seo-prose .related-tools i { margin-right: .3rem; }
+</style>
