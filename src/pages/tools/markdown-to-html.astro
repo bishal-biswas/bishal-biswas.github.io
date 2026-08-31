@@ -1,0 +1,203 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="markdown-to-html"
+    title="Markdown to HTML Converter - Free Online"
+    metaDescription="Convert Markdown to HTML online for free. Paste markdown, render clean HTML, and copy the output instantly in your browser."
+    pageHeadingText="Markdown to HTML"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="md-in">Markdown input</label>
+            <textarea id="md-in" class="tool-input" placeholder="# Hello\n\n**Bold** and *italic* text\n\n- list item\n- another item\n\n[Read more](https://example.com)" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="md-convert" class="tool-btn">Convert <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="md-out">HTML output</label>
+            <textarea id="md-out" class="tool-input" readonly spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="md-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Turn Markdown into clean HTML</h2>
+    <p>
+        This <strong>Markdown to HTML converter</strong> turns plain Markdown into ready-to-use HTML with headings,
+        lists, links, emphasis, code blocks and blockquotes. It is ideal for blog drafts, documentation snippets,
+        README files and quick content generation when you want to paste a preview into a webpage or email template.
+    </p>
+
+    <h2>What it supports</h2>
+    <ul>
+        <li>Headings from <code>#</code> to <code>######</code>.</li>
+        <li>Bold, italic, strikethrough and inline code.</li>
+        <li>Unordered and ordered lists.</li>
+        <li>Links, images and fenced code blocks.</li>
+        <li>Blockquotes and multi-paragraph text.</li>
+    </ul>
+
+    <p>
+        Need the reverse conversion? Use the <a href="/tools/html-to-markdown">HTML to Markdown converter</a>.
+        If you want to preview the final result in a browser, open the <a href="/tools/html-preview">HTML preview</a>
+        tool and paste the output there.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = (id) => document.getElementById(id);
+
+        function escapeHtml(value) {
+            return value
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/\"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        function renderInline(text) {
+            let html = escapeHtml(text);
+            html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" />');
+            html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+            html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
+            html = html.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+            html = html.replace(/__([^_]+)__/g, '<strong>$1</strong>');
+            html = html.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+            html = html.replace(/~~([^~]+)~~/g, '<del>$1</del>');
+            return html;
+        }
+
+        function markdownToHtml(input) {
+            const lines = input.replace(/\r\n/g, "\n").split("\n");
+            let html = [];
+            let paragraph = [];
+            let listType = null;
+            let listItems = [];
+            let inCode = false;
+            let codeLines = [];
+            let codeLang = "";
+
+            const flushParagraph = () => {
+                if (paragraph.length) {
+                    html.push(`<p>${renderInline(paragraph.join(" "))}</p>`);
+                    paragraph = [];
+                }
+            };
+
+            const flushList = () => {
+                if (listItems.length) {
+                    const tag = listType === "ol" ? "ol" : "ul";
+                    html.push(`<${tag}>${listItems.map(item => `<li>${renderInline(item)}</li>`).join("")}</${tag}>`);
+                    listItems = [];
+                    listType = null;
+                }
+            };
+
+            const flushCode = () => {
+                if (inCode) {
+                    const content = escapeHtml(codeLines.join("\n"));
+                    html.push(`<pre><code${codeLang ? ` class="language-${escapeHtml(codeLang)}"` : ""}>${content}</code></pre>`);
+                    codeLines = [];
+                    codeLang = "";
+                    inCode = false;
+                }
+            };
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i];
+                const trimmed = line.trim();
+
+                if (trimmed.startsWith("```") || trimmed.startsWith("~~~")) {
+                    flushParagraph();
+                    flushList();
+                    if (inCode) {
+                        flushCode();
+                    } else {
+                        inCode = true;
+                        codeLang = trimmed.replace(/^```?/, "").trim();
+                        codeLines = [];
+                    }
+                    continue;
+                }
+
+                if (inCode) {
+                    codeLines.push(line);
+                    continue;
+                }
+
+                if (!trimmed) {
+                    flushParagraph();
+                    flushList();
+                    continue;
+                }
+
+                if (/^>\s?/.test(line)) {
+                    flushParagraph();
+                    flushList();
+                    const quote = line.replace(/^>\s?/, "").trim();
+                    html.push(`<blockquote>${renderInline(quote)}</blockquote>`);
+                    continue;
+                }
+
+                const headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
+                if (headingMatch) {
+                    flushParagraph();
+                    flushList();
+                    const level = headingMatch[1].length;
+                    html.push(`<h${level}>${renderInline(headingMatch[2])}</h${level}>`);
+                    continue;
+                }
+
+                if (/^\s*[-*+]\s+/.test(line)) {
+                    flushParagraph();
+                    const item = line.replace(/^\s*[-*+]\s+/, "").trim();
+                    if (listType !== "ul") {
+                        flushList();
+                        listType = "ul";
+                    }
+                    listItems.push(item);
+                    continue;
+                }
+
+                if (/^\s*\d+\.\s+/.test(line)) {
+                    flushParagraph();
+                    const item = line.replace(/^\s*\d+\.\s+/, "").trim();
+                    if (listType !== "ol") {
+                        flushList();
+                        listType = "ol";
+                    }
+                    listItems.push(item);
+                    continue;
+                }
+
+                paragraph.push(trimmed);
+            }
+
+            flushParagraph();
+            flushList();
+            flushCode();
+
+            return html.join("\n");
+        }
+
+        const convertButton = document.getElementById("md-convert");
+        const copyButton = document.getElementById("md-copy");
+
+        convertButton.addEventListener("click", () => {
+            const markdown = document.getElementById("md-in").value;
+            document.getElementById("md-out").value = markdownToHtml(markdown);
+        });
+
+        copyButton.addEventListener("click", async () => {
+            const output = document.getElementById("md-out").value;
+            if (!output) return;
+            await navigator.clipboard.writeText(output);
+        });
+    })();
+    </script>
+</ToolShell>

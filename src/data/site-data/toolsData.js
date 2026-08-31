@@ -19,6 +19,10 @@ export const toolsData = [
     { slug: "html-entity-encoder", name: "HTML Entity Encoder", icon: "fa-shield-halved", category: "Encoders & Security", blurb: "Escape and unescape HTML entities to prevent XSS." },
 
     // Converters
+    { slug: "css-formatter", name: "CSS Formatter", icon: "fa-wand-sparkles", category: "Converters", blurb: "Pretty-print minified CSS into clean, readable rules." },
+    { slug: "css-minifier", name: "CSS Minifier", icon: "fa-wand-sparkles", category: "Converters", blurb: "Compress CSS by removing whitespace, comments and extra formatting." },
+    { slug: "markdown-to-html", name: "Markdown to HTML", icon: "fa-file-code", category: "Converters", blurb: "Convert Markdown text into clean HTML markup." },
+    { slug: "html-to-markdown", name: "HTML to Markdown", icon: "fa-file-lines", category: "Converters", blurb: "Convert rich HTML into readable Markdown text." },
     { slug: "webp-converter", name: "WebP Converter", icon: "fa-image", category: "Converters", blurb: "Convert PNG and JPG images to WebP right in your browser." },
     { slug: "unix-timestamp-converter", name: "Unix Timestamp Converter", icon: "fa-clock", category: "Converters", blurb: "Convert Unix epoch timestamps to human-readable dates and back." },
     { slug: "color-converter", name: "HEX / RGB / HSL Converter", icon: "fa-palette", category: "Converters", blurb: "Convert colors between HEX, RGB and HSL with a live preview." },
@@ -36,6 +40,8 @@ export const toolsData = [
     // Text & code
     { slug: "regex-tester", name: "Regex Tester", icon: "fa-magnifying-glass", category: "Text & Code", blurb: "Test regular expressions with live match highlighting." },
     { slug: "text-diff-checker", name: "Text Diff Checker", icon: "fa-code-compare", category: "Text & Code", blurb: "Compare two texts line by line and see what changed." },
+    { slug: "javascript-formatter", name: "JavaScript Formatter", icon: "fa-code", category: "Text & Code", blurb: "Pretty-print minified JavaScript into readable, formatted code." },
+    { slug: "javascript-obfuscator", name: "JavaScript Obfuscator", icon: "fa-shield-halved", category: "Text & Code", blurb: "Rename and disguise JavaScript to make it harder to read and understand." },
     { slug: "sql-formatter", name: "SQL Formatter", icon: "fa-database", category: "Text & Code", blurb: "Format and beautify SQL queries for readability." },
     { slug: "html-preview", name: "HTML Preview", icon: "fa-eye", category: "Text & Code", blurb: "Write HTML and see it rendered live in a sandboxed preview." },
 ];

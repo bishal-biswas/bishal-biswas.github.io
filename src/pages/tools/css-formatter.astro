@@ -1,0 +1,98 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="css-formatter"
+    title="CSS Formatter - Pretty Print CSS Online Free"
+    metaDescription="Format CSS online for free. Beautify minified CSS with readable indentation and spacing in your browser."
+    pageHeadingText="CSS Formatter"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="cssf-in">Paste CSS</label>
+            <textarea id="cssf-in" class="tool-input" placeholder=".btn{display:inline-flex;color:#fff;background:#0ea5e9;padding:12px 18px;border-radius:6px}" spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="cssf-format" class="tool-btn"><i class="fa-solid fa-wand-magic-sparkles"></i> Format</button>
+            <button id="cssf-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="cssf-clear" class="tool-btn-ghost">Clear</button>
+        </div>
+        <div>
+            <label class="tool-label" for="cssf-out">Formatted CSS</label>
+            <textarea id="cssf-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Pretty-print CSS for readable styling</h2>
+    <p>
+        This <strong>CSS formatter</strong> takes minified or messy stylesheet code and turns it into clean, readable blocks.
+        You can paste a single selector, a full stylesheet, or a chunk of framework-generated CSS and instantly reformat it.
+    </p>
+
+    <h2>Why format CSS?</h2>
+    <ul>
+        <li>Resolve visual confusion in large style files.</li>
+        <li>Improve readability during debugging and refactoring.</li>
+        <li>Make generated CSS easier to review and maintain.</li>
+        <li>Compare changes more easily in version control.</li>
+    </ul>
+
+    <p>
+        For the compact version, use the <a href="/tools/css-minifier">CSS minifier</a>. If you are working with JavaScript code,
+        the <a href="/tools/javascript-formatter">JavaScript formatter</a> is the companion tool.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const input = $("cssf-in");
+        const output = $("cssf-out");
+
+        function formatCss(css) {
+            const cleaned = css.replace(/\/\*[\s\S]*?\*\//g, "").trim();
+            if (!cleaned) return "";
+
+            let result = cleaned
+                .replace(/\s*\{\s*/g, " {\n")
+                .replace(/;\s*/g, ";\n")
+                .replace(/\s*}\s*/g, "\n}\n")
+                .replace(/\n{3,}/g, "\n\n")
+                .replace(/\s*:\s*/g, ": ")
+                .replace(/\s*,\s*/g, ", ");
+
+            const lines = result.split(/\n/);
+            let indent = 0;
+            const formatted = lines.map(line => {
+                const trimmed = line.trim();
+                if (!trimmed) return "";
+
+                if (trimmed === "}") {
+                    indent = Math.max(0, indent - 1);
+                }
+
+                const spaces = "  ".repeat(indent);
+                const rendered = `${spaces}${trimmed}`;
+
+                if (trimmed.endsWith("{")) {
+                    indent += 1;
+                }
+
+                return rendered;
+            }).join("\n").trim();
+
+            return formatted;
+        }
+
+        $("cssf-format").addEventListener("click", () => {
+            output.value = formatCss(input.value);
+        });
+
+        $("cssf-copy").addEventListener("click", () => navigator.clipboard.writeText(output.value));
+        $("cssf-clear").addEventListener("click", () => {
+            input.value = "";
+            output.value = "";
+        });
+    })();
+    </script>
+</ToolShell>

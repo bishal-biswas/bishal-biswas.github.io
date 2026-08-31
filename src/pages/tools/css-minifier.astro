@@ -1,0 +1,161 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="css-minifier"
+    title="CSS Minifier - Minify CSS Online Free"
+    metaDescription="Minify CSS online for free. Remove whitespace and comments, shrink stylesheet size, and keep your CSS valid in your browser."
+    pageHeadingText="CSS Minifier"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="css-in">Paste CSS to minify</label>
+            <textarea id="css-in" class="tool-input" placeholder=".button {\n  display: inline-block;\n  color: #fff;\n  background: #0ea5e9;\n}" spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="css-minify" class="tool-btn"><i class="fa-solid fa-minimize"></i> Minify</button>
+            <button id="css-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="css-clear" class="tool-btn-ghost">Clear</button>
+            <span id="css-stats" class="tool-note ml-auto"></span>
+        </div>
+        <p id="css-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="css-out">Minified output</label>
+            <textarea id="css-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Minify CSS without breaking your styles</h2>
+    <p>
+        This <strong>CSS minifier</strong> removes unnecessary whitespace, line breaks and comments to shrink the size of
+        your stylesheet while keeping it valid and usable in production. It is useful for shipping faster front-end code,
+        trimming blog theme CSS, reducing overhead in design systems, and keeping long stylesheets easier to transfer.
+    </p>
+
+    <h2>Why minify CSS?</h2>
+    <ul>
+        <li><strong>Faster page loads</strong> - smaller CSS files download and parse more quickly.</li>
+        <li><strong>Lower bandwidth</strong> - whitespace can add a surprising amount of extra bytes.</li>
+        <li><strong>Cleaner production builds</strong> - minified CSS is common in deployment pipelines and static-site setups.</li>
+    </ul>
+
+    <h2>HOW it works</h2>
+    <p>
+        The tool strips comments and unnecessary spaces without altering the actual CSS rules. It runs entirely in the browser,
+        so nothing is sent to a server. If you need a quick preview after minification, try the
+        <a href="/tools/html-preview">HTML preview</a> tool or the <a href="/tools/json-formatter">JSON formatter</a>
+        for other data types.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = (id) => document.getElementById(id);
+        const input = $("css-in");
+        const output = $("css-out");
+        const msg = $("css-msg");
+        const stats = $("css-stats");
+
+        function minifyCss(css) {
+            let result = "";
+            let inSingleQuote = false;
+            let inDoubleQuote = false;
+            let inComment = false;
+
+            for (let i = 0; i < css.length; i++) {
+                const char = css[i];
+                const next = css[i + 1];
+
+                if (inComment) {
+                    if (char === "*" && next === "/") {
+                        inComment = false;
+                        i++;
+                    }
+                    continue;
+                }
+
+                if (inSingleQuote) {
+                    result += char;
+                    if (char === "'" && css[i - 1] !== "\\") inSingleQuote = false;
+                    continue;
+                }
+
+                if (inDoubleQuote) {
+                    result += char;
+                    if (char === '"' && css[i - 1] !== "\\") inDoubleQuote = false;
+                    continue;
+                }
+
+                if (char === "/" && next === "*") {
+                    inComment = true;
+                    i++;
+                    continue;
+                }
+
+                if (char === "'") {
+                    inSingleQuote = true;
+                    result += char;
+                    continue;
+                }
+
+                if (char === '"') {
+                    inDoubleQuote = true;
+                    result += char;
+                    continue;
+                }
+
+                if (/\s/.test(char)) {
+                    const prev = result[result.length - 1] || "";
+                    const nextChar = css.slice(i + 1).match(/\S/);
+                    const nextNonWhitespace = nextChar ? nextChar[0] : "";
+                    if (!prev || /[{};:>+~,(]/.test(prev) || /[)};:,>+~]/.test(nextNonWhitespace)) {
+                        continue;
+                    }
+                    result += " ";
+                    continue;
+                }
+
+                result += char;
+            }
+
+            return result
+                .replace(/\s*([{}:;,])\s*/g, "$1")
+                .replace(/\s*([>+~])\s*/g, "$1")
+                .replace(/\s*\{\s*/g, "{")
+                .replace(/\s*:\s*/g, ":")
+                .replace(/\s*;\s*/g, ";")
+                .replace(/\s*}\s*/g, "}")
+                .replace(/\s+/g, " ")
+                .trim();
+        }
+
+        $("css-minify").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            stats.textContent = "";
+
+            try {
+                const css = input.value;
+                const minified = minifyCss(css);
+                output.value = minified;
+
+                const before = new Blob([css]).size;
+                const after = new Blob([minified]).size;
+                const saved = before > 0 ? Math.max(0, Math.round((1 - after / before) * 100)) : 0;
+                stats.textContent = `${before.toLocaleString()} B → ${after.toLocaleString()} B (−${saved}%)`;
+            } catch (error) {
+                output.value = "";
+                msg.textContent = "Unable to minify CSS: " + error.message;
+                msg.classList.remove("hidden");
+            }
+        });
+
+        $("css-copy").addEventListener("click", () => navigator.clipboard.writeText(output.value));
+        $("css-clear").addEventListener("click", () => {
+            input.value = "";
+            output.value = "";
+            stats.textContent = "";
+            msg.classList.add("hidden");
+        });
+    })();
+    </script>
+</ToolShell>

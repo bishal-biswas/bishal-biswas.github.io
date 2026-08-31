@@ -1,0 +1,185 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="html-to-markdown"
+    title="HTML to Markdown Converter - Free Online"
+    metaDescription="Convert HTML to Markdown online for free. Paste HTML, cleanly convert it to markdown, and copy the output instantly in your browser."
+    pageHeadingText="HTML to Markdown"
+>
+    <div slot="tool" class="tool-grid2">
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="hm-in">HTML input</label>
+            <textarea id="hm-in" class="tool-input" placeholder="<h1>Hello</h1>\n<p>This is <strong>important</strong>.</p>\n<ul><li>First</li><li>Second</li></ul>" spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="hm-convert" class="tool-btn">Convert <i class="fa-solid fa-arrow-right"></i></button>
+            </div>
+        </div>
+        <div class="flex flex-col gap-3">
+            <label class="tool-label" for="hm-out">Markdown output</label>
+            <textarea id="hm-out" class="tool-input" readonly spellcheck="false"></textarea>
+            <div class="tool-row">
+                <button id="hm-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            </div>
+        </div>
+    </div>
+
+    <h2>Turn HTML into Markdown cleanly</h2>
+    <p>
+        This <strong>HTML to Markdown converter</strong> is designed for quick content cleanup when you need to move
+        content from a webpage, CMS, or rich-text editor into a Markdown-friendly format. It keeps the structure readable,
+        converting headings, lists, paragraphs, links and emphasis into clean Markdown syntax.
+    </p>
+
+    <h2>Useful for</h2>
+    <ul>
+        <li>Copying content from a website into a blog post.</li>
+        <li>Preparing documentation for GitHub or docs sites.</li>
+        <li>Converting editor output into a simpler text format.</li>
+        <li>Moving content into static-site markdown files.</li>
+    </ul>
+
+    <p>
+        For the reverse direction, use the <a href="/tools/markdown-to-html">Markdown to HTML converter</a>.
+        For browser-based HTML rendering, you can also test the result in the <a href="/tools/html-preview">HTML preview</a> tool.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = (id) => document.getElementById(id);
+
+        function decodeHtml(html) {
+            const textarea = document.createElement("textarea");
+            textarea.innerHTML = html;
+            return textarea.value;
+        }
+
+        function normalizeText(value) {
+            return value.replace(/\s+/g, " ").trim();
+        }
+
+        function convertInline(node) {
+            if (!node) return "";
+
+            if (node.nodeType === Node.TEXT_NODE) {
+                return decodeHtml(node.textContent || "");
+            }
+
+            if (node.nodeType !== Node.ELEMENT_NODE) return "";
+
+            const tag = node.tagName.toLowerCase();
+            const children = Array.from(node.childNodes).map(convertInline).join("");
+
+            if (tag === "a") {
+                const href = node.getAttribute("href") || "";
+                const text = normalizeText(children);
+                return text ? `[${text}](${href})` : "";
+            }
+
+            if (tag === "strong" || tag === "b") {
+                const text = normalizeText(children);
+                return text ? `**${text}**` : "";
+            }
+
+            if (tag === "em" || tag === "i") {
+                const text = normalizeText(children);
+                return text ? `*${text}*` : "";
+            }
+
+            if (tag === "code") {
+                return `\`${normalizeText(node.textContent || "")}\``;
+            }
+
+            if (tag === "br") return "\n";
+            if (tag === "img") {
+                const alt = node.getAttribute("alt") || "";
+                const src = node.getAttribute("src") || "";
+                return src ? `![${alt}](${src})` : "";
+            }
+
+            return children;
+        }
+
+        function convertBlock(node) {
+            if (!node) return "";
+
+            if (node.nodeType === Node.TEXT_NODE) {
+                const text = decodeHtml(node.textContent || "");
+                return text && text.trim() ? text : "";
+            }
+
+            if (node.nodeType !== Node.ELEMENT_NODE) return "";
+
+            const tag = node.tagName.toLowerCase();
+
+            if (tag === "h1" || tag === "h2" || tag === "h3" || tag === "h4" || tag === "h5" || tag === "h6") {
+                const level = Number(tag[1]) || 1;
+                const text = normalizeText(Array.from(node.childNodes).map(convertInline).join(""));
+                return text ? `${"#".repeat(level)} ${text}\n\n` : "";
+            }
+
+            if (tag === "p") {
+                const text = normalizeText(Array.from(node.childNodes).map(convertInline).join(""));
+                return text ? `${text}\n\n` : "";
+            }
+
+            if (tag === "blockquote") {
+                const text = normalizeText(Array.from(node.childNodes).map(convertInline).join(""));
+                return text ? `> ${text.replace(/\n/g, "\n> ")}\n\n` : "";
+            }
+
+            if (tag === "pre") {
+                const code = (node.textContent || "").replace(/\r\n/g, "\n").trim();
+                return code ? `\n\n\`\`\`\n${code}\n\`\`\`\n\n` : "";
+            }
+
+            if (tag === "ul" || tag === "ol") {
+                const items = Array.from(node.children)
+                    .filter(child => child.tagName && child.tagName.toLowerCase() === "li")
+                    .map((li, index) => {
+                        const text = normalizeText(Array.from(li.childNodes).map(convertInline).join(""));
+                        const prefix = tag === "ol" ? `${index + 1}.` : "-";
+                        return text ? `${prefix} ${text}` : "";
+                    })
+                    .filter(Boolean);
+
+                return items.length ? `${items.join("\n")}\n\n` : "";
+            }
+
+            if (tag === "li") {
+                return Array.from(node.childNodes).map(convertInline).join("") + "\n";
+            }
+
+            if (tag === "br") return "\n";
+
+            return Array.from(node.childNodes)
+                .map(convertBlock)
+                .join("");
+        }
+
+        function htmlToMarkdown(html) {
+            const container = document.createElement("div");
+            container.innerHTML = html;
+            const result = Array.from(container.childNodes)
+                .map(convertBlock)
+                .join("")
+                .replace(/\n{3,}/g, "\n\n")
+                .trim();
+
+            return result;
+        }
+
+        $("hm-convert").addEventListener("click", () => {
+            const html = $("hm-in").value;
+            $("hm-out").value = htmlToMarkdown(html);
+        });
+
+        $("hm-copy").addEventListener("click", async () => {
+            const output = $("hm-out").value;
+            if (!output) return;
+            await navigator.clipboard.writeText(output);
+        });
+    })();
+    </script>
+</ToolShell>

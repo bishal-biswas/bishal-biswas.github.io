@@ -15,18 +15,42 @@ import { toolsData, toolCategories } from "../../data/site-data/toolsData";
     isLargeWidth={true}
 >
     <div class="flex flex-col gap-10 my-5">
+        <div class="rounded-2xl border border-[#58769135] bg-[#10273c] p-4 sm:p-5 shadow-lg shadow-body-bg-2">
+            <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div class="relative w-full sm:max-w-xl">
+                    <input
+                        id="tool-search"
+                        type="search"
+                        placeholder="Search tools..."
+                        class="w-full rounded-xl border border-[#58769135] bg-[#0b1a2a] px-4 py-3 pl-11 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-[#58ded6]"
+                    />
+                    <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#58ded6]"></i>
+                </div>
+                <div class="flex items-center gap-2 text-sm text-slate-300">
+                    <span class="inline-flex items-center rounded-full border border-[#58769135] bg-[#183550d7] px-3 py-1.5 font-medium text-[#d9f3f1]">
+                        <span id="tool-count">{toolsData.length}</span>
+                        <span class="ml-1">tools</span>
+                    </span>
+                </div>
+            </div>
+        </div>
+
         {
             toolCategories.map(category => (
-                <section>
+                <section class="tool-category" data-category={category}>
                     <h2 class="text-2xl font-bold mb-4 dark:text-white flex items-center gap-3">
                         <span class="h-[2px] w-8 bg-[#58ded6] inline-block rounded-full"></span>
                         {category}
                     </h2>
-                    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <div class="tool-grid grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                         {
                             toolsData.filter(t => t.category === category).map(tool => (
                                 <a href={`/tools/${tool.slug}`}
-                                    class="group flex flex-col gap-2 p-5 rounded-2xl dark:bg-dark-teal bg-dark-teal border border-[#58769135] hover:border-[#58ded6] hover:-translate-y-1 transition-all duration-200 shadow-lg shadow-body-bg-2">
+                                    class="tool-card group flex flex-col gap-2 p-5 rounded-2xl dark:bg-dark-teal bg-dark-teal border border-[#58769135] hover:border-[#58ded6] hover:-translate-y-1 transition-all duration-200 shadow-lg shadow-body-bg-2"
+                                    data-tool-name={tool.name.toLowerCase()}
+                                    data-tool-blurb={tool.blurb.toLowerCase()}
+                                    data-tool-slug={tool.slug.toLowerCase()}
+                                >
                                     <span class="size-10 flex items-center justify-center rounded-xl bg-[#183550d7] text-[#58ded6] text-lg group-hover:bg-[#58ded6] group-hover:text-[#0b1a2a] transition-colors">
                                         <i class={`fa-solid ${tool.icon}`}></i>
                                     </span>
@@ -57,4 +81,46 @@ import { toolsData, toolCategories } from "../../data/site-data/toolsData";
             </p>
         </section>
     </div>
+
+    <script is:inline>
+        (function () {
+            const searchInput = document.getElementById('tool-search');
+            const toolCount = document.getElementById('tool-count');
+            const cards = Array.from(document.querySelectorAll('.tool-card'));
+            const categories = Array.from(document.querySelectorAll('.tool-category'));
+
+            const updateTools = () => {
+                const query = (searchInput.value || '').trim().toLowerCase();
+                let visibleCount = 0;
+
+                categories.forEach(category => {
+                    const categoryCards = Array.from(category.querySelectorAll('.tool-card'));
+                    let visibleInCategory = 0;
+
+                    categoryCards.forEach(card => {
+                        const haystack = [
+                            card.dataset.toolName || '',
+                            card.dataset.toolBlurb || '',
+                            card.dataset.toolSlug || ''
+                        ].join(' ');
+
+                        const match = !query || haystack.includes(query);
+                        card.style.display = match ? 'flex' : 'none';
+
+                        if (match) {
+                            visibleInCategory += 1;
+                            visibleCount += 1;
+                        }
+                    });
+
+                    category.style.display = visibleInCategory > 0 ? 'block' : 'none';
+                });
+
+                toolCount.textContent = String(visibleCount);
+            };
+
+            searchInput.addEventListener('input', updateTools);
+            updateTools();
+        })();
+    </script>
 </PlainLayout>

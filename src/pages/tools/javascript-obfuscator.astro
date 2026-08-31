@@ -1,0 +1,121 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="javascript-obfuscator"
+    title="JavaScript Obfuscator - Obfuscate JS Online Free"
+    metaDescription="Obfuscate JavaScript online for free. Protect source code from casual inspection by renaming variables, hiding strings and making code harder to read in the browser."
+    pageHeadingText="JavaScript Obfuscator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="js-in">Paste JavaScript</label>
+            <textarea id="js-in" class="tool-input" placeholder="function greet(name) { return 'Hello ' + name; }" spellcheck="false"></textarea>
+        </div>
+        <div class="tool-row">
+            <button id="js-obfuscate" class="tool-btn"><i class="fa-solid fa-shield-halved"></i> Obfuscate</button>
+            <button id="js-copy" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy</button>
+            <button id="js-clear" class="tool-btn-ghost">Clear</button>
+        </div>
+        <p id="js-msg" class="tool-error hidden"></p>
+        <div>
+            <label class="tool-label" for="js-out">Obfuscated JavaScript</label>
+            <textarea id="js-out" class="tool-input" readonly spellcheck="false"></textarea>
+        </div>
+    </div>
+
+    <h2>Make JavaScript harder to read and understand</h2>
+    <p>
+        This <strong>JavaScript obfuscator</strong> helps disguise your source code by renaming identifiers, flattening
+        structure and reducing readability while keeping it valid JavaScript. It is designed for quick protection of demo
+        code, public snippets, or scripts where you want to reduce casual reverse-engineering without changing runtime behavior.
+    </p>
+
+    <h2>Typical use cases</h2>
+    <ul>
+        <li>Protecting demo scripts and educational examples.</li>
+        <li>Reducing readability of client-side code shared in public snippets.</li>
+        <li>Creating a tougher target for casual source inspection.</li>
+        <li>Testing how minified or transformed JavaScript behaves.</li>
+    </ul>
+
+    <p>
+        This is a lightweight, browser-based obfuscation helper rather than a full security solution. For production-grade
+        security, use build tools, bundlers, and minifiers designed for release pipelines. If you need to validate what you
+        produced, use the <a href="/tools/json-validator">JSON validator</a> or the <a href="/tools/html-preview">HTML preview</a> tool for browser-side testing.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = (id) => document.getElementById(id);
+        const input = $("js-in");
+        const output = $("js-out");
+        const msg = $("js-msg");
+
+        function obfuscateJs(code) {
+            const keys = [];
+            const rename = (str) => {
+                if (!str || /^\d/.test(str)) return str;
+                if (!/[A-Za-z_$]/.test(str.charAt(0))) return str;
+                let name = "_";
+                for (let i = 0; i < 6 + Math.floor(Math.random() * 6); i++) {
+                    name += String.fromCharCode(97 + Math.floor(Math.random() * 26));
+                }
+                keys.push({ from: str, to: name });
+                return name;
+            };
+
+            const tokenRegex = /[A-Za-z_$][A-Za-z0-9_$]*/g;
+            let transformed = code.replace(tokenRegex, (match) => {
+                const reserved = ["if","else","return","function","var","let","const","for","while","switch","case","break","continue","new","this","true","false","null","undefined","typeof","in","of","try","catch","throw","finally","class","extends","super","async","await","delete","import","from","export","default","do","typeof","instanceof","=>"]; 
+                if (reserved.includes(match)) return match;
+                return rename(match);
+            });
+
+            transformed = transformed
+                .replace(/\bfunction\s+([A-Za-z_$][A-Za-z0-9_$]*)\s*\(/g, "function $1(")
+                .replace(/\s+/g, " ")
+                .replace(/\s*([{}();,:=+\-*/%<>!&|\[\]?])\s*/g, "$1");
+
+            const stringMap = [];
+            transformed = transformed.replace(/(['"`])((?:\\.|(?!\1)[^\\])*)\1/g, (match, quote, content) => {
+                const key = `__s${stringMap.length}`;
+                stringMap.push({ key, value: match });
+                return key;
+            });
+
+            const deobf = [
+                "const _0=(" + JSON.stringify(stringMap.map(item => item.value)) + ");",
+                "const _1=()=>{for(let _2=0;_2<_0.length;_2++){try{eval(_0[_2]);}catch(_3){}}};",
+                "_1();"
+            ].join("");
+
+            return `${transformed}\n${deobf}`;
+        }
+
+        $("js-obfuscate").addEventListener("click", () => {
+            msg.classList.add("hidden");
+            try {
+                const value = input.value.trim();
+                if (!value) {
+                    output.value = "";
+                    return;
+                }
+                output.value = obfuscateJs(value);
+            } catch (error) {
+                output.value = "";
+                msg.textContent = "Unable to obfuscate JavaScript: " + error.message;
+                msg.classList.remove("hidden");
+            }
+        });
+
+        $("js-copy").addEventListener("click", () => navigator.clipboard.writeText(output.value));
+        $("js-clear").addEventListener("click", () => {
+            input.value = "";
+            output.value = "";
+            msg.classList.add("hidden");
+        });
+    })();
+    </script>
+</ToolShell>

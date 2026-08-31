@@ -53,6 +53,7 @@ collections:
         required: true
         pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
         hint: 'Becomes the URL: /articles/<slug>/. Changing this on a published post breaks its existing links.'
+      - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Used for SEO and social share cards.' }
       - { name: featuredImage, label: Featured Image, widget: image, hint: 'Saved as a bare filename; the site prepends /uploads/articles/' }
       - { name: author, label: Author, widget: string, default: Bishal Biswas }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'A future date hides the post until that day.' }
