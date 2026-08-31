@@ -72,24 +72,70 @@ const relatedPool = current
 </PlainLayout>
 
 <style is:global>
+    :root {
+        --tool-panel-bg: linear-gradient(160deg, #f5fbff, #edf4fb);
+        --tool-panel-border: rgba(26, 55, 82, 0.14);
+        --tool-panel-shadow: 0 20px 50px rgba(15, 23, 42, 0.12);
+        --tool-input-bg: #ffffff;
+        --tool-input-text: #12304a;
+        --tool-input-border: rgba(20, 57, 80, 0.16);
+        --tool-label-text: #3b5d78;
+        --tool-secondary-text: #5d7387;
+        --tool-btn-bg: #18a7a3;
+        --tool-btn-text: #ffffff;
+        --tool-btn-hover: #12918d;
+        --tool-btn-ghost-bg: #edf3f8;
+        --tool-btn-ghost-text: #0f3d5c;
+        --tool-btn-ghost-border: rgba(15, 61, 92, 0.16);
+        --tool-prose-bg: #f5f9fc;
+        --tool-prose-text: #16364e;
+        --tool-prose-heading: #0b1d2d;
+        --tool-prose-muted: #49657a;
+        --tool-prose-code-bg: #edf4fb;
+        --tool-prose-code-text: #0f6c74;
+    }
+
+    .dark {
+        --tool-panel-bg: linear-gradient(160deg, #12283dd9, #0d1f30ee);
+        --tool-panel-border: rgba(88, 118, 145, 0.29);
+        --tool-panel-shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+        --tool-input-bg: #0b1a2a;
+        --tool-input-text: #d9f3f1;
+        --tool-input-border: rgba(88, 118, 145, 0.29);
+        --tool-label-text: #8fb3c9;
+        --tool-secondary-text: #8fb3c9;
+        --tool-btn-bg: #58ded6;
+        --tool-btn-text: #0b1a2a;
+        --tool-btn-hover: #7ff0e9;
+        --tool-btn-ghost-bg: #183550;
+        --tool-btn-ghost-text: #58ded6;
+        --tool-btn-ghost-border: rgba(88, 118, 145, 0.29);
+        --tool-prose-bg: #10273c;
+        --tool-prose-text: #cfe6e4;
+        --tool-prose-heading: #e9fbfa;
+        --tool-prose-muted: #cee4ed;
+        --tool-prose-code-bg: #0b1a2a;
+        --tool-prose-code-text: #58ded6;
+    }
+
     /* ---- Tool panel ---- */
     .tool-panel {
-        background: linear-gradient(160deg, #12283dd9, #0d1f30ee);
-        border: 1px solid #58769149;
+        background: var(--tool-panel-bg);
+        border: 1px solid var(--tool-panel-border);
         backdrop-filter: blur(8px);
         border-radius: 1.25rem;
         padding: 1.25rem;
-        box-shadow: 0 20px 50px #00000059;
+        box-shadow: var(--tool-panel-shadow);
     }
     @media (min-width: 1024px) { .tool-panel { padding: 2rem; } }
 
-    .tool-label { display:block; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: #8fb3c9; margin-bottom: .35rem; font-weight: 600; }
+    .tool-label { display:block; font-size: .78rem; letter-spacing: .05em; text-transform: uppercase; color: var(--tool-label-text); margin-bottom: .35rem; font-weight: 600; }
 
     .tool-input, .tool-select {
         width: 100%;
-        background: #0b1a2a;
-        color: #d9f3f1;
-        border: 1px solid #58769149;
+        background: var(--tool-input-bg);
+        color: var(--tool-input-text);
+        border: 1px solid var(--tool-input-border);
         border-radius: .75rem;
         padding: .7rem .9rem;
         font-size: .9rem;
@@ -100,8 +146,8 @@ const relatedPool = current
     textarea.tool-input { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; min-height: 10rem; resize: vertical; line-height: 1.5; }
 
     .tool-btn {
-        background: #58ded6;
-        color: #0b1a2a;
+        background: var(--tool-btn-bg);
+        color: var(--tool-btn-text);
         font-weight: 700;
         border: none;
         border-radius: 9999px;
@@ -110,43 +156,43 @@ const relatedPool = current
         font-size: .9rem;
         transition: transform .12s ease, background .15s ease;
     }
-    .tool-btn:hover { background: #7ff0e9; transform: translateY(-1px); }
+    .tool-btn:hover { background: var(--tool-btn-hover); transform: translateY(-1px); }
 
     .tool-btn-ghost {
-        background: #183550;
-        color: #58ded6;
-        border: 1px solid #58769149;
+        background: var(--tool-btn-ghost-bg);
+        color: var(--tool-btn-ghost-text);
+        border: 1px solid var(--tool-btn-ghost-border);
         border-radius: 9999px;
         padding: .6rem 1.4rem;
         cursor: pointer;
         font-size: .9rem;
         transition: background .15s ease;
     }
-    .tool-btn-ghost:hover { background: #1e4160; }
+    .tool-btn-ghost:hover { background: rgba(24, 136, 138, 0.12); }
 
     .tool-row { display: flex; flex-wrap: wrap; gap: .6rem; align-items: center; }
     .tool-grid2 { display: grid; gap: 1rem; }
     @media (min-width: 1024px) { .tool-grid2 { grid-template-columns: 1fr 1fr; } }
 
-    .tool-note { font-size: .8rem; color: #8fb3c9; }
-    .tool-error { color: #ff8a8a; font-size: .85rem; white-space: pre-wrap; }
-    .tool-success { color: #7df0a1; font-size: .85rem; }
+    .tool-note { font-size: .8rem; color: var(--tool-secondary-text); }
+    .tool-error { color: #d14343; font-size: .85rem; white-space: pre-wrap; }
+    .tool-success { color: #13825f; font-size: .85rem; }
 
     /* ---- SEO article ---- */
     .seo-prose {
-        background: #10273c;
-        border: 1px solid #58769135;
-        color: #cfe6e4;
+        background: var(--tool-prose-bg);
+        border: 1px solid var(--tool-panel-border);
+        color: var(--tool-prose-text);
         line-height: 1.75;
     }
-    .seo-prose h2 { font-size: 1.5rem; font-weight: 700; color: #e9fbfa; margin: 2rem 0 .75rem; }
+    .seo-prose h2 { font-size: 1.5rem; font-weight: 700; color: var(--tool-prose-heading); margin: 2rem 0 .75rem; }
     .seo-prose h2:first-child { margin-top: 0; }
-    .seo-prose h3 { font-size: 1.15rem; font-weight: 700; color: #d9f3f1; margin: 1.5rem 0 .5rem; }
+    .seo-prose h3 { font-size: 1.15rem; font-weight: 700; color: var(--tool-prose-heading); margin: 1.5rem 0 .5rem; }
     .seo-prose p { margin-bottom: 1rem; }
-    .seo-prose a { color: #58ded6; text-decoration: underline; text-underline-offset: 3px; }
+    .seo-prose a { color: #0f7c7a; text-decoration: underline; text-underline-offset: 3px; }
     .seo-prose ul { list-style: disc; padding-left: 1.4rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: .4rem; }
     .seo-prose ol { list-style: decimal; padding-left: 1.4rem; margin-bottom: 1rem; display: flex; flex-direction: column; gap: .4rem; }
-    .seo-prose code { background: #0b1a2a; border: 1px solid #58769135; border-radius: .35rem; padding: .1rem .4rem; font-size: .85em; color: #58ded6; }
+    .seo-prose code { background: var(--tool-prose-code-bg); border: 1px solid var(--tool-input-border); border-radius: .35rem; padding: .1rem .4rem; font-size: .85em; color: var(--tool-prose-code-text); }
     .seo-prose .related-tools { list-style: none; padding-left: 0; }
     .seo-prose .related-tools i { margin-right: .3rem; }
 </style>
