@@ -38,6 +38,10 @@
         {
           "menuTitle": "Products",
           "menuURL": "/products"
+        },
+        {
+          "menuTitle": "Developer Tools",
+          "menuURL": "/tools"
         }
       ]
     },
