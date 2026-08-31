@@ -4,7 +4,7 @@ slug: html-elements-html-attributes
 featuredImage: article-thumbnail-1-.jpg
 author: Bishal Biswas
 publishDate: 2026-08-31
-isDraft: true
+isDraft: false
 category: Web Development
 tags:
   - HTML
