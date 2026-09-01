@@ -1,7 +1,7 @@
 ---
 title: HTML Elements vs HTML Attributes
 slug: html-elements-html-attributes
-featuredImage: article-thumbnail-1-.jpg
+image: article-thumbnail-1-.jpg
 author: Bishal Biswas
 publishDate: 2026-08-31
 isDraft: false

@@ -4,6 +4,7 @@ import type { CollectionEntry } from "astro:content";
 import ArticleShareBtnLinks from "../components/ArticleShareBtnLinks.astro";
 import Prose from "./Prose.astro";
 import { aboutMeSection } from "../data/site-data/profile"
+import { isBackendConfigured } from "../data/site-data/integrations";
 // import ButtonLinkUI from "./ButtonLinkUI.astro";
 
 interface Props {
@@ -126,7 +127,7 @@ const { post } = Astro.props;
                     class="row gap-5 flex lg:flex-row flex-col justify-between mt-4"
                 >
                     <ArticleShareBtnLinks
-                        pageFeaturedImage={post.data.featuredImage}
+                        pageFeaturedImage={post.data.image}
                         pageTitle={post.data.title}
                     />
 
@@ -135,13 +136,26 @@ const { post } = Astro.props;
                     >
                         <div class="like-dislike-container w-fit">
                             <div class="user-response flex gap-1">
-                                <span class="bg-lite-green hover:bg-dark-green rounded-tl-full rounded-bl-full px-4 p-2 cursor-pointer hover:scale-105 transition-all ease-in-out duration-300"><i class="fa-solid fa-thumbs-up"></i></span>
-                                <span class="bg-lite-green hover:bg-dark-green rounded-tr-full rounded-br-full px-4 p-2 cursor-pointer hover:scale-105 transition-all ease-in-out duration-300"><i class="fa-solid fa-thumbs-down -scale-x-100"></i></span
-                                >
+                                <button
+                                    type="button"
+                                    data-reaction="like"
+                                    aria-pressed="false"
+                                    disabled={!isBackendConfigured}
+                                    aria-label="Like this article"
+                                    class="bg-lite-green enabled:hover:bg-dark-green rounded-tl-full rounded-bl-full px-4 p-2 enabled:cursor-pointer enabled:hover:scale-105 transition-all ease-in-out duration-300"
+                                ><i class="fa-solid fa-thumbs-up"></i></button>
+                                <button
+                                    type="button"
+                                    data-reaction="dislike"
+                                    aria-pressed="false"
+                                    disabled={!isBackendConfigured}
+                                    aria-label="Dislike this article"
+                                    class="bg-lite-green enabled:hover:bg-dark-green rounded-tr-full rounded-br-full px-4 p-2 enabled:cursor-pointer enabled:hover:scale-105 transition-all ease-in-out duration-300"
+                                ><i class="fa-solid fa-thumbs-down -scale-x-100"></i></button>
                             </div>
                             <div class="values w-full flex text-center">
-                                <span class="block w-1/2">{post.data.likes}</span>
-                                <span class="block w-1/2">{post.data.dislikes}</span>
+                                <span class="block w-1/2" data-stat="likes">{post.data.likes ?? 0}</span>
+                                <span class="block w-1/2" data-stat="dislikes">{post.data.dislikes ?? 0}</span>
                             </div>
                         </div>
                     </div>

@@ -1,7 +1,7 @@
 ---
 title: What Is HTML? A Beginner's Complete Guide in 2026
 slug: html-a-beginner-complete-guide
-featuredImage: what-is-html-a-beginner-s-complete-guide.webp
+image: what-is-html-a-beginner-s-complete-guide.webp
 author: Bishal Biswas
 publishDate: 2026-08-29
 isDraft: false

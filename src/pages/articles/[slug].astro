@@ -9,6 +9,8 @@ import BlogContent from "../../components/blogContent.astro";
 import SectionDivider from "../../components/SectionDivider.astro";
 import { calculateReadingTime, filterFuturePosts, getFormattedDate, getPaths } from "../../data/utils";
 import PlainLayout from "../../layouts/PlainLayout.astro";
+import ArticleStats from "../../components/ArticleStats.astro";
+import { isBackendConfigured } from "../../data/site-data/integrations";
 
 /* const blog ={
     data : {
@@ -96,10 +98,10 @@ const articleDescription = plainBody.length > 80
   pageSmallText=""
   isLargeWidth={true}
   title={entry.data.title}
-  backgroundImg={getPaths("Article") + entry.data.featuredImage}
+  backgroundImg={getPaths("Article") + entry.data.image}
   pageType="article"
   ogType="article"
-  ogImage={getPaths("Article") + entry.data.featuredImage}
+  ogImage={getPaths("Article") + entry.data.image}
   heroImgTransitionName={`article-image-${entry.data.slug}`}
   metaDescription={articleDescription}
 >
@@ -116,10 +118,10 @@ const articleDescription = plainBody.length > 80
             <span id="readingTime" class="readingTime">{calculateReadingTime(entry.body?.replaceAll("#", "") ?? "")}</span>
         </span>
         {
-            (entry.data.views) &&
+            (isBackendConfigured || entry.data.views) &&
             <span title="Visits" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg" >
                 <i class="fa-duotone fa-eye"></i>
-                <span class="">{entry.data.views} Views</span>
+                <span class=""><span data-stat="views">{entry.data.views ?? 0}</span> Views</span>
             </span>
         }
     </div>
@@ -139,6 +141,7 @@ const articleDescription = plainBody.length > 80
     
     <ArticleBottomAllCategories />
 
+    <ArticleStats slug={entry.data.slug ?? ""} />
 </PlainLayout>
 
 <script is:inline src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>

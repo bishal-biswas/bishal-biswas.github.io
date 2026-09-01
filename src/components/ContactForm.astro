@@ -1,17 +1,154 @@
 ---
 import ButtonLinkUI from "./ButtonLinkUI.astro";
-
-
+import {
+    integrations,
+    isBackendConfigured,
+    isEmailJsConfigured,
+    fallbackEmail,
+} from "../data/site-data/integrations";
 ---
+
 <!-- Contact Form -->
-<div class="contactForm-container relative flex justify-center items-center dark:bg-dark-teal bg-dark-teal text-[#dedee0] text-sm rounded-lg text-center shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5 max-h-[400px]">
-    <form class="flex flex-col gap-5 w-full">
-        <input required type="text" class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Your Name">
-        <input required type="email" class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Email">
-        <textarea required name="" class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full min-h-[150px]" placeholder="Your Message" id="" cols="10" rows="4"></textarea>
+<div
+    class="contactForm-container relative flex flex-col justify-center items-center dark:bg-dark-teal bg-dark-teal text-[#dedee0] text-sm rounded-lg text-center shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5"
+>
+    <form id="contact-form" class="flex flex-col gap-5 w-full">
+        <label class="sr-only" for="contact-name">Your name</label>
+        <input
+            id="contact-name"
+            name="name"
+            required
+            type="text"
+            autocomplete="name"
+            maxlength="120"
+            class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+            placeholder="Your Name"
+        />
+
+        <label class="sr-only" for="contact-email">Your email</label>
+        <input
+            id="contact-email"
+            name="email"
+            required
+            type="email"
+            autocomplete="email"
+            maxlength="160"
+            class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+            placeholder="Email"
+        />
+
+        <label class="sr-only" for="contact-subject">Subject</label>
+        <input
+            id="contact-subject"
+            name="subject"
+            type="text"
+            maxlength="160"
+            class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+            placeholder="Subject (optional)"
+        />
+
+        <label class="sr-only" for="contact-message">Your message</label>
+        <textarea
+            id="contact-message"
+            name="message"
+            required
+            maxlength="5000"
+            class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full min-h-[150px]"
+            placeholder="Your Message"
+            cols="10"
+            rows="4"></textarea>
+
+        <!-- Honeypot: hidden from people, irresistible to bots. -->
+        <div class="hidden" aria-hidden="true">
+            <label for="contact-company">Company</label>
+            <input id="contact-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
 
         <span class="flex">
-            <ButtonLinkUI isButton={true} action="" isBgColored={true} iconClass="ml-2 fa-solid fa-paper-plane transition-all ease-in-out duration-150" >Send</ButtonLinkUI>
+            <ButtonLinkUI
+                isButton={true}
+                action=""
+                isBgColored={true}
+                iconClass="ml-2 fa-solid fa-paper-plane transition-all ease-in-out duration-150"
+                >Send</ButtonLinkUI
+            >
         </span>
     </form>
+
+    {
+        !isBackendConfigured && (
+            <p class="mt-4 text-xs opacity-70">
+                The form is not connected yet - reach me at{" "}
+                <a class="underline hover:text-lite-green" href={`mailto:${fallbackEmail}`}>
+                    {fallbackEmail}
+                </a>
+                .
+            </p>
+        )
+    }
 </div>
+
+{
+    isEmailJsConfigured && (
+        <script is:inline src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js" />
+    )
+}
+
+<script
+    is:inline
+    define:vars={{
+        emailjsConfig: isEmailJsConfigured ? integrations.emailjs : null,
+    }}
+>
+    (function () {
+        var form = document.getElementById("contact-form");
+        if (!form || !window.siteApi) return;
+
+        // With EmailJS configured the visitor-facing auto-reply is sent from the
+        // browser after the message is safely stored; otherwise Apps Script
+        // sends it server-side (CONFIG.SEND_AUTOREPLY in Code.gs).
+        if (emailjsConfig && window.emailjs) {
+            window.emailjs.init({ publicKey: emailjsConfig.publicKey });
+        }
+
+        function sendAutoReply(fields) {
+            if (!emailjsConfig || !window.emailjs) return;
+            window.emailjs
+                .send(emailjsConfig.serviceId, emailjsConfig.templateId, {
+                    to_name: fields.name,
+                    to_email: fields.email,
+                    from_name: "Bishal Biswas",
+                    subject: fields.subject || "Website enquiry",
+                    message: fields.message,
+                    reply_to: "bishal.biswas.4796@gmail.com",
+                })
+                // The message is already saved, so a failed courtesy email is
+                // worth a console line and nothing more.
+                .catch(function (error) {
+                    console.error("EmailJS auto-reply failed", error);
+                });
+        }
+
+        window.siteApi.bindForm(form, "contact", {
+            pending: "Sending",
+            success: "Thanks - your message is on its way.",
+            onSuccess: function (_result, submittedForm) {
+                sendAutoReply({
+                    name: submittedForm.dataset.lastName || "",
+                    email: submittedForm.dataset.lastEmail || "",
+                    subject: submittedForm.dataset.lastSubject || "",
+                    message: submittedForm.dataset.lastMessage || "",
+                });
+            },
+            // bindForm resets the form before onSuccess runs, so stash what the
+            // auto-reply needs while the values are still there.
+            collect: function (submittedForm) {
+                submittedForm.dataset.lastName = submittedForm.elements.name.value;
+                submittedForm.dataset.lastEmail = submittedForm.elements.email.value;
+                submittedForm.dataset.lastSubject = submittedForm.elements.subject.value;
+                submittedForm.dataset.lastMessage = submittedForm.elements.message.value;
+                return {};
+            },
+        });
+    })();
+</script>

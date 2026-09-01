@@ -1,0 +1,38 @@
+---
+// One ad slot. Renders every enabled unit assigned to `placement` in the CMS
+// (Site Data > Ad Units), and renders nothing at all - heading included - when
+// the slot is empty, so an unsold slot leaves no gap on the page.
+//
+// adCode is emitted verbatim with set:html. That is intentional: ad networks
+// ship <script> tags, and because this is a static build the markup is baked
+// into the HTML file, so those scripts run normally. It also means the field
+// is only as safe as the person pasting into it - it is admin-only input, and
+// nothing here comes from visitors.
+import { adUnitsFor } from "../data/site-data/adUnits";
+
+interface Props {
+    placement: string;
+    heading?: string;
+    isSticky?: boolean;
+}
+
+const { placement, heading = "Advertisement", isSticky = false } = Astro.props;
+const units = adUnitsFor(placement);
+---
+
+{
+    units.length > 0 && (
+        <div class="widget w-full" class:list={[isSticky && "sticky top-24"]}>
+            <span class="heading-wrapper w-full my-5 flex items-center relative border-t border-[#919ca1] border-dotted">
+                <span class="absolute text-xl font-bold pr-4 z-[1] dark:bg-body-bg-2 bg-body-bg-2">
+                    {heading}
+                </span>
+            </span>
+            <div class="widget-container ADS flex lg:flex-row flex-col justify-center items-center gap-3 w-full p-3 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]">
+                {units.map((unit) => (
+                    <div class="ad-unit w-full flex justify-center overflow-hidden" set:html={unit.adCode} />
+                ))}
+            </div>
+        </div>
+    )
+}

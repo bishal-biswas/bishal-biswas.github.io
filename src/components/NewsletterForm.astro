@@ -1,0 +1,65 @@
+---
+// Email capture, stored in the Newsletter tab of the Google Sheet.
+// Used in the article sidebar; drop it anywhere else that needs a signup.
+import { isBackendConfigured } from "../data/site-data/integrations";
+
+interface Props {
+    // Unique per instance - two of these can appear on one page.
+    formId?: string;
+    // Recorded in the sheet so you can tell where a subscriber came from.
+    source?: string;
+}
+
+const { formId = "newsletter-form", source = "article-sidebar" } = Astro.props;
+---
+
+<form class="newsletter-form flex flex-col gap-5 w-full" id={formId} data-source={source}>
+    <label class="sr-only" for={`${formId}-email`}>Email address</label>
+    <input
+        id={`${formId}-email`}
+        name="email"
+        required
+        type="email"
+        autocomplete="email"
+        maxlength="160"
+        class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+        placeholder="Enter your Email Address"
+    />
+
+    <!-- Honeypot: hidden from people, irresistible to bots. -->
+    <div class="hidden" aria-hidden="true">
+        <label for={`${formId}-website`}>Website</label>
+        <input id={`${formId}-website`} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+    </div>
+
+    <span class="flex justify-center">
+        <button
+            type="submit"
+            class="CTAbtn w-full rounded-full p-7 py-3 bg-lite-green text-white text-xs font-semibold uppercase hover:scale-105 transition-all ease-in-out duration-300"
+        >
+            Subscribe <i
+                class="ml-2 fa-duotone fa-arrow-right transition-all ease-in-out duration-150"></i>
+        </button>
+    </span>
+
+    {
+        !isBackendConfigured && (
+            <p class="text-[11px] opacity-70 text-center">Signups open soon.</p>
+        )
+    }
+</form>
+
+<script is:inline define:vars={{ formId }}>
+    (function () {
+        var form = document.getElementById(formId);
+        if (!form || !window.siteApi) return;
+
+        window.siteApi.bindForm(form, "subscribe", {
+            pending: "Subscribing",
+            success: "You are subscribed. Check your inbox for a hello.",
+            collect: function (element) {
+                return { source: element.dataset.source || "" };
+            },
+        });
+    })();
+</script>

@@ -22,7 +22,7 @@ local_backend: true
 #
 # public_folder is deliberately "" everywhere: this site stores BARE FILENAMES
 # in frontmatter and prepends the directory at render time via getPaths(), e.g.
-#   getPaths("Article") + entry.data.featuredImage
+#   getPaths("Article") + entry.data.image
 # If Decap wrote "/uploads/articles/foo.png" the site would build a broken
 # doubled path. See src/data/utils.ts and src/data/site-data/navigation.js.
 media_folder: public/uploads/files
@@ -54,7 +54,7 @@ collections:
         pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
         hint: 'Becomes the URL: /articles/<slug>/. Changing this on a published post breaks its existing links.'
       - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Used for SEO and social share cards.' }
-      - { name: featuredImage, label: Featured Image, widget: image, hint: 'Saved as a bare filename; the site prepends /uploads/articles/' }
+      - { name: image, label: Featured Image, widget: image, hint: 'Saved as a bare filename; the site prepends /uploads/articles/' }
       - { name: author, label: Author, widget: string, default: Bishal Biswas }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true, hint: 'A future date hides the post until that day.' }
       - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely.' }
@@ -292,6 +292,36 @@ collections:
               - { name: title, label: Title, widget: string, hint: 'Must match the category value used on articles exactly.' }
               - { name: imageFile, label: Image, widget: image, hint: 'Bare filename; the site prepends /uploads/categ/' }
 
+      - name: ad-units
+        label: Ad Units
+        file: src/data/site-data/json/ad-units.json
+        fields:
+          - name: adUnits
+            label: Ad Units
+            widget: list
+            label_singular: Ad Unit
+            summary: '{{fields.adTitle}} - {{fields.placement}}'
+            fields:
+              - { name: adTitle, label: Name, widget: string, hint: 'Just a label for this list - never shown on the site.' }
+              - name: placement
+                label: Placement
+                widget: select
+                default: Article Sidebar
+                # Each option needs a matching <AdUnit placement="..."> in the
+                # markup. Keep in step with adPlacements in
+                # src/data/site-data/adUnits.js.
+                options:
+                  - Article Sidebar
+                  - Article Sidebar (Sticky)
+              - { name: isEnabled, label: Enabled, widget: boolean, default: false, hint: 'Off hides the slot completely - heading included.' }
+              - name: adCode
+                label: Ad Code
+                widget: code
+                default_language: html
+                allow_language_selection: false
+                output_code_only: true
+                hint: 'Paste the network snippet (AdSense, Ezoic, a plain <img> link). Rendered verbatim, scripts included - only paste code you trust.'
+
       - name: products
         label: Products
         file: src/data/site-data/json/products.json
@@ -306,7 +336,18 @@ collections:
               - { name: productDescription, label: Description, widget: text }
               - { name: productLink, label: Link, widget: string, required: false }
               - { name: productImage, label: Image URL, widget: string, hint: 'Full URL - these are external images.' }
-              - { name: productCategory, label: Category, widget: string }
+              - name: productCategory
+                label: Category
+                widget: select
+                default: Books
+                # These are the sections on /products, in order. Keep them in
+                # step with productCategories in src/data/site-data/content.js.
+                options:
+                  - Books
+                  - Software
+                  - Websites
+                  - WordPress Themes
+                  - WordPress Plugins
       
   # ----------------------------------------------------------- personal info
   # Facts about Bishal: profile, photos, resume, and the career history shown on

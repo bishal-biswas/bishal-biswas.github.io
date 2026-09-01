@@ -6,6 +6,7 @@ import Prose from '../components/Prose.astro';
 import HeadTag from '../components/HeadTag.astro';
 import Modal from '../components/Modal.astro';
 import Notify from '../components/Notify.astro';
+import SiteApi from '../components/SiteApi.astro';
 
 interface Props {
     title ?: string,
@@ -31,6 +32,7 @@ if(pageType == "article"){
 <body class="bg-body-bg lg:p-3">
     <Modal />
     <Notify />
+    <SiteApi />
 
     <span class="scrollUp"></span>
     <div class="dark:bg-body-bg-2 bg-body-bg-2 w-full flex flex-col items-center min-h-[90vh] rounded-md overflow-hidden">

@@ -1,0 +1,84 @@
+---
+import ProductCard from "../../components/ProductCard.astro";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+
+interface ProductSchema {
+    productTitle: string;
+    productDescription: string;
+    productImage: string;
+    productLink: string;
+    productCategory: string;
+}
+
+import { products, productCategories } from "../../data/site-data/content";
+import { getPageContent } from "../../data/utils";
+
+const allProducts = products as ProductSchema[];
+
+// This is a dynamic route for one reason: getStaticPaths can decline to build
+// anything. With no products the page is never emitted at all, so /products
+// returns a real 404 instead of an empty shell for search engines to index.
+// The undefined rest parameter is what maps this file to /products itself.
+export function getStaticPaths() {
+    return products.length ? [{ params: { slug: undefined } }] : [];
+}
+
+const productsIn = (categoryName: string) =>
+    allProducts.filter((product) => product.productCategory === categoryName);
+
+// Anything filed under a category that is not in the curated list still gets a
+// section, appended after the known ones, so nothing silently disappears.
+const knownNames = productCategories.map((category) => category.name);
+const extraSections = [...new Set(allProducts.map((product) => product.productCategory))]
+    .filter((name) => name && !knownNames.includes(name))
+    .map((name) => ({ name, icon: "fa-solid fa-box", blurb: "" }));
+
+// Only categories that actually hold something get a heading - an empty
+// section is a promise the page cannot keep.
+const sections = [...productCategories, ...extraSections]
+    .map((category) => ({ ...category, items: productsIn(category.name) }))
+    .filter((section) => section.items.length > 0);
+
+const pageContent = getPageContent("Products");
+---
+
+<PlainLayout
+    title="Products"
+    metaDescription="Books, software, websites, WordPress themes and plugins that Bishal Biswas builds and recommends to other developers."
+    pageType="project"
+    pageSmallTextBelow={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
+>
+    <div class="wrapper flex flex-col gap-12">
+        {
+            sections.map((section) => (
+                <section class="product-section">
+                    <span class="heading-wrapper flex items-center relative border-t border-[#919ca1] border-dotted mb-6">
+                        <h2 class="absolute flex items-center gap-3 text-2xl font-bold pr-4 z-[1] dark:bg-body-bg-2 bg-body-bg-2">
+                            <i class={`${section.icon} text-lite-green text-xl`} aria-hidden="true" />
+                            {section.name}
+                        </h2>
+                    </span>
+
+                    {section.blurb && (
+                        <p class="text-sm dark:text-font-gray mb-5">{section.blurb}</p>
+                    )}
+
+                    <div class="flexbox flex gap-4 flex-wrap">
+                        {section.items.map((product) => (
+                            <ProductCard
+                                prdLink={product.productLink}
+                                prdTitle={product.productTitle}
+                                prdDescription={product.productDescription}
+                                prdImageUrl={product.productImage}
+                            />
+                        ))}
+                    </div>
+                </section>
+            ))
+        }
+    </div>
+</PlainLayout>

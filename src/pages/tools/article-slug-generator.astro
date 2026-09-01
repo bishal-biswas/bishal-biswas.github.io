@@ -1,0 +1,349 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="article-slug-generator"
+    title="Article Slug Generator - SEO URL Slug Maker, Free & Online"
+    metaDescription="Turn any article title into a clean, SEO-friendly URL slug. Strips stop words like a, the, of and in, handles accents and punctuation, and runs entirely in your browser."
+    pageHeadingText="Article Slug Generator"
+>
+    <div slot="tool" class="flex flex-col gap-4">
+        <div>
+            <label class="tool-label" for="sl-in">Article title</label>
+            <textarea
+                id="sl-in"
+                class="tool-input"
+                style="min-height:5.5rem"
+                spellcheck="false"
+                placeholder="How to Install MongoDB on a VPS in 2026&#10;&#10;Paste one title per line to generate slugs in bulk."
+            ></textarea>
+        </div>
+
+        <div class="tool-grid2">
+            <div>
+                <label class="tool-label" for="sl-sep">Separator</label>
+                <select id="sl-sep" class="tool-select">
+                    <option value="-">Hyphen - recommended</option>
+                    <option value="_">Underscore</option>
+                </select>
+            </div>
+            <div>
+                <label class="tool-label" for="sl-max">Word limit (0 = no limit)</label>
+                <input id="sl-max" class="tool-input" type="number" min="0" max="30" step="1" value="0" />
+            </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <label class="tool-row" style="gap:.55rem;cursor:pointer">
+                <input id="sl-stop" type="checkbox" checked />
+                <span class="tool-note">Remove stop words - <code>a</code>, <code>the</code>, <code>of</code>, <code>in</code>, <code>with</code> and friends</span>
+            </label>
+            <label class="tool-row" style="gap:.55rem;cursor:pointer">
+                <input id="sl-question" type="checkbox" />
+                <span class="tool-note">Also remove question words - <code>how</code>, <code>what</code>, <code>why</code>, <code>when</code>. Off by default: they carry search intent.</span>
+            </label>
+        </div>
+
+        <div>
+            <label class="tool-label" for="sl-extra">Also remove these words</label>
+            <input id="sl-extra" class="tool-input" placeholder="comma separated, e.g. best, ultimate, guide, 2026" />
+        </div>
+
+        <div>
+            <label class="tool-label" for="sl-out">Slug</label>
+            <textarea id="sl-out" class="tool-input" readonly style="min-height:4.5rem;font-size:.95rem"></textarea>
+        </div>
+
+        <div class="tool-row">
+            <button id="sl-copy" class="tool-btn"><i class="fa-regular fa-copy"></i> Copy slug</button>
+            <button id="sl-clear" class="tool-btn-ghost">Clear</button>
+            <span id="sl-stats" class="tool-note"></span>
+        </div>
+
+        <p id="sl-before" class="tool-note" hidden></p>
+        <div id="sl-removed" class="tool-row" style="display:none;gap:.35rem"></div>
+        <p id="sl-warn" class="tool-error" hidden></p>
+    </div>
+
+    <h2>Turn any headline into a clean URL slug</h2>
+    <p>
+        A slug is the human-readable tail of a URL - the <code>how-to-install-mongodb-vps</code> in
+        <code>example.com/articles/how-to-install-mongodb-vps</code>. This <strong>article slug generator</strong>
+        takes a title, lowercases it, strips punctuation and accents, joins the words with hyphens and drops the
+        filler words that add length without adding meaning. Paste one title or a hundred; everything happens in
+        your browser and nothing is uploaded.
+    </p>
+
+    <h2>What are stop words, and do they hurt SEO?</h2>
+    <p>
+        Stop words are the high-frequency connective words a search engine can safely ignore: <em>a, an, the, of,
+        in, on, for, with, is, are, to</em>. Leaving them in a URL will not get you penalised - Google's own
+        guidance treats the URL as a minor ranking signal, and its crawlers parse
+        <code>the-best-way-to-learn-html</code> perfectly well.
+    </p>
+    <p>
+        The reason to strip them anyway is everything <em>around</em> the ranking:
+    </p>
+    <ul>
+        <li><strong>Keyword prominence</strong> - a short slug puts your actual topic at the front, where both readers and search engines weigh it most.</li>
+        <li><strong>Readability in results</strong> - Google truncates long URLs in the SERP, and a truncated URL is a weaker click signal.</li>
+        <li><strong>Shareability</strong> - shorter links survive being pasted into chat, slides and print without wrapping or breaking.</li>
+        <li><strong>Consistency</strong> - a rule applied by a tool beats a rule applied by hand at 11pm.</li>
+    </ul>
+    <p>
+        So: worth doing, not worth agonising over. If dropping a word makes the slug read strangely, keep it.
+    </p>
+
+    <h3>The words this tool keeps on purpose</h3>
+    <p>
+        Most slug generators strip <code>how</code>, <code>what</code>, <code>why</code> and <code>when</code>
+        along with everything else. That is usually a mistake. Those words <em>are</em> the search query for
+        informational content - people type "how to install mongodb", not "install mongodb" - and a slug that
+        mirrors the query is easier to scan in a list of results. This tool leaves them alone unless you tick the
+        second box.
+    </p>
+    <p>
+        Negations are protected for a blunter reason: <code>not</code>, <code>no</code> and <code>without</code>
+        reverse the meaning of a title. "Why You Should Not Use jQuery" must never become
+        <code>why-you-should-use-jquery</code>.
+    </p>
+
+    <h2>What the generator does to your title</h2>
+    <ol>
+        <li>Normalises accented characters - <code>Café Décor</code> becomes <code>cafe-decor</code>, not <code>caf-dcor</code>.</li>
+        <li>Expands <code>&amp;</code> into <code>and</code> - which then drops out as a stop word unless you untick the box.</li>
+        <li>Deletes apostrophes without leaving a gap, so <code>developer's</code> becomes <code>developers</code> rather than <code>developer-s</code>.</li>
+        <li>Replaces every remaining run of punctuation, symbols and whitespace with a single separator.</li>
+        <li>Removes stop words - unless that would empty the slug, in which case it keeps them.</li>
+        <li>Applies your word limit, lowercases everything, and trims stray separators from both ends.</li>
+    </ol>
+
+    <h2>Slug rules worth following</h2>
+    <ul>
+        <li><strong>Hyphens, never underscores.</strong> Google treats a hyphen as a word separator and an underscore as a joiner, so <code>web_design</code> can be read as one token.</li>
+        <li><strong>Lowercase only.</strong> Some servers treat <code>/My-Post</code> and <code>/my-post</code> as different URLs, which splits your ranking signals between two pages.</li>
+        <li><strong>Aim for three to six words.</strong> Long enough to describe the page, short enough to survive truncation.</li>
+        <li><strong>Lead with the primary keyword.</strong> It is the first thing read on both sides of the search box.</li>
+        <li><strong>Leave dates out</strong> unless the page really is tied to a year. <code>/best-laptops-2024</code> looks stale in 2026 even after you update the article.</li>
+        <li><strong>Do not edit a published slug casually.</strong> Changing it creates a new URL and drops every link and ranking pointed at the old one. If you must, set up a 301 redirect.</li>
+    </ul>
+
+    <h3>Examples</h3>
+    <ul>
+        <li>"The Ultimate Guide to CSS Grid for Beginners" → <code>ultimate-guide-css-grid-beginners</code></li>
+        <li>"How to Install MongoDB on a VPS in 2026" → <code>how-install-mongodb-vps-2026</code></li>
+        <li>"What's the Difference Between HTML Elements and Attributes?" → <code>whats-difference-html-elements-attributes</code></li>
+        <li>"10 Things I Wish I Knew Before Learning React" → <code>10-things-wish-knew-learning-react</code></li>
+    </ul>
+
+    <h2>Writing the article next?</h2>
+    <p>
+        Once the slug is settled, the <a href="/tools/seo-article-writer">SEO article writer</a> scores the draft
+        itself - keyword density, headings, readability. For the rest of the URL, the
+        <a href="/tools/url-encoder-decoder">URL encoder and decoder</a> handles query strings and percent-encoding.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+
+        // Connective words that add length without adding meaning. Question
+        // words and negations are deliberately absent - see QUESTION_WORDS
+        // below and the article above.
+        const STOP_WORDS = new Set(`
+            a about above after again against all am an and any are as at
+            be because been before being below between both but by
+            can cannot could did do does doing down during
+            each few for from further
+            had has have having he her here hers herself him himself his
+            i if in into is it its itself
+            let me more most my myself
+            of off on once only or other ought our ours ourselves out over own
+            same shall she should so some such
+            than that the their theirs them themselves then there these they this those through to too
+            under until up us
+            very was we were will with would
+            you your yours yourself yourselves
+        `.trim().split(/\s+/));
+
+        // Kept unless the second checkbox is ticked: these mirror how people
+        // actually search for informational content.
+        const QUESTION_WORDS = new Set(["how", "what", "why", "when", "where", "which", "who", "whom", "whose"]);
+
+        function buildStopSet(includeQuestions, extraRaw) {
+            const set = new Set(STOP_WORDS);
+            if (includeQuestions) QUESTION_WORDS.forEach(word => set.add(word));
+            String(extraRaw || "")
+                .toLowerCase()
+                .split(/[,\s]+/)
+                .filter(Boolean)
+                .forEach(word => set.add(word));
+            return set;
+        }
+
+        function toWords(title) {
+            return String(title)
+                // Split accented characters into letter + accent, then drop the
+                // accents, so "Café" survives as "cafe" rather than "caf".
+                .normalize("NFKD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/&/g, " and ")
+                // Apostrophes close up: developer's -> developers.
+                .replace(/['‘’ʼ`]/g, "")
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, " ")
+                .trim()
+                .split(/\s+/)
+                .filter(Boolean);
+        }
+
+        function slugify(title, options) {
+            const words = toWords(title);
+            const removed = [];
+            let kept = words;
+
+            if (options.removeStopWords && words.length) {
+                const filtered = words.filter(word => {
+                    if (!options.stopSet.has(word)) return true;
+                    removed.push(word);
+                    return false;
+                });
+                // Stripping every word would leave no slug at all, so a title
+                // made entirely of stop words keeps them.
+                if (filtered.length) kept = filtered;
+                else removed.length = 0;
+            }
+
+            if (options.maxWords > 0) kept = kept.slice(0, options.maxWords);
+
+            return { slug: kept.join(options.separator), words: kept, removed: removed };
+        }
+
+        const LONG_SLUG = 60;
+
+        function update() {
+            const raw = $("sl-in").value;
+            const separator = $("sl-sep").value;
+            const maxWords = Math.max(0, Math.min(30, parseInt($("sl-max").value, 10) || 0));
+            const options = {
+                separator: separator,
+                maxWords: maxWords,
+                removeStopWords: $("sl-stop").checked,
+                stopSet: buildStopSet($("sl-question").checked, $("sl-extra").value),
+            };
+
+            const titles = raw.split("\n").map(line => line.trim()).filter(Boolean);
+            const results = titles.map(title => slugify(title, options));
+
+            $("sl-out").value = results.map(result => result.slug).join("\n");
+
+            const stats = $("sl-stats");
+            const before = $("sl-before");
+            const removedBox = $("sl-removed");
+            const warn = $("sl-warn");
+
+            if (!results.length) {
+                stats.textContent = "";
+                before.hidden = true;
+                removedBox.style.display = "none";
+                warn.hidden = true;
+                return;
+            }
+
+            const allRemoved = [...new Set(results.flatMap(result => result.removed))];
+            const longest = Math.max(...results.map(result => result.slug.length));
+            const totalWords = results.reduce((sum, result) => sum + result.words.length, 0);
+
+            stats.textContent = results.length > 1
+                ? `${results.length} slugs - longest ${longest} characters - ${allRemoved.length} distinct words removed`
+                : `${longest} characters - ${totalWords} words - ${results[0].removed.length} removed`;
+
+            // The single-title case gets a before/after so the saving is obvious.
+            const untouched = results.length === 1 && options.removeStopWords && results[0].removed.length
+                ? slugify(titles[0], Object.assign({}, options, { removeStopWords: false }))
+                : null;
+            if (untouched) {
+                before.hidden = false;
+                before.textContent = `Without stop words removed: ${untouched.slug} (${untouched.slug.length} characters)`;
+            } else {
+                before.hidden = true;
+            }
+
+            if (allRemoved.length) {
+                removedBox.style.display = "flex";
+                removedBox.innerHTML =
+                    '<span class="tool-note" style="margin-right:.25rem">Removed:</span>' +
+                    allRemoved
+                        .map(word => `<span class="sl-chip"></span>`)
+                        .join("");
+                // Removed words come from user input, so they are set as text.
+                removedBox.querySelectorAll(".sl-chip").forEach((chip, index) => {
+                    chip.textContent = allRemoved[index];
+                });
+            } else {
+                removedBox.style.display = "none";
+            }
+
+            const emptyResult = results.some(result => !result.slug);
+            if (emptyResult) {
+                warn.hidden = false;
+                warn.textContent = "Some titles produced an empty slug - they contain no Latin letters or digits.";
+            } else if (longest > LONG_SLUG) {
+                warn.hidden = false;
+                warn.textContent = `Longest slug is ${longest} characters. Search results truncate long URLs - try a word limit of 5 or 6.`;
+            } else {
+                warn.hidden = true;
+            }
+        }
+
+        ["sl-in", "sl-sep", "sl-max", "sl-stop", "sl-question", "sl-extra"].forEach(id => {
+            $(id).addEventListener("input", update);
+            $(id).addEventListener("change", update);
+        });
+
+        $("sl-copy").addEventListener("click", () => {
+            const output = $("sl-out");
+            if (!output.value) return;
+            const notify = (message, type) => {
+                if (window.showNotification) window.showNotification(message, type);
+            };
+            navigator.clipboard.writeText(output.value).then(
+                () => notify("Slug copied to your clipboard.", "success"),
+                () => {
+                    // Denied permission or an insecure context - select the text
+                    // so the copy is one keystroke away instead of a dead button.
+                    output.focus();
+                    output.select();
+                    notify("Could not reach the clipboard - the slug is selected, press Ctrl+C.", "warning");
+                },
+            );
+        });
+
+        $("sl-clear").addEventListener("click", () => {
+            $("sl-in").value = "";
+            $("sl-extra").value = "";
+            update();
+            $("sl-in").focus();
+        });
+
+        $("sl-in").value = "The Ultimate Guide to CSS Grid for Beginners";
+        update();
+    })();
+    </script>
+
+    <style is:inline>
+        .sl-chip {
+            display: inline-block;
+            padding: .1rem .5rem;
+            border-radius: 9999px;
+            font-size: .75rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            background: var(--tool-btn-ghost-bg);
+            color: var(--tool-btn-ghost-text);
+            border: 1px solid var(--tool-btn-ghost-border);
+            text-decoration: line-through;
+        }
+        #sl-removed { flex-wrap: wrap; align-items: center; }
+    </style>
+</ToolShell>

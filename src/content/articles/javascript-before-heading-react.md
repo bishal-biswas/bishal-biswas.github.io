@@ -1,7 +1,7 @@
 ---
 title : Javascript before Heading to React
 slug : javascript-before-heading-react
-featuredImage : javascript-before-heading-react.jpg
+image : javascript-before-heading-react.jpg
 author : Bishal Biswas
 publishDate : 2025-10-14T08:30
 isDraft : false

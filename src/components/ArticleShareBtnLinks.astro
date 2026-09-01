@@ -1,122 +1,203 @@
 ---
+import { resolveAsset } from "../data/utils";
+
 interface Props {
-    pageTitle:string, 
-    pageFeaturedImage:string
+    pageTitle: string;
+    pageFeaturedImage: string;
 }
 const { pageTitle, pageFeaturedImage } = Astro.props;
+
+const shareUrl = Astro.url.toString();
+
+// Pinterest needs an absolute image URL. The article image is usually a bare
+// filename that lives under /uploads/articles/, so resolve it the same way the
+// rest of the site does before making it absolute - pasting the origin straight
+// onto the filename produced a 404 for every pin.
+const resolvedImage = resolveAsset("Article", pageFeaturedImage);
+const imageUrl = resolvedImage ? new URL(resolvedImage, Astro.url.origin).toString() : "";
+
+// One entry per button so the tooltip, icon and link markup stay in a single
+// place. `only` narrows a button to one breakpoint - WhatsApp needs the web
+// client on desktop and the app deep link on mobile.
+const shareTargets = [
+    {
+        label: "Share on Facebook",
+        icon: "fa-brands fa-facebook-f",
+        href: `https://www.facebook.com/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+        only: "",
+    },
+    {
+        label: "Share on X",
+        icon: "fa-brands fa-x-twitter",
+        href: `https://twitter.com/share?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(pageTitle)}`,
+        only: "",
+    },
+    {
+        label: "Share on WhatsApp",
+        icon: "fa-brands fa-whatsapp",
+        href: `https://web.whatsapp.com/send?text=${encodeURIComponent(`${pageTitle} | ${shareUrl}`)}`,
+        only: "desktop",
+    },
+    {
+        label: "Share on WhatsApp",
+        icon: "fa-brands fa-whatsapp",
+        href: `https://api.whatsapp.com/send?text=${encodeURIComponent(`${pageTitle} | ${shareUrl}`)}`,
+        only: "mobile",
+    },
+    {
+        label: "Share on Pinterest",
+        icon: "fa-brands fa-pinterest-p",
+        href: `https://www.pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&media=${encodeURIComponent(imageUrl)}&description=${encodeURIComponent(pageTitle)}`,
+        only: "",
+    },
+    {
+        label: "Share on LinkedIn",
+        icon: "fa-brands fa-linkedin-in",
+        href: `https://www.linkedin.com/shareArticle?url=${encodeURIComponent(shareUrl)}`,
+        only: "",
+    },
+];
+
+const actionButtons = [
+    { label: "Copy link", icon: "fa-solid fa-paperclip", action: "copyCurrentPageURL()" },
+    { label: "Share", icon: "fa-solid fa-share", action: "triggerPageShare()" },
+];
+
+const circleClasses =
+    "size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300";
 ---
 
 <div class="shareBtns flex items-center gap-3">
-    <i class="fa-thin fa-share-nodes"></i>
+    <i class="fa-thin fa-share-nodes" aria-hidden="true"></i>
     <ul class="flex flex-wrap items-center justify-center gap-3">
-        <li class="relative">
-            <div class="title absolute invisible">Share on facebook</div>
-            <a
-                href={"https://www.facebook.com/sharer.php?u=" + Astro.url}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-facebook-f"></i>
-            </a>
-        </li>
-        <li class="relative">
-            <div class="title absolute invisible">Share on x</div>
-            <a
-                href={"https://twitter.com/share?url=" +
-                    Astro.url +
-                    "&text=" +
-                    pageTitle}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-x-twitter"></i>
-            </a>
-        </li>
-        <li class="relative hidden lg:block">
-            <div class="title absolute invisible">Share on whatsapp</div>
-            <a
-                href={"https://web.whatsapp.com/send?text=" +
-                    pageTitle +
-                    " | " +
-                    Astro.url}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </li>
-        <li class="relative lg:hidden">
-            <div class="title absolute invisible">Share on whatsapp</div>
-            <a
-                href={"https://api.whatsapp.com/send?text=" +
-                    pageTitle +
-                    " | " +
-                    Astro.url}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-whatsapp"></i>
-            </a>
-        </li>
-        <li class="relative">
-            <div class="title absolute invisible">Share on pinterest</div>
-            <a
-                href={"https://www.pinterest.com/pin/create/button/?url=" +
-                    Astro.url +
-                    "&media=" +
-                    Astro.url.origin+"/"+pageFeaturedImage +
-                    "&description=" +
-                    pageTitle}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-pinterest-p"></i>
-            </a>
-        </li>
-        <li class="relative">
-            <div class="title absolute invisible">Share on linkedin</div>
-            <a
-                href={"https://www.linkedin.com/shareArticle?url=" + Astro.url}
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-brands fa-linkedin-in"></i>
-            </a>
-        </li>
-        <li class="relative">
-            <div class="title absolute invisible">Copy Link</div>
-            <button onclick="copyCurrentPageURL()" aria-label="Copy URL Button"
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-solid fa-paperclip"></i>
-            </button>
-        </li>
-        <li class="relative">
-            <div class="title absolute invisible">Share</div>
-            <button onclick="triggerPageShare()" aria-label="Share"
-                class="size-7 rounded-full bg-lite-green hover:bg-dark-green flex justify-center items-center hover:scale-105 transition-all ease-in-out duration-300"
-            >
-                <i class="fa-solid fa-share"></i>
-            </button>
-        </li>
+        {
+            shareTargets.map((target) => (
+                <li
+                    class="share-item relative"
+                    class:list={[
+                        target.only === "desktop" && "hidden lg:block",
+                        target.only === "mobile" && "lg:hidden",
+                    ]}
+                >
+                    <a
+                        href={target.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={target.label}
+                        class={circleClasses}
+                    >
+                        <i class={target.icon} aria-hidden="true" />
+                    </a>
+                    <span class="share-tooltip" role="tooltip" aria-hidden="true">
+                        {target.label}
+                    </span>
+                </li>
+            ))
+        }
+        {
+            actionButtons.map((button) => (
+                <li class="share-item relative">
+                    <button
+                        type="button"
+                        onclick={button.action}
+                        aria-label={button.label}
+                        class={circleClasses}
+                    >
+                        <i class={button.icon} aria-hidden="true" />
+                    </button>
+                    <span class="share-tooltip" role="tooltip" aria-hidden="true">
+                        {button.label}
+                    </span>
+                </li>
+            ))
+        }
     </ul>
 </div>
 
-<script is:inline>
-function copyCurrentPageURL() {
-    const currentURL = window.location.href; // Get the current page URL
-    
-    navigator.clipboard.writeText(currentURL)
-    .then(() => {
-        console.log('URL copied to clipboard!');
-        showNotification('The page URL has been copied to your clipboard.');
-        // alert('The page URL has been copied to your clipboard.');
-      })
-      .catch(err => {
-        console.error('Failed to copy the URL: ', err);
-        alert('Failed to copy the URL.');
-      });
-}
+<style>
+    /* A dark chip above the button. Fixed colours rather than theme tokens:
+       it floats over a green circle in both light and dark mode. */
+    .share-tooltip {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translate(-50%, 4px);
+        z-index: 10;
 
-async function triggerPageShare() {
-    await navigator.share({
-        title: document.querySelector("title").innerText,
-        text: document.querySelector("title").innerText,
-        url: window.location.href
-    });
-}
+        padding: 4px 8px;
+        border-radius: 6px;
+        background: #00283a;
+        color: #fcfcfe;
+        font-size: 11px;
+        line-height: 1.3;
+        font-weight: 500;
+        white-space: nowrap;
+        box-shadow: 0 4px 12px #0000005e;
+
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition:
+            opacity 200ms ease,
+            transform 200ms ease,
+            visibility 200ms;
+    }
+
+    /* The little arrow pointing down at the button. */
+    .share-tooltip::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -4px;
+        border: 4px solid transparent;
+        border-top-color: #00283a;
+    }
+
+    /* Keyboard users get the same hint as mouse users. */
+    .share-item:hover .share-tooltip,
+    .share-item:focus-within .share-tooltip {
+        opacity: 1;
+        visibility: visible;
+        transform: translate(-50%, 0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .share-tooltip {
+            transition: none;
+        }
+    }
+</style>
+
+<script is:inline>
+    function copyCurrentPageURL() {
+        navigator.clipboard
+            .writeText(window.location.href)
+            .then(function () {
+                showNotification("The page URL has been copied to your clipboard.", "success");
+            })
+            .catch(function (error) {
+                console.error("Failed to copy the URL: ", error);
+                showNotification("Could not copy the URL.", "error");
+            });
+    }
+
+    async function triggerPageShare() {
+        // navigator.share is mobile-and-Safari territory; everywhere else the
+        // sensible equivalent is putting the link on the clipboard.
+        if (!navigator.share) {
+            copyCurrentPageURL();
+            return;
+        }
+        try {
+            await navigator.share({
+                title: document.title,
+                text: document.title,
+                url: window.location.href,
+            });
+        } catch (error) {
+            // A dismissed share sheet rejects; that is not a failure worth reporting.
+            if (error && error.name !== "AbortError") console.error(error);
+        }
+    }
 </script>

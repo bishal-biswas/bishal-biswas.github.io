@@ -1,0 +1,178 @@
+---
+// Public "leave a review" form. Rows land in the Testimonials tab with
+// Approved unticked; ticking that box is what publishes them.
+import { isBackendConfigured } from "../data/site-data/integrations";
+
+const stars = [5, 4, 3, 2, 1];
+---
+
+<div
+    class="testimonial-form-container w-full dark:bg-dark-teal bg-dark-teal dark:text-font-white text-teal-white text-sm rounded-lg shadow-sm shadow-[#000000be] lg:p-10 p-5"
+>
+    <h2 class="text-xl font-bold mb-1">Worked with me? Leave a review</h2>
+    <p class="text-xs dark:text-font-gray mb-6">
+        Reviews are read before they go up, so give it a day or two to appear.
+    </p>
+
+    <form id="testimonial-form" class="flex flex-col gap-5 w-full">
+        <div class="flex flex-col lg:flex-row gap-5">
+            <span class="flex flex-col gap-2 w-full">
+                <label class="text-xs uppercase tracking-wide" for="testimonial-name">Name</label>
+                <input
+                    id="testimonial-name"
+                    name="name"
+                    required
+                    type="text"
+                    autocomplete="name"
+                    maxlength="120"
+                    class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+                    placeholder="Your name"
+                />
+            </span>
+            <span class="flex flex-col gap-2 w-full">
+                <label class="text-xs uppercase tracking-wide" for="testimonial-email">Email</label>
+                <input
+                    id="testimonial-email"
+                    name="email"
+                    required
+                    type="email"
+                    autocomplete="email"
+                    maxlength="160"
+                    class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+                    placeholder="you@company.com"
+                />
+                <span class="text-[11px] dark:text-font-gray">Never published - it is only so I can thank you.</span>
+            </span>
+        </div>
+
+        <span class="flex flex-col gap-2 w-full">
+            <label class="text-xs uppercase tracking-wide" for="testimonial-role">
+                Role / company <span class="normal-case opacity-70">(optional)</span>
+            </label>
+            <input
+                id="testimonial-role"
+                name="role"
+                type="text"
+                maxlength="120"
+                class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+                placeholder="CTO, Example Ltd."
+            />
+        </span>
+
+        <fieldset class="flex flex-col gap-2">
+            <legend class="text-xs uppercase tracking-wide mb-2">Rating</legend>
+            <!-- Radios in reverse order so the CSS sibling selector can light up
+                 every star to the left of the hovered / checked one. -->
+            <div class="star-rating flex flex-row-reverse justify-end gap-1 text-2xl">
+                {
+                    stars.map((star) => (
+                        <>
+                            <input
+                                class="sr-only"
+                                type="radio"
+                                name="rating"
+                                id={`testimonial-star-${star}`}
+                                value={star}
+                                checked={star === 5}
+                            />
+                            <label
+                                for={`testimonial-star-${star}`}
+                                title={`${star} out of 5`}
+                                class="cursor-pointer transition-transform duration-150 hover:scale-110"
+                            >
+                                <span class="sr-only">{star} out of 5 stars</span>
+                                <i class="fa-solid fa-star" aria-hidden="true" />
+                            </label>
+                        </>
+                    ))
+                }
+            </div>
+        </fieldset>
+
+        <span class="flex flex-col gap-2 w-full">
+            <label class="text-xs uppercase tracking-wide" for="testimonial-review">Your review</label>
+            <textarea
+                id="testimonial-review"
+                name="review"
+                required
+                minlength="20"
+                maxlength="2000"
+                rows="5"
+                class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full min-h-[140px]"
+                placeholder="What was it like working together?"></textarea>
+        </span>
+
+        <span class="flex flex-col gap-2 w-full">
+            <label class="text-xs uppercase tracking-wide" for="testimonial-photo">
+                Photo URL <span class="normal-case opacity-70">(optional)</span>
+            </label>
+            <input
+                id="testimonial-photo"
+                name="photo"
+                type="url"
+                maxlength="500"
+                class="dark:text-font-white text-black dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full"
+                placeholder="https://... - a LinkedIn photo works"
+            />
+        </span>
+
+        <!-- Honeypot: hidden from people, irresistible to bots. -->
+        <div class="hidden" aria-hidden="true">
+            <label for="testimonial-fax">Fax</label>
+            <input id="testimonial-fax" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+        </div>
+
+        <span class="flex">
+            <button
+                type="submit"
+                class="ButtonUI flex gap-2 items-center cursor-pointer rounded-full p-7 py-3 bg-lite-green text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300"
+            >
+                <span>Submit review</span>
+                <i class="text-lg leading-5 fa-solid fa-paper-plane" aria-hidden="true"></i>
+            </button>
+        </span>
+
+        {
+            !isBackendConfigured && (
+                <p class="text-xs opacity-70">Review submissions open soon.</p>
+            )
+        }
+    </form>
+</div>
+
+<style>
+    /* Unselected stars are dim; the checked one and everything after it in the
+       reversed row (visually: to its left) turn amber. */
+    .star-rating label {
+        color: color-mix(in srgb, currentColor 30%, transparent);
+    }
+    .star-rating input:checked ~ label {
+        color: var(--color-amber-400, #fbbf24);
+    }
+    /* While the pointer is over the row, the hover preview wins over the
+       stored value, so the stars track the cursor. */
+    .star-rating:hover input:checked ~ label {
+        color: color-mix(in srgb, currentColor 30%, transparent);
+    }
+    .star-rating label:hover,
+    .star-rating label:hover ~ label {
+        color: var(--color-amber-400, #fbbf24);
+    }
+    .star-rating input:focus-visible + label {
+        outline: 2px solid var(--color-lite-green);
+        outline-offset: 3px;
+        border-radius: 4px;
+    }
+</style>
+
+<script is:inline>
+    (function () {
+        var form = document.getElementById("testimonial-form");
+        if (!form || !window.siteApi) return;
+
+        window.siteApi.bindForm(form, "testimonial", {
+            pending: "Sending",
+            success: "Thank you! Your review will appear once I approve it.",
+        });
+    })();
+</script>

@@ -1,0 +1,108 @@
+---
+// Live view / like / dislike counters for one article, backed by the
+// ArticleStats + Reactions tabs of the Google Sheet.
+//
+// It drives whatever is already on the page rather than rendering its own UI:
+//   [data-stat="views"|"likes"|"dislikes"]   - text is replaced with the count
+//   [data-reaction="like"|"dislike"]         - becomes a toggle button
+//
+// The numbers baked in at build time stay as the fallback, so an article still
+// reads correctly with the backend switched off or unreachable.
+import { isBackendConfigured } from "../data/site-data/integrations";
+
+interface Props {
+    slug: string;
+}
+
+const { slug } = Astro.props;
+---
+
+{
+    isBackendConfigured && slug && (
+        <script is:inline define:vars={{ slug }}>
+            (function () {
+                if (!window.siteApi || !window.siteApi.configured) return;
+
+                var ACTIVE_CLASSES = ["bg-dark-green", "ring-2", "ring-white/60"];
+                var storageKey = "reaction:" + slug;
+                var busy = false;
+
+                function render(stats) {
+                    if (!stats) return;
+                    ["views", "likes", "dislikes"].forEach(function (name) {
+                        var value = stats[name];
+                        if (value === undefined || value === null) return;
+                        document.querySelectorAll('[data-stat="' + name + '"]').forEach(
+                            function (node) {
+                                node.textContent = new Intl.NumberFormat().format(value);
+                            },
+                        );
+                    });
+                }
+
+                function markActive(reaction) {
+                    try {
+                        if (reaction) localStorage.setItem(storageKey, reaction);
+                        else localStorage.removeItem(storageKey);
+                    } catch (err) {
+                        /* storage blocked - the server still knows */
+                    }
+                    document.querySelectorAll("[data-reaction]").forEach(function (button) {
+                        var isActive = button.dataset.reaction === reaction;
+                        button.setAttribute("aria-pressed", isActive ? "true" : "false");
+                        ACTIVE_CLASSES.forEach(function (className) {
+                            button.classList.toggle(className, isActive);
+                        });
+                    });
+                }
+
+                function storedReaction() {
+                    try {
+                        return localStorage.getItem(storageKey) || "";
+                    } catch (err) {
+                        return "";
+                    }
+                }
+
+                markActive(storedReaction());
+
+                // Registering the view also returns the current counts, which
+                // saves a second round trip on every article load.
+                window.siteApi
+                    .post("view", { slug: slug })
+                    .then(function (data) {
+                        render(data.stats);
+                    })
+                    .catch(function (error) {
+                        // Counters are decoration; a failure must stay silent.
+                        console.error("Could not record the view", error);
+                    });
+
+                document.querySelectorAll("[data-reaction]").forEach(function (button) {
+                    button.addEventListener("click", function () {
+                        if (busy) return;
+                        busy = true;
+                        button.classList.add("opacity-60");
+
+                        window.siteApi
+                            .post("react", { slug: slug, reaction: button.dataset.reaction })
+                            .then(function (data) {
+                                render(data.stats);
+                                markActive(data.reaction || "");
+                            })
+                            .catch(function (error) {
+                                window.siteApi.notify(
+                                    error.message || "Could not save that, sorry.",
+                                    "error",
+                                );
+                            })
+                            .finally(function () {
+                                busy = false;
+                                button.classList.remove("opacity-60");
+                            });
+                    });
+                });
+            })();
+        </script>
+    )
+}

@@ -87,7 +87,7 @@ const allBlogPosts = await getCollection("article");
                             <swiper-slide>
                                 <div class="article-card rounded-lg shadow-2xl size-full my-7 active:scale-95">
                                     <a href={"/articles/"+post.data.slug} class="article-thumbnail h-[80%] block" >
-                                        <img src={getPaths("Article")+post.data.featuredImage} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg lg:h-[160px] md:h-[250px] h-[200px]" />
+                                        <img src={getPaths("Article")+post.data.image} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg lg:h-[160px] md:h-[250px] h-[200px]" />
                                     </a>
                                     <div class="article-data h-[60px] p-2 text-left bg-[#00151f8a] rounded-br-lg rounded-bl-lg">
                                         <a href={"/articles/"+post.data.slug} class="line-clamp-2 text-sm" >

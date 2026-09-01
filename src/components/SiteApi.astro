@@ -1,0 +1,177 @@
+---
+// Shared browser client for the Google Sheets / Apps Script backend.
+// Ships in every layout next to <Notify />, and defines a single global:
+//
+//   siteApi.configured                     -> false when no endpoint is set
+//   siteApi.visitorId()                    -> stable anonymous id
+//   await siteApi.post("contact", {...})   -> { ok, message, ... }
+//   await siteApi.get({ action: "stats" }) -> parsed JSON
+//   siteApi.bindForm(form, action, opts)   -> wires submit + honeypot + toast
+//
+import { integrations } from "../data/site-data/integrations";
+---
+
+<script
+    is:inline
+    define:vars={{
+        endpoint: integrations.sheetsEndpoint,
+        token: integrations.apiToken,
+    }}
+>
+    (function () {
+        // The script ships in every layout; only the first copy should run.
+        if (window.siteApi) return;
+
+        var STORAGE_KEY = "site-visitor-id";
+
+        /** Anonymous, per-browser id. Only used to dedupe views and reactions. */
+        function visitorId() {
+            try {
+                var existing = localStorage.getItem(STORAGE_KEY);
+                if (existing) return existing;
+                var fresh =
+                    (crypto.randomUUID && crypto.randomUUID()) ||
+                    String(Date.now()) + "-" + Math.random().toString(36).slice(2);
+                localStorage.setItem(STORAGE_KEY, fresh);
+                return fresh;
+            } catch (err) {
+                // Private mode with storage blocked: stay anonymous per page load.
+                return "no-storage";
+            }
+        }
+
+        function post(action, payload) {
+            if (!endpoint) return Promise.reject(new Error("Backend is not configured."));
+
+            var body = Object.assign({ action: action, visitorId: visitorId() }, payload || {});
+            if (token) body.token = token;
+
+            return fetch(endpoint, {
+                method: "POST",
+                // text/plain keeps this a CORS "simple request". Apps Script web
+                // apps never answer the preflight that application/json would
+                // trigger, so this content type is load-bearing.
+                headers: { "Content-Type": "text/plain;charset=utf-8" },
+                body: JSON.stringify(body),
+                redirect: "follow",
+            })
+                .then(function (response) {
+                    if (!response.ok) throw new Error("Server returned " + response.status);
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (!data || data.ok !== true) {
+                        throw new Error((data && data.error) || "Request failed");
+                    }
+                    return data;
+                });
+        }
+
+        function get(params) {
+            if (!endpoint) return Promise.reject(new Error("Backend is not configured."));
+
+            var url = new URL(endpoint);
+            Object.keys(params || {}).forEach(function (key) {
+                if (params[key] !== undefined && params[key] !== null) {
+                    url.searchParams.set(key, params[key]);
+                }
+            });
+            if (token) url.searchParams.set("token", token);
+
+            return fetch(url.toString(), { redirect: "follow" })
+                .then(function (response) {
+                    if (!response.ok) throw new Error("Server returned " + response.status);
+                    return response.json();
+                })
+                .then(function (data) {
+                    if (!data || data.ok !== true) {
+                        throw new Error((data && data.error) || "Request failed");
+                    }
+                    return data;
+                });
+        }
+
+        /**
+         * Turns a plain <form> into a backend-posting form.
+         *
+         *   form      - the element; every named input is sent as-is
+         *   action    - backend action name ("contact", "subscribe", ...)
+         *   options   - { collect, onSuccess, pending, success }
+         *
+         * Handles the honeypot, the fill-time stamp, the button's pending
+         * state, and the toast on both outcomes, so the callers stay short.
+         */
+        function bindForm(form, action, options) {
+            if (!form) return;
+            var opts = options || {};
+            var renderedAt = Date.now();
+            var button = form.querySelector('[type="submit"], button:not([type])');
+            var buttonLabel = button ? button.innerHTML : "";
+            var busy = false;
+
+            form.addEventListener("submit", function (event) {
+                event.preventDefault();
+                if (busy) return;
+
+                if (!window.siteApi.configured) {
+                    notify(
+                        "This form is not connected yet. Please email me directly in the meantime.",
+                        "warning",
+                    );
+                    return;
+                }
+
+                var data = {};
+                new FormData(form).forEach(function (value, key) {
+                    data[key] = typeof value === "string" ? value : "";
+                });
+                data.elapsed = Date.now() - renderedAt;
+                data.page = window.location.href;
+                if (opts.collect) Object.assign(data, opts.collect(form) || {});
+
+                busy = true;
+                setPending(true);
+
+                post(action, data)
+                    .then(function (result) {
+                        form.reset();
+                        renderedAt = Date.now();
+                        notify(result.message || opts.success || "Done - thank you!", "success");
+                        if (opts.onSuccess) opts.onSuccess(result, form);
+                    })
+                    .catch(function (error) {
+                        notify(error.message || "Something went wrong. Please try again.", "error");
+                    })
+                    .finally(function () {
+                        busy = false;
+                        setPending(false);
+                    });
+            });
+
+            function setPending(state) {
+                if (!button) return;
+                button.disabled = state;
+                button.classList.toggle("opacity-60", state);
+                button.classList.toggle("cursor-not-allowed", state);
+                button.innerHTML = state
+                    ? '<i class="fa-solid fa-circle-notch fa-spin"></i> ' + (opts.pending || "Sending")
+                    : buttonLabel;
+            }
+        }
+
+        function notify(message, type) {
+            if (window.showNotification) window.showNotification(message, type);
+            else if (type === "error") console.error(message);
+        }
+
+        window.siteApi = {
+            configured: Boolean(endpoint),
+            endpoint: endpoint,
+            visitorId: visitorId,
+            post: post,
+            get: get,
+            bindForm: bindForm,
+            notify: notify,
+        };
+    })();
+</script>

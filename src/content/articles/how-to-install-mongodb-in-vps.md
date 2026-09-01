@@ -1,7 +1,7 @@
 ---
 title : How to Install MongoDB on Your Ubuntu VPS
 slug : how-to-install-mongodb-in-vps
-featuredImage : how-to-install-mongodb-in-vps.jpg
+image : how-to-install-mongodb-in-vps.jpg
 author : Bishal Biswas
 publishDate : 2026-01-16T08:30
 isDraft : false

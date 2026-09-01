@@ -17,7 +17,7 @@ const articleCollection = defineCollection({
     loader: glob({ pattern: "**/*.md", base: "./src/content/articles" }),
     schema: z.object({
         title: z.string(),
-        featuredImage: z.string(),
+        image: z.string(),
         metaDescription: z.string().optional(),
         author: z.string(),
         publishDate: z.coerce.date(),

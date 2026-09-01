@@ -63,6 +63,29 @@ function findCategoryCount(categoryName:string, AllArticlesCategory : string[]) 
 }
 
 
+/**
+ * Strip markdown and HTML down to plain words. Shared by the static search
+ * index and the RSS feed, both of which need readable text from a raw body.
+ */
+function plainText(text: string | undefined): string {
+    if (!text) return "";
+    return text
+        .replace(/```[\s\S]*?```/g, " ")      // fenced code blocks
+        .replace(/`[^`]*`/g, " ")             // inline code
+        .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // images
+        .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // links -> their text
+        .replace(/<[^>]+>/g, " ")             // html tags
+        .replace(/[#>*_~|-]+/g, " ")          // markdown punctuation
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+/** Cut to `len` characters on a word boundary, ellipsis only if something was dropped. */
+function excerpt(text: string | undefined, len = 160): string {
+    if (!text) return "";
+    return text.length > len ? text.slice(0, len).replace(/\s+\S*$/, "") + "…" : text;
+}
+
 //Article Reading Time
 function calculateReadingTime(articleText:string, wordsPerMinute:number = 200) {
     const wordCount = articleText.trim().split(/\s+/).length;
@@ -138,4 +161,4 @@ function filterFuturePosts(posts: any[]) {
     });
   }
 
-export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts}
+export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts, plainText, excerpt}

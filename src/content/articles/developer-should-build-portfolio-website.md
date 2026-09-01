@@ -1,7 +1,7 @@
 ---
 title : Why Every Developer Should Build a Portfolio Website
 slug : developer-should-build-portfolio-website
-featuredImage : developer-should-build-portfolio-website.webp
+image : developer-should-build-portfolio-website.webp
 author : Bishal Biswas
 publishDate : 2025-05-24T08:30
 isDraft : false

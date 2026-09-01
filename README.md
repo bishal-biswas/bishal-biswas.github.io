@@ -45,11 +45,14 @@ See [LICENSE](./LICENSE) for the full terms.
 | CMS | [Decap CMS](https://decapcms.org) at `/admin` |
 | Auth | GitHub OAuth via a Vercel proxy |
 | Hosting | GitHub Pages, deployed by GitHub Actions |
+| Backend | Google Sheets + Apps Script ([setup](./docs/google-sheets-backend.md)) |
 
 ## Project Structure
 
 ```text
 ├── .github/workflows/deploy.yml   Build + deploy to GitHub Pages
+├── docs/                          Setup guides
+├── google-apps-script/Code.gs     Google Sheets backend (deployed separately)
 ├── public/
 │   ├── admin/                     Decap CMS (index.html + config.yml)
 │   └── uploads/                   CMS-managed media
@@ -90,6 +93,18 @@ Then open <http://localhost:4321/admin/index.html>.
 > Deleting `.astro/` alone does not clear it, so a local build can succeed
 > using cached entries even when the Markdown files are missing. Verify page
 > counts against `git status` before assuming a build is healthy.
+
+## Dynamic features
+
+The site is static, but the contact form, newsletter signup, testimonial
+submissions and article view/like counters all write to a Google Sheet through
+a single Apps Script Web App. Setup - creating the sheet, deploying the script,
+and the EmailJS option for auto-replies - is in
+[docs/google-sheets-backend.md](./docs/google-sheets-backend.md).
+
+Configuration comes from `PUBLIC_*` env vars (see `.env.example`), set as
+GitHub repository *variables* for production. With none of them set, every form
+degrades to a "not connected yet" notice rather than failing.
 
 ## Deployment
 

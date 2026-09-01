@@ -31,6 +31,7 @@ export const toolsData = [
     // Generators
     { slug: "uuid-generator", name: "UUID Generator", icon: "fa-dice", category: "Generators", blurb: "Generate cryptographically random UUID v4 identifiers in bulk." },
     { slug: "cron-expression-generator", name: "Cron Expression Generator", icon: "fa-calendar-days", category: "Generators", blurb: "Build cron schedules visually with a plain-English preview." },
+    { slug: "article-slug-generator", name: "Article Slug Generator", icon: "fa-link", category: "Generators", blurb: "Turn article titles into clean URL slugs with the stop words stripped out." },
 
     // Productivity
     { slug: "seo-article-writer", name: "SEO Article Writer", icon: "fa-pen-nib", category: "Productivity", blurb: "Write articles in a block editor with Yoast-style SEO analysis." },

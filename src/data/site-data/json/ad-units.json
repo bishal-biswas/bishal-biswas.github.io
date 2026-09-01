@@ -1,0 +1,16 @@
+{
+  "adUnits": [
+    {
+      "adTitle": "Sidebar 300x250",
+      "placement": "Article Sidebar",
+      "isEnabled": false,
+      "adCode": ""
+    },
+    {
+      "adTitle": "Sidebar Sticky 300x250",
+      "placement": "Article Sidebar (Sticky)",
+      "isEnabled": false,
+      "adCode": ""
+    }
+  ]
+}

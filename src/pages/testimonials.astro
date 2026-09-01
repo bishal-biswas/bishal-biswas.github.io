@@ -1,14 +1,19 @@
 ---
 import CardTestimonialReview from "../components/Card_TestimonialReview.astro";
+import TestimonialForm from "../components/TestimonialForm.astro";
 import PlainLayout from "../layouts/PlainLayout.astro";
 import { getPageContent } from "../data/utils";
 import { testimonials } from "../data/site-data/testimonials";
+import { integrations, isBackendConfigured } from "../data/site-data/integrations";
 
 const pageContent = getPageContent("Testimonials");
 
+// Reviews approved in the sheet appear without a rebuild; the ones curated in
+// the CMS are baked in at build time and always render first.
+const showLiveReviews = isBackendConfigured && integrations.liveTestimonials;
 ---
 
-<PlainLayout 
+<PlainLayout
     title="Testimonials"
     metaDescription="What clients and collaborators say about working with Bishal Biswas on web and software development projects."
     pageSmallTextBelow="What people say about me I have worked with!"
@@ -19,8 +24,11 @@ const pageContent = getPageContent("Testimonials");
     backgroundImgClass={pageContent.backgroundImageClass}
     pageType="project"
     >
-    
-    <div class="testimonials-container masonry-layout relative w-full my-5 columns-1 md:columns-2 lg:columns-3 gap-5 space-y-10">
+
+    <div
+        id="testimonials-container"
+        class="testimonials-container masonry-layout relative w-full my-5 columns-1 md:columns-2 lg:columns-3 gap-5 space-y-10"
+    >
         {
             testimonials.map((review) => (
                 <CardTestimonialReview
@@ -34,8 +42,108 @@ const pageContent = getPageContent("Testimonials");
 
     {
         testimonials.length === 0 &&
-        <p class="w-full text-center py-16 opacity-70">
+        <p id="testimonials-empty" class="w-full text-center py-16 opacity-70">
             No testimonials yet - check back soon.
         </p>
+    }
+
+    <TestimonialForm />
+
+    {
+        showLiveReviews && (
+        <script is:inline>
+            (function () {
+                var container = document.getElementById("testimonials-container");
+                if (!container || !window.siteApi || !window.siteApi.configured) return;
+
+                // Markup mirrors Card_TestimonialReview.astro - change both together.
+                function card(review) {
+                    var rating = Math.max(0, Math.min(5, Math.round(Number(review.ratingStar) || 0)));
+                    var name = review.clientName || "Anonymous";
+                    var stars = "";
+                    for (var i = 0; i < 5; i++) {
+                        stars +=
+                            i < rating
+                                ? '<i class="fa-solid fa-star text-amber-400"></i>'
+                                : '<i class="fa-regular fa-star opacity-40"></i>';
+                    }
+
+                    var element = document.createElement("div");
+                    element.className =
+                        "reviewCard break-inside-avoid overflow-hidden relative h-min flex flex-col gap-3 dark:bg-dark-teal bg-dark-teal dark:text-font-white text-teal-white rounded-lg p-5 shadow-md shadow-[#000000be]";
+                    element.innerHTML =
+                        '<i class="text-font-gray text-4xl fa-duotone fa-solid fa-quote-left" aria-hidden="true"></i>' +
+                        '<span class="content">' +
+                        '<blockquote class="text-sm dark:text-font-gray"></blockquote>' +
+                        '<span class="flex items-center gap-3 mt-3">' +
+                        (review.clientImg
+                            ? '<img alt="" loading="lazy" width="56" height="56" class="rounded-full size-14 object-cover shrink-0">'
+                            : '<span aria-hidden="true" class="rounded-full size-14 shrink-0 grid place-items-center bg-lite-green text-dark-teal font-bold text-xl"></span>') +
+                        '<div class="ClientDetails flex flex-col gap-1">' +
+                        '<p class="name font-semibold"></p>' +
+                        '<p class="role text-xs dark:text-font-gray"></p>' +
+                        (rating > 0
+                            ? '<span class="stars flex gap-1 text-sm" role="img" aria-label="' +
+                              rating +
+                              ' out of 5 stars">' +
+                              stars +
+                              "</span>"
+                            : "") +
+                        "</div></span></span>";
+
+                    // Sheet rows are visitor-supplied, so every value goes in as
+                    // text - never as markup.
+                    element.querySelector("blockquote").textContent = review.reviewText || "";
+                    element.querySelector(".name").textContent = name;
+
+                    var role = element.querySelector(".role");
+                    if (review.role) role.textContent = review.role;
+                    else role.remove();
+
+                    var image = element.querySelector("img");
+                    if (image) {
+                        image.src = review.clientImg;
+                        image.alt = "Photo of " + name;
+                    } else {
+                        element.querySelector("span[aria-hidden]").textContent = name
+                            .trim()
+                            .charAt(0)
+                            .toUpperCase();
+                    }
+                    return element;
+                }
+
+                window.siteApi
+                    .get({ action: "testimonials" })
+                    .then(function (data) {
+                        var reviews = data.testimonials || [];
+                        if (!reviews.length) return;
+
+                        // A review curated into the CMS would otherwise show twice.
+                        var alreadyOnPage = Array.prototype.map.call(
+                            container.querySelectorAll("blockquote"),
+                            function (node) {
+                                return node.textContent.trim().slice(0, 80);
+                            },
+                        );
+
+                        var added = 0;
+                        reviews.forEach(function (review) {
+                            var key = String(review.reviewText || "").trim().slice(0, 80);
+                            if (!key || alreadyOnPage.indexOf(key) !== -1) return;
+                            container.appendChild(card(review));
+                            added++;
+                        });
+
+                        var empty = document.getElementById("testimonials-empty");
+                        if (added && empty) empty.remove();
+                    })
+                    .catch(function (error) {
+                        // A dead endpoint must not blank the curated reviews.
+                        console.error("Could not load approved testimonials", error);
+                    });
+            })();
+        </script>
+        )
     }
 </PlainLayout>

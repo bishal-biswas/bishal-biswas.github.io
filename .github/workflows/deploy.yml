@@ -32,8 +32,17 @@ jobs:
           # node-version: 24 # The specific version of Node that should be used to build your site. Defaults to 24. (optional)
           # package-manager: pnpm@latest # The Node package manager that should be used to install dependencies and build your site. Automatically detected based on your lockfile. (optional)
           # build-cmd: pnpm run build # The command to run to build your site. Runs the package build script/task by default. (optional)
-        # env:
-          # PUBLIC_POKEAPI: 'https://pokeapi.co/api/v2' # Use single quotation marks for the variable value. (optional)
+        # PUBLIC_* values end up in the built JS, so they are repository
+        # variables (Settings > Secrets and variables > Actions > Variables),
+        # not secrets. An unset one is an empty string, which every form
+        # already degrades gracefully around. See .env.example.
+        env:
+          PUBLIC_SHEETS_ENDPOINT: ${{ vars.PUBLIC_SHEETS_ENDPOINT }}
+          PUBLIC_API_TOKEN: ${{ vars.PUBLIC_API_TOKEN }}
+          PUBLIC_EMAILJS_PUBLIC_KEY: ${{ vars.PUBLIC_EMAILJS_PUBLIC_KEY }}
+          PUBLIC_EMAILJS_SERVICE_ID: ${{ vars.PUBLIC_EMAILJS_SERVICE_ID }}
+          PUBLIC_EMAILJS_AUTOREPLY_TEMPLATE_ID: ${{ vars.PUBLIC_EMAILJS_AUTOREPLY_TEMPLATE_ID }}
+          PUBLIC_LIVE_TESTIMONIALS: ${{ vars.PUBLIC_LIVE_TESTIMONIALS }}
 
   deploy:
     needs: build
