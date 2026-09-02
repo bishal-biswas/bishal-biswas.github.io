@@ -23,25 +23,19 @@
       "title": "Facebook",
       "iconClass": "fab fa-facebook",
       "color": "#6060ce",
-      "url": ""
-    },
-    {
-      "title": "Twitter",
-      "iconClass": "fab fa-twitter",
-      "color": "#010101",
-      "url": ""
+      "url": "https://www.facebook.com/bishalbiswas.dev/"
     },
     {
       "title": "Linkedin",
       "iconClass": "fab fa-linkedin",
       "color": "#4747c7",
-      "url": ""
+      "url": "https://www.linkedin.com/in/iambishal-biswas/"
     },
     {
       "title": "Github",
       "iconClass": "fab fa-github",
       "color": "#010101",
-      "url": ""
+      "url": "https://github.com/dev-bishal"
     }
   ],
   "Resume": "/public/uploads/how-to-win-friends-and-influence-people-carnegie-dale-sep-2010.pdf",
