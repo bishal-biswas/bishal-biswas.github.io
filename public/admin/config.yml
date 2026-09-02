@@ -41,8 +41,13 @@ collections:
     format: yaml-frontmatter
     slug: '{{fields.slug}}'
     identifier_field: title
-    summary: '{{title}}'
-    sortable_fields: [publishDate, title, category]
+    # The [Draft] prefix is the isDraft boolean run through Decap's `ternary`
+    # filter, so the entry list shows draft state without opening each entry.
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}}"
+    sortable_fields: [publishDate, title, category, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
     media_folder: /public/uploads/articles
     public_folder: ''
     fields:
@@ -92,8 +97,11 @@ collections:
     format: yaml-frontmatter
     slug: '{{title}}'
     identifier_field: title
-    summary: '{{title}} - {{projectType}}'
-    sortable_fields: [publishDate, title]
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}} - {{projectType}}"
+    sortable_fields: [publishDate, title, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
     media_folder: /public/uploads/portfolios
     public_folder: ''
     fields:
@@ -141,7 +149,11 @@ collections:
     format: yaml-frontmatter
     slug: '{{fields.slug}}'
     identifier_field: title
-    sortable_fields: [publishDate, title]
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}}"
+    sortable_fields: [publishDate, title, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
     media_folder: /public/uploads/articles
     public_folder: ''
     fields:
@@ -176,6 +188,11 @@ collections:
     format: yaml-frontmatter
     slug: '{{fields.slug}}'
     identifier_field: title
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}}"
+    sortable_fields: [publishDate, title, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
     media_folder: /public/uploads/files
     public_folder: ''
     fields:
