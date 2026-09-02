@@ -6,16 +6,34 @@ import {
     isEmailJsConfigured,
     fallbackEmail,
 } from "../data/site-data/integrations";
+
+interface Props {
+    // Every id in here is derived from formId, so a second copy can share the
+    // page with the first - /contact renders the default one while the
+    // "Leave a Message" modal parks its own alongside it.
+    formId?: string;
+    // Chrome around the fields. Swap it out when the form sits inside a
+    // container that already brings its own background and padding.
+    containerClass?: string;
+}
+
+const {
+    formId = "contact-form",
+    containerClass = "dark:bg-dark-teal bg-dark-teal rounded-lg shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5",
+} = Astro.props;
 ---
 
 <!-- Contact Form -->
 <div
-    class="contactForm-container relative flex flex-col justify-center items-center dark:bg-dark-teal bg-dark-teal text-[#dedee0] text-sm rounded-lg text-center shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5"
+    class:list={[
+        "contactForm-container relative flex flex-col justify-center items-center text-[#dedee0] text-sm text-center",
+        containerClass,
+    ]}
 >
-    <form id="contact-form" class="flex flex-col gap-5 w-full">
-        <label class="sr-only" for="contact-name">Your name</label>
+    <form id={formId} class="flex flex-col gap-5 w-full">
+        <label class="sr-only" for={`${formId}-name`}>Your name</label>
         <input
-            id="contact-name"
+            id={`${formId}-name`}
             name="name"
             required
             type="text"
@@ -25,9 +43,9 @@ import {
             placeholder="Your Name"
         />
 
-        <label class="sr-only" for="contact-email">Your email</label>
+        <label class="sr-only" for={`${formId}-email`}>Your email</label>
         <input
-            id="contact-email"
+            id={`${formId}-email`}
             name="email"
             required
             type="email"
@@ -37,9 +55,9 @@ import {
             placeholder="Email"
         />
 
-        <label class="sr-only" for="contact-subject">Subject</label>
+        <label class="sr-only" for={`${formId}-subject`}>Subject</label>
         <input
-            id="contact-subject"
+            id={`${formId}-subject`}
             name="subject"
             type="text"
             maxlength="160"
@@ -47,9 +65,9 @@ import {
             placeholder="Subject (optional)"
         />
 
-        <label class="sr-only" for="contact-message">Your message</label>
+        <label class="sr-only" for={`${formId}-message`}>Your message</label>
         <textarea
-            id="contact-message"
+            id={`${formId}-message`}
             name="message"
             required
             maxlength="5000"
@@ -60,8 +78,8 @@ import {
 
         <!-- Honeypot: hidden from people, irresistible to bots. -->
         <div class="hidden" aria-hidden="true">
-            <label for="contact-company">Company</label>
-            <input id="contact-company" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+            <label for={`${formId}-company`}>Company</label>
+            <input id={`${formId}-company`} name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
         </div>
 
         <span class="flex">
@@ -97,11 +115,12 @@ import {
 <script
     is:inline
     define:vars={{
+        formId,
         emailjsConfig: isEmailJsConfigured ? integrations.emailjs : null,
     }}
 >
     (function () {
-        var form = document.getElementById("contact-form");
+        var form = document.getElementById(formId);
         if (!form || !window.siteApi) return;
 
         // With EmailJS configured the visitor-facing auto-reply is sent from the

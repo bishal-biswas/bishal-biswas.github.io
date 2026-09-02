@@ -8,6 +8,7 @@ import { calculateAge } from "../data/utils";
 import { getPaths } from "../data/utils";
 
 import ButtonLinkUI from "./ButtonLinkUI.astro";
+import ContactForm from "./ContactForm.astro";
 import SectionDivider from "./SectionDivider.astro";
 import TypewriterText from "./TypewriterText.astro"
 
@@ -86,27 +87,40 @@ const personInfo = personaInfo;
     </div>
 </div>
 
+<!--
+    The real <ContactForm />, parked out of sight until #messageBtn hands it to
+    the modal. Rendering the component here - instead of pasting a lookalike
+    into modalContent - is what makes the modal copy actually send: its own
+    script runs on page load and binds it to siteApi, exactly like /contact.
+-->
+<div class="hidden">
+    <div
+        id="contactModalPanel"
+        tabindex="-1"
+        data-modal-labelledby="contactModalTitle"
+        class="relative dark:bg-dark-teal bg-dark-teal dark:text-font-white text-teal-white text-left rounded-lg shadow-xl outline-none p-5 sm:p-6"
+    >
+        <button
+            type="button"
+            data-modal-close
+            aria-label="Close"
+            class="absolute -top-4 -right-4 text-lg size-8 cursor-pointer rounded-full bg-lite-green p-1 text-white grid place-items-center hover:scale-110"
+        >
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <h3 id="contactModalTitle" class="text-lg font-medium leading-6 text-lite-green">Leave a Message</h3>
+
+        <ContactForm formId="modal-contact-form" containerClass="mt-4" />
+    </div>
+</div>
+
 <script is:inline>
     const messageBtn = document.querySelector("#messageBtn");
-    messageBtn.addEventListener("click", ()=>{
-        addContactFrmComponentIntoModal()
-        fadeOpenModal();
-    })
-    
-    function addContactFrmComponentIntoModal() {
-        const contactFrmComponent = `
-            <div class="contactForm-container relative flex justify-center items-center dark:bg-dark-teal bg-dark-teal text-[#dedee0] text-sm rounded-lg text-center shadow-sm shadow-[#000000be] mt-10 lg:p-10 p-5">
-                <form class="flex flex-col gap-5 w-full">
-                    <input required type="text" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Your Name">
-                    <input required type="email" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full" placeholder="Email">
-                    <textarea required name="" class="dark:bg-body-bg-2 bg-body-bg-2 px-4 py-2 rounded-xl w-full min-h-[150px] max-h-[200px]" placeholder="Your Message" id="" cols="10" rows="4"></textarea>
-                
-                    <span class="flex">
-                        <button onclick="" class="ButtonUI flex gap-2 items-center cursor-pointer rounded-full p-7 py-3 text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300 bg-lite-green"><span>Send</span><i class="text-lg ml-2 fa-duotone fa-arrow-right transition-all ease-in-out duration-150"></i></button>
-                    </span>
-                </form>
-            </div>`;
-        modalContent.insertAdjacentHTML("afterbegin", contactFrmComponent);
+
+    if (messageBtn) {
+        messageBtn.addEventListener("click", () => {
+            openModalPanel("contactModalPanel");
+        });
     }
-    
 </script>

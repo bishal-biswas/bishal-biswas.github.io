@@ -1,8 +1,17 @@
 ---
-import ButtonLinkUI from "./ButtonLinkUI.astro";
-import ContactForm from "./ContactForm.astro";
-
-
+// Shared dialog shell. Two ways to fill it:
+//
+//   modalContent.insertAdjacentHTML(...) + fadeOpenModal()
+//       - for throwaway markup (search box, service blurbs).
+//
+//   openModalPanel("someId")
+//       - for markup that is already in the page and has live listeners
+//         (e.g. <ContactForm />). The node is borrowed into the dialog and
+//         handed back to its original parent on close, so its bindings and
+//         anything the visitor typed survive.
+//
+// Anything carrying [data-modal-close] inside the dialog closes it.
+// Escape is wired up in main.js, which calls closeModal() on every press.
 ---
 
 <div id="myModal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
@@ -26,9 +35,15 @@ import ContactForm from "./ContactForm.astro";
     const modalBackground = document.getElementById('modalBackground');
     const modalContainer = document.getElementById('modalContainer');
     const modalContent = document.getElementById('modalContent');
+
+    // A borrowed panel and the parent it has to go back to.
+    let borrowedPanel = null;
+    let borrowedPanelHome = null;
+    let closeTimer = null;
     
     modalContent.addEventListener("click", (event)=>{
         event.stopPropagation();
+        if (event.target.closest("[data-modal-close]")) closeModal();
     })
     modalContainer.addEventListener("click" , ()=> {
         closeModal()
@@ -42,6 +57,7 @@ import ContactForm from "./ContactForm.astro";
     });
 
     function fadeOpenModal() {
+        clearTimeout(closeTimer);
         modal.classList.remove('hidden');
         // Short delay to ensure the classes are applied after display:block
         setTimeout(() => {
@@ -52,21 +68,50 @@ import ContactForm from "./ContactForm.astro";
             }, 10); 
     }
 
+    /**
+     * Move an existing element into the dialog and open it. The element keeps
+     * its identity - same node, same listeners - so component scripts that ran
+     * at page load keep working inside the modal.
+     */
+    function openModalPanel(panelId) {
+        const panel = document.getElementById(panelId);
+        if (!panel) return;
+
+        clearModalContent();
+        borrowedPanel = panel;
+        borrowedPanelHome = panel.parentElement;
+        modalContent.appendChild(panel);
+        modal.setAttribute('aria-labelledby', panel.dataset.modalLabelledby || 'modal-title');
+
+        fadeOpenModal();
+        // Send focus into the dialog without popping a mobile keyboard.
+        panel.focus({ preventScroll: true });
+    }
+
     function closeModal(){
+        if (modal.classList.contains('hidden')) return;
+
         // Start opacity and transform animations
         modalBackground.classList.remove('opacity-100');
         modalBackground.classList.add('opacity-0');
         modalContent.classList.remove('opacity-100', 'scale-100');
         modalContent.classList.add('opacity-0', 'scale-95');
 
-        // After animation ends, hide the modal
-        setTimeout(() => {
+        // After animation ends, hide the modal and empty it - clearing any
+        // earlier would blank the box halfway through the fade.
+        clearTimeout(closeTimer);
+        closeTimer = setTimeout(() => {
             modal.classList.add('hidden');
+            clearModalContent();
         }, 300); // Duration of animation (300ms)
-        clearModalContent();
     }
 
     function clearModalContent() {
+        // Hand a borrowed panel back before the wipe, or it is destroyed along
+        // with its listeners and whatever the visitor had typed into it.
+        if (borrowedPanel && borrowedPanelHome) borrowedPanelHome.appendChild(borrowedPanel);
+        borrowedPanel = null;
+        borrowedPanelHome = null;
         modalContent.innerHTML = "";
     }
 </script>
