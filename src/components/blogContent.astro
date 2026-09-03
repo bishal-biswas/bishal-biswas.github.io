@@ -110,7 +110,7 @@ const { post } = Astro.props;
                         </div>
                     </div>
 
-                    <div class="category flex items-baseline gap-3 lg:w-1/5">
+                    <div class="category flex items-baseline gap-3">
                         <i class="fa-solid fa-folder-open"></i>
                         <a
                             href={"/articles/category/"+ post.data.category
@@ -123,17 +123,12 @@ const { post } = Astro.props;
                     </div>
                 </div>
 
-                <div
-                    class="row gap-5 flex lg:flex-row flex-col justify-between mt-4"
-                >
+                <div class="row gap-5 flex lg:flex-row flex-col justify-between mt-4" >
                     <ArticleShareBtnLinks
                         pageFeaturedImage={post.data.image}
-                        pageTitle={post.data.title}
-                    />
+                        pageTitle={post.data.title} />
 
-                    <div
-                        class="like-dislike-wrapper w-full lg:w-fit flex justify-center items-center"
-                    >
+                    <div class="like-dislike-wrapper w-full lg:w-fit flex justify-center items-center">
                         <div class="like-dislike-container w-fit">
                             <div class="user-response flex gap-1">
                                 <button
