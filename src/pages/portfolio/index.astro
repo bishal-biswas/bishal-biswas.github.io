@@ -80,7 +80,13 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                                     {project.data.projectBriefDescription}
                                 </p>
                             </th>
-                            <td class="px-4 py-4 whitespace-nowrap">{project.data.projectType}</td>
+                            <td class="px-4 py-4">
+                                <span class="flex flex-wrap gap-1">
+                                    {project.data.categories.map((category) => (
+                                        <span class="px-2 py-[2px] text-xs rounded-full bg-[#5fb35333] text-lite-green-2 whitespace-nowrap">{category}</span>
+                                    ))}
+                                </span>
+                            </td>
                             <td class="px-4 py-4">
                                 <span class="flex flex-wrap gap-1">
                                     {project.data.techStack.map((tech) => (
@@ -91,7 +97,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                             <td class="px-4 py-4 whitespace-nowrap">{project.data.projectDuration}</td>
                             <td class="px-4 py-4 whitespace-nowrap">
                                 {project.data.isProjectCompleted ? "Completed" : "In Progress"}
-                                {project.data.isStatus && <span class="block text-xs opacity-70">{project.data.isStatus}</span>}
+                                {project.data.workType && <span class="block text-xs opacity-70">{project.data.workType}</span>}
                             </td>
                             <td class="px-4 py-4">
                                 <span class="flex gap-3">
@@ -135,6 +141,10 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
         skillImgPath: getPaths("Skills"),
         siteData : { technologyData }
     }}>
+
+    // Categories are stored on the card as one pipe-joined data attribute;
+    // the pipe cannot appear in a category name, so it is safe to split on.
+    const CATEGORY_SEPARATOR = "|";
 
     let displayedTill = 3;
     const masonryContainer = document.getElementById('masonry');
@@ -206,14 +216,18 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                     </div>
                 </div>
                 `
-                if(itemsList[i].data.isStatus)
-                    content += `<span class="absolute rotate-45 bg-[#f97316] -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white">${itemsList[i].data.isStatus}</span>`
+                if(itemsList[i].data.workType){
+                    if(itemsList[i].data.workType == "Freelance")
+                        content += `<span class="absolute rotate-45 bg-[#f97316] -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white">${itemsList[i].data.workType}</span>`
+                    else
+                        content += `<span class="absolute rotate-45 bg-[#8e0bc0] -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white">${itemsList[i].data.workType}</span>`
+                }
                 content += `<img class="w-full object-cover object-top min-h-[200px] max-h-[350px]" loading="lazy" src=${featureImgPath + itemsList[i].data.featuredImage}>`
 
             masonryItem.insertAdjacentHTML("afterbegin", content)
 
             // masonryItem.style.opacity = '0';
-            masonryItem.setAttribute("data-category", itemsList[i].data.projectType)
+            masonryItem.setAttribute("data-category", itemsList[i].data.categories.join(CATEGORY_SEPARATOR))
             columns[i % columnCount].appendChild(masonryItem);
 
             void masonryItem.offsetWidth;
@@ -298,8 +312,11 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
         let categoryListArray = [];
         const allObjects = document.querySelectorAll(".masonry-item");
         allObjects.forEach(object => {
-            if (!categoryListArray.includes(object.dataset.category))
-                categoryListArray.push(object.dataset.category);
+            // One card can belong to several categories - each gets its own button.
+            (object.dataset.category || "").split(CATEGORY_SEPARATOR).forEach(category => {
+                if (category && !categoryListArray.includes(category))
+                    categoryListArray.push(category);
+            });
         });
 
         //Creating Category Buttons
@@ -338,7 +355,6 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
     function makeToolsUsedComponent(toolsList) {
         let toolElement = "";
         for (let i = 0; i < toolsList.length; i++) {
-            console.log(getTechStackLogo(toolsList[i]));
             toolElement+= `<img class="size-9 rounded" src=${skillImgPath + getTechStackLogo(toolsList[i])} alt=${toolsList[i]} title=${toolsList[i]} />`
         }
         return toolElement
@@ -350,7 +366,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
         for (let i = 0; i < displayedTill; i++) {
             if(category === "All")
                 cardsToShow.push(allPortfolioData[i]);
-            else if(allPortfolioData[i].data.projectType === category)
+            else if(allPortfolioData[i].data.categories.includes(category))
                 cardsToShow.push(allPortfolioData[i]);
         }
 

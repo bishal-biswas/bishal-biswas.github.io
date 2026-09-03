@@ -89,6 +89,16 @@
       "technologyTitle": "MS SQL Server",
       "technologyLogoImage": "MSSQLServer.png",
       "isTechStack": true
+    },
+    {
+      "isTechStack": true,
+      "technologyTitle": "React",
+      "technologyLogoImage": "react.png"
+    },
+    {
+      "isTechStack": false,
+      "technologyTitle": "Firebase",
+      "technologyLogoImage": "firebase.png"
     }
   ]
 }

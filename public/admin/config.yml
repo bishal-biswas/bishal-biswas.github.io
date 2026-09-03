@@ -96,7 +96,9 @@ collections:
     format: yaml-frontmatter
     slug: '{{fields.slug}}'
     identifier_field: title
-    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}} - {{projectType}}"
+    # Categories is a list widget now, and Decap's summary templating cannot
+    # render a list of objects, so the summary shows Work Type instead.
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}} - {{workType}}"
     sortable_fields: [publishDate, title, isDraft]
     view_filters:
       - { label: Drafts, field: isDraft, pattern: true }
@@ -132,10 +134,15 @@ collections:
         public_folder: ''
         field: { name: screenshot, label: Screenshot, widget: image }
         hint: 'Stored in /uploads/portfolios/screenshots/ - a different folder from the featured image.'
-      - { name: projectType, label: Project Type, widget: string }
+      - name: categories
+        label: Categories
+        widget: list
+        hint: 'Drives the filter buttons on /portfolio - one entry per category, e.g. ASP.Net then SQL Server.'
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Category, widget: string }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
-      - { name: isStatus, label: Status, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
+      - { name: workType, label: Work Type, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
       - name: techStack
         label: Tech Stack
         widget: list

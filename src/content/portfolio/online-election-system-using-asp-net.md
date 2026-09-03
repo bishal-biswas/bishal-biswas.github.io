@@ -1,21 +1,48 @@
 ---
-title : "Online Election System using ASP.Net"
-slug : "online-election-system-using-asp-net"
-metaDescription : "Final Year Project Online Election System, made with ASP.Net and SQL Server "
-featuredImage : "online-election-system-using-asp-net.jpeg"
-projectBriefDescription : "The Online Election System is a comprehensive web-based platform designed to digitalize and streamline the election process in India."
-screenshots : ["online-election-system-using-asp-net (1).webp", "online-election-system-using-asp-net (2).webp", "online-election-system-using-asp-net (3).webp", "online-election-system-using-asp-net (4).webp", "online-election-system-using-asp-net (5).webp", "online-election-system-using-asp-net (6).webp", "online-election-system-using-asp-net (7).webp", "online-election-system-using-asp-net (8).webp", "online-election-system-using-asp-net (9).webp", "online-election-system-using-asp-net (10).webp", "online-election-system-using-asp-net (11).webp", "online-election-system-using-asp-net (12).webp", "online-election-system-using-asp-net (13).webp", "online-election-system-using-asp-net (14).webp", "online-election-system-using-asp-net (15).webp", "online-election-system-using-asp-net (16).webp", "online-election-system-using-asp-net (17).webp", "online-election-system-using-asp-net (18).webp"]
-screenshotsUniqueName : "online-election-system-using-asp-net"
-screenshotsCount : 18
-projectType : "Web Development"
-publishDate : "2019-08-05T21:43"
-isDraft : false
-techStack : ["ASP.Net", "C#", "HTML", "JavaScript", "Visual Studio", "MS SQL Server"]
-isProjectCompleted : true
-projectDuration : "1.5 Months"
-rating : 0
-projectLiveLink : "-"
-projectRepoLink : "-"
+screenshotsCount: 18
+projectRepoLink: "-"
+screenshotsUniqueName: online-election-system-using-asp-net
+title: Online Election System using ASP.Net
+slug: online-election-system-using-asp-net
+metaDescription: "Final Year Project Online Election System, made with ASP.Net and SQL Server "
+featuredImage: online-election-system-using-asp-net.jpeg
+projectBriefDescription: The Online Election System is a comprehensive web-based
+  platform designed to digitalize and streamline the election process in India.
+screenshots:
+  - online-election-system-using-asp-net (1).webp
+  - online-election-system-using-asp-net (2).webp
+  - online-election-system-using-asp-net (3).webp
+  - online-election-system-using-asp-net (4).webp
+  - online-election-system-using-asp-net (5).webp
+  - online-election-system-using-asp-net (6).webp
+  - online-election-system-using-asp-net (7).webp
+  - online-election-system-using-asp-net (8).webp
+  - online-election-system-using-asp-net (9).webp
+  - online-election-system-using-asp-net (10).webp
+  - online-election-system-using-asp-net (11).webp
+  - online-election-system-using-asp-net (12).webp
+  - online-election-system-using-asp-net (13).webp
+  - online-election-system-using-asp-net (14).webp
+  - online-election-system-using-asp-net (15).webp
+  - online-election-system-using-asp-net (16).webp
+  - online-election-system-using-asp-net (17).webp
+  - online-election-system-using-asp-net (18).webp
+categories:
+  - ASP.Net
+  - SQL Server
+publishDate: 2019-08-05T21:43
+isDraft: false
+workType: Personal
+techStack:
+  - ASP.Net
+  - C#
+  - HTML
+  - JavaScript
+  - Visual Studio
+  - MS SQL Server
+isProjectCompleted: true
+projectDuration: 1.5 Months
+projectLiveLink: "-"
 ---
 ## Project Overview
 

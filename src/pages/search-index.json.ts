@@ -39,7 +39,7 @@ export const GET: APIRoute = async () => {
             date: entry.data.publishDate,
             image: entry.data.featuredImage,
             imageBase: "/uploads/portfolios/",
-            tags: [...new Set([entry.data.projectType, ...(entry.data.techStack ?? [])])],
+            tags: [...new Set([...(entry.data.categories ?? []), ...(entry.data.techStack ?? [])])],
             body: plainText(entry.body).slice(0, MAX_BODY_CHARS),
         });
     }

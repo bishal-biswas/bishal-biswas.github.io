@@ -1,22 +1,40 @@
 ---
-title : "Cybersecurity Finland Website"
-slug : "cybersecurity-finland"
-metaDescription : "A Freelance project to design and develop Cybersecurity Finland is a website using Astro. "
-featuredImage : "cybersecurity-finland.jpeg"
-projectBriefDescription : "Cybersecurity Finland’s website using Astro"
-screenshots : ["cybersecurity-finland (1).webp", "cybersecurity-finland (2).webp", "cybersecurity-finland (3).webp", "cybersecurity-finland (4).webp", "cybersecurity-finland (5).webp"]
-screenshotsUniqueName : "cybersecurity-finland"
-screenshotsCount : 5
-projectType : "Web Development"
-publishDate : "2024-08-05T00:00"
-isDraft : false
-techStack : ["Astro", "HTML", "Tailwind CSS", "JavaScript", "VS Code"]
-isProjectCompleted : true
-projectDuration : "2 Months"
-rating : 5
-projectLiveLink : "https://cybersecurity.fi/"
-projectRepoLink : ""
-clientReview : "I am thoroughly impressed with the Astro.build project you delivered. Your technical expertise and attention to detail have resulted in a high-quality, performant site that meets all our requirements. The code is clean, well-documented, and easy to maintain. Your responsiveness and ability to solve challenges efficiently made this collaboration a great experience. Fantastic job"
+screenshotsCount: 5
+title: Cybersecurity Finland Website
+slug: cybersecurity-finland
+metaDescription: "A Freelance project to design and develop Cybersecurity
+  Finland is a website using Astro. "
+featuredImage: cybersecurity-finland.jpeg
+projectBriefDescription: Cybersecurity Finland’s website using Astro
+screenshots:
+  - cybersecurity-finland (1).webp
+  - cybersecurity-finland (2).webp
+  - cybersecurity-finland (3).webp
+  - cybersecurity-finland (4).webp
+  - cybersecurity-finland (5).webp
+categories:
+  - Astro
+publishDate: 2024-08-05T00:00
+isDraft: false
+workType: Freelance
+techStack:
+  - Astro
+  - HTML
+  - Tailwind CSS
+  - JavaScript
+  - VS Code
+isProjectCompleted: true
+projectDuration: 2 Months
+rating: 5
+projectLiveLink: https://cybersecurity.fi/
+projectRepoLink: ""
+clientReview: I am thoroughly impressed with the Astro.build project you
+  delivered. Your technical expertise and attention to detail have resulted in a
+  high-quality, performant site that meets all our requirements. The code is
+  clean, well-documented, and easy to maintain. Your responsiveness and ability
+  to solve challenges efficiently made this collaboration a great experience.
+  Fantastic job
+screenshotsUniqueName: cybersecurity-finland
 ---
 For one of my <b>freelance projects</b>, I developed <b>Cybersecurity Finland’s website</b> using <b>Astro</b>, a modern static site generator known for its <b>performance-first architecture</b>. This project required a highly optimized, secure, and scalable platform to showcase cybersecurity solutions, vulnerability assessment services, compliance guidance, and SOC (Security Operations Center) services.
 

@@ -41,7 +41,7 @@ if(entry.data.rating){
     title={entry.data.title}
     pageHeadingText={entry.data.title}
     pageMainHeadingtagType="h1"
-    pageSmallText={entry.data.projectType}
+    pageSmallText={entry.data.categories.join(", ")}
     isBreadcrumbShown={true}
     backgroundImg={getPaths("Portfolio") + entry.data.featuredImage || pageContent.backgroundImage}
     isHeroContentSectionShown={false}
@@ -90,7 +90,11 @@ if(entry.data.rating){
             </span>
             <span class="w-full lg:w-1/2 flex justify-center items-center flex-col gap-4" >
                 <h1 class="text-4xl font-bold text-center">{entry.data.title}</h1>
-                <span>{entry.data.projectType}</span>
+                <span class="flex flex-wrap justify-center gap-2">
+                    {entry.data.categories.map((category: string) => (
+                        <span class="px-3 py-[3px] text-sm rounded-full bg-[#183550d7] text-[#58ded6]">{category}</span>
+                    ))}
+                </span>
                 <span class="flex w-full gap-3 justify-between">
                     <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 w-1/2" >
                         <div class="brightnessLow-overlay absolute z-0 rounded-lg w-full h-full bg-[#70ba6557]" >
