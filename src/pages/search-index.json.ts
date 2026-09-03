@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { excerpt, filterFuturePosts, plainText } from "../data/utils";
+import { excerpt, filterFuturePosts, getPortfolioSlug, plainText } from "../data/utils";
 
 // Static search index, generated at build time and fetched by /search.
 // GitHub Pages can't run a search API, so the whole index ships as one file.
@@ -28,13 +28,13 @@ export const GET: APIRoute = async () => {
         });
     }
 
-    // ---- Portfolio (URL is derived from the title, matching [slug].astro)
+    // ---- Portfolio (URL comes from the slug field, matching [slug].astro)
     const projects = await getCollection("portfolio", ({ data }) => data.isDraft === false);
     for (const entry of projects) {
         items.push({
             type: "Project",
             title: entry.data.title,
-            url: `/portfolio/${entry.data.title.replaceAll(" ", "-").toLowerCase()}/`,
+            url: `/portfolio/${getPortfolioSlug(entry.data)}/`,
             excerpt: excerpt(entry.data.projectBriefDescription),
             date: entry.data.publishDate,
             image: entry.data.featuredImage,

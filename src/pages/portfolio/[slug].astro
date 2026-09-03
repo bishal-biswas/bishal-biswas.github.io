@@ -5,12 +5,12 @@ import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
 import Prose from "../../components/Prose.astro";
 import { getCollection } from "astro:content";
 import HeadingText from "../../components/headingText.astro";
-import { getPaths, getTechStackLogo, getPageContent } from "../../data/utils";
+import { getPaths, getPortfolioSlug, getTechStackLogo, getPageContent } from "../../data/utils";
 
 export async function getStaticPaths() {
   const portfolioEntries = await getCollection('portfolio');
   return portfolioEntries.map(entry => ({
-    params: { slug: entry.data.title.replaceAll(" ", "-").toLowerCase() }, props: { entry },
+    params: { slug: getPortfolioSlug(entry.data) }, props: { entry },
   }));
 }
 
@@ -48,7 +48,7 @@ if(entry.data.rating){
     pageType="project"
     ogType="article"
     ogImage={getPaths("Portfolio") + entry.data.featuredImage}
-    metaDescription={entry.data.projectBriefDescription}
+    metaDescription={entry.data.metaDescription?.trim() || entry.data.projectBriefDescription}
 >
     <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 lg:mt-4 dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white" >
         <div class="brightnessLow-overlay absolute z-0 rounded-lg w-full h-full dark:bg-[#00283a9b] bg-[#fcfcfe9b] backdrop-blur" >

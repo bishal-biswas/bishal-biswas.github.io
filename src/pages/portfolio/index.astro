@@ -3,7 +3,7 @@
 import PlainLayout from "../../layouts/PlainLayout.astro";
 import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { getPaths } from "../../data/utils";
+import { getPaths, getPortfolioSlug } from "../../data/utils";
 import { technologyData } from "../../data/site-data/skills";
 import { pageData } from "../../data/site-data/pageData";
 
@@ -15,7 +15,9 @@ portfolioEntries.sort(
             new Date(a.data.publishDate).valueOf(),
     );
 
-let portfolioData = portfolioEntries.map(({ id, data }) => ({ id, data }))
+// slug is precomputed here so the table markup and the masonry client
+// script below (which cannot import from utils) agree on the same URL.
+let portfolioData = portfolioEntries.map(({ id, data }) => ({ id, data, slug: getPortfolioSlug(data) }))
 
 const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
 
@@ -70,7 +72,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                     portfolioData.map((project) => (
                         <tr class="border-b border-[#ffffff14] last:border-0 hover:bg-[#ffffff0d] transition-colors">
                             <th scope="row" class="px-4 py-4 font-semibold">
-                                <a href={`/portfolio/${project.data.title.replaceAll(" ", "-").toLowerCase()}`}
+                                <a href={`/portfolio/${project.slug}`}
                                    class="hover:text-lite-green-2 transition-colors">
                                     {project.data.title}
                                 </a>
@@ -93,7 +95,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                             </td>
                             <td class="px-4 py-4">
                                 <span class="flex gap-3">
-                                    <a href={`/portfolio/${project.data.title.replaceAll(" ", "-").toLowerCase()}`}
+                                    <a href={`/portfolio/${project.slug}`}
                                        class="hover:text-lite-green-2" title="Details"><i class="fa-solid fa-circle-info"></i></a>
                                     {project.data.projectLiveLink && (
                                         <a href={project.data.projectLiveLink} rel="noopener noreferrer" target="_blank"
@@ -187,7 +189,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
             let content = `
                 <div class="details z-[1] select-none overflow-hidden absolute w-full h-full flex flex-col justify-between p-4 gap-2 items-center bg-gradient-to-br from-[#70ba658d] to-[#00283a90]">
                     <div class="top">
-                        <a href="/portfolio/${itemsList[i].data.title.replaceAll(" ", "-").toLowerCase()}" class="group hover:text-lite-green-2 font-semibold text-left w-fit cursor-pointer text-xl flex items-center gap-2">${itemsList[i].data.title}
+                        <a href="/portfolio/${itemsList[i].slug}" class="group hover:text-lite-green-2 font-semibold text-left w-fit cursor-pointer text-xl flex items-center gap-2">${itemsList[i].data.title}
                             <span class="flex justify-center items-center">
                                 <span class="size-10 text-xl flex justify-center items-center rounded-full border-2 border-transparent group-hover:text-white group-hover:border-font-white group group-hover:bg-lite-green transition-all ease-in-out" ><i class="fa-solid fa-circle-arrow-up rotate-135 group-hover:rotate-90"></i></span>
                             </span>    

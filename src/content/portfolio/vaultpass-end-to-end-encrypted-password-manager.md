@@ -1,11 +1,11 @@
 ---
 title: VaultPass — End-to-End Encrypted Password Manager
+slug: vaultpass-end-to-end-encrypted-password-manager
 featuredImage: vaultpass-secure-password-manager-featuredimage.webp
 projectBriefDescription: A zero-knowledge password manager built with React 19,
   Firebase and the Web Crypto API, where the database only ever stores
   ciphertext.
 screenshots:
-  - vaultpass-secure-password-manager-featuredimage.webp
   - vaultpass-2-.webp
   - vaultpass-3-.webp
   - vaultpass-1-.webp

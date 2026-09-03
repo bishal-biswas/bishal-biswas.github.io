@@ -153,6 +153,13 @@ function getPageContent(pageTitle: string) {
     };
 }
 
+function getPortfolioSlug(data: { slug?: string; title: string }) {
+    // Project URLs come from the `slug` field. Entries written before that
+    // field was exposed in the CMS fall back to the old title-derived slug so
+    // their existing links keep resolving.
+    return data.slug?.trim() || data.title.replaceAll(" ", "-").toLowerCase();
+}
+
 function filterFuturePosts(posts: any[]) {
     const today = new Date(); // Get the current date
     return posts.filter((post) => {
@@ -161,4 +168,4 @@ function filterFuturePosts(posts: any[]) {
     });
   }
 
-export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, calculateAge, filterFuturePosts, plainText, excerpt}
+export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, getPortfolioSlug, calculateAge, filterFuturePosts, plainText, excerpt}

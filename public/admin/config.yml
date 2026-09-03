@@ -85,17 +85,16 @@ collections:
       - { name: body, label: Body, widget: markdown }
 
   # --------------------------------------------------------------- portfolio
-  # URL is derived from the TITLE (lowercased, spaces -> hyphens), not a slug
-  # field. See getStaticPaths in src/pages/portfolio/[slug].astro.
+  # URL comes from the `slug` FIELD: /portfolio/<slug>/
   - name: portfolio
     label: Portfolio
     label_singular: Project
-    description: Projects rendered at /portfolio/<title-as-slug>/
+    description: Projects rendered at /portfolio/<slug>/
     folder: src/content/portfolio
     create: true
     extension: md
     format: yaml-frontmatter
-    slug: '{{title}}'
+    slug: '{{fields.slug}}'
     identifier_field: title
     summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}} - {{projectType}}"
     sortable_fields: [publishDate, title, isDraft]
@@ -105,8 +104,25 @@ collections:
     media_folder: /public/uploads/portfolios
     public_folder: ''
     fields:
-      - { name: title, label: Title, widget: string, hint: 'The URL is built from this. Renaming a project changes its URL.' }
-      - { name: featuredImage, label: Featured Image, widget: image, hint: 'Bare filename; the site prepends /uploads/portfolios/' }
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /portfolio/<slug>/. Changing this on a published project breaks its existing links.'
+      - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Used for SEO and social share cards. Falls back to the Brief Description when empty.' }
+      - name: featuredImage
+        label: Featured Image
+        widget: image
+        # Repeated from the collection above on purpose. Without it the media
+        # library keeps whichever folder was last opened - upload the
+        # screenshots first and the featured image lands in screenshots/ too,
+        # while the frontmatter still stores a bare filename the site resolves
+        # against /uploads/portfolios/, so the image 404s.
+        media_folder: /public/uploads/portfolios
+        public_folder: ''
+        hint: 'Bare filename; the site prepends /uploads/portfolios/. Do not add it to Screenshots as well - that is a different folder.'
       - { name: projectBriefDescription, label: Brief Description, widget: text }
       - name: screenshots
         label: Screenshots
@@ -115,7 +131,7 @@ collections:
         media_folder: /public/uploads/portfolios/screenshots
         public_folder: ''
         field: { name: screenshot, label: Screenshot, widget: image }
-        hint: 'Stored in /assets/images/screenshots/ - a different folder from the featured image.'
+        hint: 'Stored in /uploads/portfolios/screenshots/ - a different folder from the featured image.'
       - { name: projectType, label: Project Type, widget: string }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
