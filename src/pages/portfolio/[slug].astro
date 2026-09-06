@@ -5,10 +5,10 @@ import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
 import Prose from "../../components/Prose.astro";
 import { getCollection } from "astro:content";
 import HeadingText from "../../components/headingText.astro";
-import { getPaths, getPortfolioSlug, getTechStackLogo, getPageContent } from "../../data/utils";
+import { filterDrafts, getPaths, getPortfolioSlug, getTechStackLogo, getPageContent, resolveAsset } from "../../data/utils";
 
 export async function getStaticPaths() {
-  const portfolioEntries = await getCollection('portfolio');
+    const portfolioEntries = filterDrafts(await getCollection('portfolio'));
   return portfolioEntries.map(entry => ({
     params: { slug: getPortfolioSlug(entry.data) }, props: { entry },
   }));
@@ -43,11 +43,11 @@ if(entry.data.rating){
     pageMainHeadingtagType="h1"
     pageSmallText={entry.data.categories.join(", ")}
     isBreadcrumbShown={true}
-    backgroundImg={getPaths("Portfolio") + entry.data.featuredImage || pageContent.backgroundImage}
+    backgroundImg={resolveAsset("Portfolio", entry.data.featuredImage) || pageContent.backgroundImage}
     isHeroContentSectionShown={false}
     pageType="project"
     ogType="article"
-    ogImage={getPaths("Portfolio") + entry.data.featuredImage}
+    ogImage={resolveAsset("Portfolio", entry.data.featuredImage)}
     metaDescription={entry.data.metaDescription?.trim() || entry.data.projectBriefDescription}
 >
     <section class="relative flex justify-center items-center bg-cover bg-center bg-no-repeat p-4 lg:mt-4 dark:text-teal-white dark:text-font-white text-teal-white dark:text-font-white" >
@@ -63,7 +63,7 @@ if(entry.data.rating){
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
                             {(entry.data.screenshots as string[] | undefined)?.map((screenshot) => (
                                 <swiper-slide>
-                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
+                                    <img src={resolveAsset("Portfolio", screenshot, "screenshots/")} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>
@@ -76,7 +76,7 @@ if(entry.data.rating){
                         coverflow-effect-modifier="1" coverflow-effect-slide-shadows="true">
                             {screenshotsCollection.map((screenshot) => (
                                 <swiper-slide>
-                                    <img src={`/uploads/portfolios/screenshots/${screenshot}`} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
+                                    <img src={resolveAsset("Portfolio", screenshot, "screenshots/")} class="w-full lg:h-[300px] h-[200px] rounded-lg object-cover object-top" loading="lazy"/>
                                 </swiper-slide>
                             ))}
                         </swiper-container>
@@ -171,7 +171,7 @@ if(entry.data.rating){
             <span class="flex justify-center items-center gap-2 text-base w-fit">
                 {
                     entry.data.clientPic &&
-                    <img src={entry.data.clientPic} alt={entry.data.clientName} class="size-10 rounded-full" />
+                    <img src={resolveAsset("Other Files", entry.data.clientPic)} alt={entry.data.clientName} class="size-10 rounded-full" />
                 }
                 {
                     entry.data.clientName &&

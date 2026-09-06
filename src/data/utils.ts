@@ -111,10 +111,10 @@ interface categoriesPrototype {
 // But Decap's image widget also offers "Replace with URL", so any of them can
 // come back as an absolute URL or an already-rooted path - prepending a folder
 // to those produces "/uploads/categ/https://...". Pass everything through this.
-function resolveAsset(pathName: string, file: string | undefined) {
+function resolveAsset(pathName: string, file: string | undefined, subdirectory = "") {
     if (!file) return "";
     if (/^(https?:)?\/\//.test(file) || file.startsWith("/")) return file;
-    return getPaths(pathName) + file;
+    return getPaths(pathName) + subdirectory + file;
 }
 
 function getPaths(directoryName: string){
@@ -163,9 +163,13 @@ function getPortfolioSlug(data: { slug?: string; title: string }) {
 function filterFuturePosts(posts: any[]) {
     const today = new Date(); // Get the current date
     return posts.filter((post) => {
-      const publishDate = new Date(post.data.publishDate); // Convert publishDate to a Date object
-      return publishDate <= today; // Include only posts with publishDate in the past or today
+        const publishDate = new Date(post.data.publishDate); // Convert publishDate to a Date object
+        return publishDate <= today; // Include only posts with publishDate in the past or today
     });
-  }
+}
 
-export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, getPortfolioSlug, calculateAge, filterFuturePosts, plainText, excerpt}
+function filterDrafts<T extends { data: { isDraft?: boolean } }>(entries: T[]) {
+    return entries.filter((entry) => entry.data.isDraft !== true);
+}
+
+export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, getPortfolioSlug, calculateAge, filterFuturePosts, filterDrafts, plainText, excerpt}

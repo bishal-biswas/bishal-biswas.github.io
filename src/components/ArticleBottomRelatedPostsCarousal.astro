@@ -1,7 +1,7 @@
 ---
 import { getCollection } from "astro:content";
 import HeadingText from "./headingText.astro";
-import { filterFuturePosts, getPaths } from "../data/utils";
+import { filterDrafts, filterFuturePosts, resolveAsset } from "../data/utils";
 
 interface Props {
     category: string,
@@ -10,12 +10,15 @@ interface Props {
 
 const {category, ignoreArticle} = Astro.props;
 let allBlogPosts = await getCollection("article");
+allBlogPosts = filterDrafts(allBlogPosts);
 allBlogPosts = filterFuturePosts(allBlogPosts);
 let RelatedArticles = [];
 
 for (let i = 0; i < allBlogPosts.length; i++) {
-    if(allBlogPosts[i].data.category == category && ignoreArticle != allBlogPosts[i].data.title)
-    RelatedArticles.push(allBlogPosts[i]);
+    if(allBlogPosts[i].data.isDraft !== true){
+        if(allBlogPosts[i].data.category == category && ignoreArticle != allBlogPosts[i].data.title)
+            RelatedArticles.push(allBlogPosts[i]);
+    }
 }
 
 ---
@@ -36,13 +39,13 @@ for (let i = 0; i < allBlogPosts.length; i++) {
         <div class="article-navigation gap-3 w-full p-5 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]">
             <swiper-container class="mySwiper" init="false">
                 {
-                    allBlogPosts.map(
+                    RelatedArticles.map(
                         (post: any) =>
                             (post.data.category == category && ignoreArticle != post.data.title) && (
                                 <swiper-slide>
                                     <div class="article-card rounded-lg shadow-2xl size-full my-7">
                                         <a href={post.data.slug} class="article-thumbnail h-[70%] block" >
-                                            <img src={getPaths("Article")+post.data.image} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg h-[145px]" />
+                                            <img src={resolveAsset("Article", post.data.image)} alt="article-thumbnail" class="rounded-tr-lg w-full rounded-tl-lg h-[145px]" />
                                         </a>
                                         <div class="article-data h-[60px] p-2 text-left dark:bg-body-bg rounded-br-lg rounded-bl-lg">
                                             <a href={post.data.slug} class="line-clamp-2 text-sm" >

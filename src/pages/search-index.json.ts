@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { excerpt, filterFuturePosts, getPortfolioSlug, plainText } from "../data/utils";
+import { excerpt, filterFuturePosts, getPortfolioSlug, plainText, resolveAsset } from "../data/utils";
 
 // Static search index, generated at build time and fetched by /search.
 // GitHub Pages can't run a search API, so the whole index ships as one file.
@@ -21,8 +21,8 @@ export const GET: APIRoute = async () => {
             url: `/articles/${entry.data.slug}/`,
             excerpt: excerpt(body),
             date: entry.data.publishDate,
-            image: entry.data.image,
-            imageBase: "/uploads/articles/",
+            image: resolveAsset("Article", entry.data.image),
+            imageBase: "",
             tags: [...new Set([entry.data.category, ...(entry.data.tags ?? [])])],
             body: body.slice(0, MAX_BODY_CHARS),
         });
@@ -37,8 +37,8 @@ export const GET: APIRoute = async () => {
             url: `/portfolio/${getPortfolioSlug(entry.data)}/`,
             excerpt: excerpt(entry.data.projectBriefDescription),
             date: entry.data.publishDate,
-            image: entry.data.featuredImage,
-            imageBase: "/uploads/portfolios/",
+            image: resolveAsset("Portfolio", entry.data.featuredImage),
+            imageBase: "",
             tags: [...new Set([...(entry.data.categories ?? []), ...(entry.data.techStack ?? [])])],
             body: plainText(entry.body).slice(0, MAX_BODY_CHARS),
         });

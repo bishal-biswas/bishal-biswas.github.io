@@ -3,10 +3,11 @@ import type { GetStaticPaths } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import CodeHelpLayout from "../../layouts/CodeHelpLayout.astro";
-import { filterFuturePosts, getFormattedDate } from "../../data/utils";
+import { filterDrafts, filterFuturePosts, getFormattedDate } from "../../data/utils";
 
 export const getStaticPaths = (async () => {
   let allCodeSnippets = await getCollection('code-help');
+    allCodeSnippets = filterDrafts(allCodeSnippets);
   allCodeSnippets = filterFuturePosts(allCodeSnippets);
   return allCodeSnippets.map((entry : CollectionEntry<"code-help">) => {
     return {

@@ -18,7 +18,7 @@ const {previousArticle , nextArticle} = Astro.props;
 <div
     class="article-navigation flex lg:flex-row flex-col justify-between items-center gap-3 w-full p-5 py-7 rounded-lg dark:bg-dark-teal bg-dark-teal shadow-sm shadow-[#000000be]"
 >
-    <span class="lg:w-[32%] flex justify-normal">
+    <span class="lg:w-[32%] w-full flex justify-normal">
         {
             previousArticle.data.slug != "" ? (
                 <ArticleNavigationLinks
@@ -27,7 +27,7 @@ const {previousArticle , nextArticle} = Astro.props;
                     urlToArticle={"/articles/"+ previousArticle.data.slug}
                 />
             ) : (
-                <span class="lg:w-[32%]" aria-label="no previous article" />
+                <span class="lg:w-[32%] w-full" aria-label="no previous article" />
             )
         }
     </span>
@@ -39,7 +39,7 @@ const {previousArticle , nextArticle} = Astro.props;
             <span class="group-hover:text-[#70ba65]">Articles</span>
         </span>
     </a>
-    <span class="lg:w-[32%] flex justify-end">
+    <span class="lg:w-[32%] w-full flex justify-end">
         {
             nextArticle.data.slug != "" ? (
                 <ArticleNavigationLinks
@@ -48,7 +48,7 @@ const {previousArticle , nextArticle} = Astro.props;
                     urlToArticle={"/articles/"+ nextArticle.data.slug}
                 />
             ) : (
-                <span class="lg:w-[32%]" aria-label="no next article" />
+                <span class="lg:w-[32%] w-full" aria-label="no next article" />
             )
         }
     </span>
