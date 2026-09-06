@@ -2,9 +2,10 @@
 import HeadingText from "./headingText.astro";
 
 import { getCollection } from "astro:content";
-import { getCategoryImage, findCategoryCount, getPaths, filterFuturePosts, resolveAsset } from "../data/utils.ts"
+import { getCategoryImage, findCategoryCount, getPaths, filterDrafts, filterFuturePosts, resolveAsset } from "../data/utils.ts"
 
 let allBlogPosts = await getCollection("article");
+allBlogPosts = filterDrafts(allBlogPosts);
 allBlogPosts = filterFuturePosts(allBlogPosts);
 var categAllArticles: string[] = []; 
 for (let i = 0; i < allBlogPosts.length; i++) categAllArticles.push(allBlogPosts[i].data.category);

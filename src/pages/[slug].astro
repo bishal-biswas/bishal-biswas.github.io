@@ -2,9 +2,10 @@
 import { getCollection } from "astro:content";
 import SinglePageLayout from "../layouts/SinglePageLayout.astro";
 import Prose from "../components/Prose.astro";
+import { filterDrafts } from "../data/utils";
 
 export async function getStaticPaths() {
-  const pageEntries = await getCollection('pages');
+  const pageEntries = filterDrafts(await getCollection('pages'));
   return pageEntries.map(entry => ({
     params: { slug: entry.data.slug }, props: { entry },
   }));

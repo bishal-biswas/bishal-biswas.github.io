@@ -9,7 +9,7 @@ const { navigationSide, urlToArticle, titleofArticle}
 = Astro.props;
 ---
 
-<a href={urlToArticle} class="w-fit flex items-center gap-3 group" 
+<a href={urlToArticle} class="w-fit flex items-center gap-3 group overflow-hidden text-ellipsis whitespace-nowrap"
 class:list={[ "text-"+ navigationSide, 
     {"justify-normal" : navigationSide == "left"},
     {"justify-end" : navigationSide == "right"},
@@ -20,7 +20,7 @@ class:list={[ "text-"+ navigationSide,
             <i class={"fa-solid fa-arrow-" + navigationSide}></i>
         </span>
     }
-    <span class="lg:w-auto group-hover:text-[#70ba65] whitespace-nowrap overflow-hidden text-ellipsis">
+    <span class="lg:w-auto group-hover:text-[#70ba65]">
         {titleofArticle}
     </span>
     {

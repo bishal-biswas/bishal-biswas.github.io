@@ -7,7 +7,7 @@ import ArticleSidebar from "../../components/ArticleSidebar.astro";
 import ArticleBottomRelatedPostsCarousal from "../../components/ArticleBottomRelatedPostsCarousal.astro"
 import BlogContent from "../../components/blogContent.astro";
 import SectionDivider from "../../components/SectionDivider.astro";
-import { calculateReadingTime, filterFuturePosts, getFormattedDate, getPaths } from "../../data/utils";
+import { calculateReadingTime, filterDrafts, filterFuturePosts, getFormattedDate, resolveAsset } from "../../data/utils";
 import PlainLayout from "../../layouts/PlainLayout.astro";
 import ArticleStats from "../../components/ArticleStats.astro";
 import { isBackendConfigured } from "../../data/site-data/integrations";
@@ -22,6 +22,7 @@ import { isBackendConfigured } from "../../data/site-data/integrations";
 
 export const getStaticPaths = (async () => {
   let allBlogPosts = await getCollection('article');
+    allBlogPosts = filterDrafts(allBlogPosts);
   allBlogPosts = filterFuturePosts(allBlogPosts);
   return allBlogPosts.map((entry) => {
     return {
@@ -31,7 +32,7 @@ export const getStaticPaths = (async () => {
   });
 }) satisfies GetStaticPaths;
 
-const BlogPosts = await getCollection('article');
+const BlogPosts = filterDrafts(await getCollection('article'));
 
 interface navButtons {
     data : {
@@ -98,10 +99,10 @@ const articleDescription = plainBody.length > 80
   pageSmallText=""
   isLargeWidth={true}
   title={entry.data.title}
-  backgroundImg={getPaths("Article") + entry.data.image}
+    backgroundImg={resolveAsset("Article", entry.data.image)}
   pageType="article"
   ogType="article"
-  ogImage={getPaths("Article") + entry.data.image}
+    ogImage={resolveAsset("Article", entry.data.image)}
   heroImgTransitionName={`article-image-${entry.data.slug}`}
   metaDescription={articleDescription}
 >

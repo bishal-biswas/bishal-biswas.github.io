@@ -3,11 +3,11 @@
 import PlainLayout from "../../layouts/PlainLayout.astro";
 import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
 import { getCollection, type CollectionEntry } from "astro:content";
-import { getPaths, getPortfolioSlug } from "../../data/utils";
+import { filterDrafts, getPaths, getPortfolioSlug, resolveAsset } from "../../data/utils";
 import { technologyData } from "../../data/site-data/skills";
 import { pageData } from "../../data/site-data/pageData";
 
-const portfolioEntries = await getCollection('portfolio');
+const portfolioEntries = filterDrafts(await getCollection('portfolio'));
 
 portfolioEntries.sort(
         (a:CollectionEntry<"portfolio">, b:CollectionEntry<"portfolio">) =>
@@ -17,7 +17,11 @@ portfolioEntries.sort(
 
 // slug is precomputed here so the table markup and the masonry client
 // script below (which cannot import from utils) agree on the same URL.
-let portfolioData = portfolioEntries.map(({ id, data }) => ({ id, data, slug: getPortfolioSlug(data) }))
+let portfolioData = portfolioEntries.map(({ id, data }) => ({
+    id,
+    data: { ...data, featuredImage: resolveAsset("Portfolio", data.featuredImage) },
+    slug: getPortfolioSlug(data),
+}))
 
 const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
 
@@ -137,7 +141,6 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
 <script is:inline type="text/javascript" define:vars={
     {
         allPortfolioData : portfolioData, 
-        featureImgPath: getPaths("Portfolio"), 
         skillImgPath: getPaths("Skills"),
         siteData : { technologyData }
     }}>
@@ -222,7 +225,7 @@ const pageContent = pageData.filter(page => page.pageTitle == "Portfolio")[0];
                     else
                         content += `<span class="absolute rotate-45 bg-[#8e0bc0] -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white">${itemsList[i].data.workType}</span>`
                 }
-                content += `<img class="w-full object-cover object-top min-h-[200px] max-h-[350px]" loading="lazy" src=${featureImgPath + itemsList[i].data.featuredImage}>`
+                content += `<img class="w-full object-cover object-top min-h-[200px] max-h-[350px]" loading="lazy" src="${itemsList[i].data.featuredImage}">`
 
             masonryItem.insertAdjacentHTML("afterbegin", content)
 
