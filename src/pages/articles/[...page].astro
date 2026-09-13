@@ -15,7 +15,6 @@ export async function getStaticPaths({ paginate }: { paginate: any }) {
         return data.isDraft === false;
     });
 
-    allBlogPosts = filterFuturePosts(allBlogPosts);
     allBlogPosts.sort(
         (a:CollectionEntry<"article">, b:CollectionEntry<"article">) =>
             new Date(b.data.publishDate).valueOf() -
