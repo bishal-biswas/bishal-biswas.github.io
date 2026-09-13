@@ -1,11 +1,20 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, type CollectionEntry } from "astro:content";
 import PlainLayout from "../../layouts/PlainLayout.astro";
 import CardCodeResource from "../../components/Card_CodeResource.astro";
 import { pageData } from "../../data/site-data/pageData";
+import { filterFuturePosts } from "../../data/utils";
 
 const codeEntries = await getCollection('code-help');
-const publishedSnippets = codeEntries.filter((entry) => !entry.data.isDraft);
+let publishedSnippets = codeEntries.filter((entry) => !entry.data.isDraft);
+
+publishedSnippets = filterFuturePosts(publishedSnippets);
+publishedSnippets.sort(
+    (a:CollectionEntry<"code-help">, b:CollectionEntry<"code-help">) =>
+        new Date(b.data.publishDate).valueOf() -
+        new Date(a.data.publishDate).valueOf()
+    );
+
 
 // Topics come from the snippets themselves, most-used first, so adding a
 // tag in the CMS updates this list with no code change.
@@ -83,13 +92,14 @@ const pageContent = pageData.filter(page => page.pageTitle == "Snippets")[0];
             </ul>
         </div>
 
-        <div class="code-articles lg:w-[80%] w-full flex-wrap flex gap-3">
+        <!-- lg:w-[80%] -->
+        <div class="code-articles w-full flex-wrap flex gap-3"> 
             {
                 publishedSnippets.map((code)=>(
                     <CardCodeResource
                         cardTitle={code.data.title}
                         cardUrl={code.data.slug || ""}
-                        descriptionText={code.data.metaDescription}
+                        descriptionText={code.data.metaDescription || ""}
                         tags={code.data.tags}/>
                 ))
             }
