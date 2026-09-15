@@ -6,5 +6,7 @@ author: Bishal Biswas
 publishDate: 2026-09-15
 isDraft: true
 category: Web Development
+tags:
+  - Full Stack Website
 ---
 s
