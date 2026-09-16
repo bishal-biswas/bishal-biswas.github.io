@@ -31,6 +31,14 @@
     {
       "name": "Other Files",
       "path": "/uploads/files/"
+    },
+    {
+      "name": "Services",
+      "path": "/uploads/services/"
+    },
+    {
+      "name": "Products",
+      "path": "/uploads/products/"
     }
   ]
 }

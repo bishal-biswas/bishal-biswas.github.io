@@ -1,0 +1,129 @@
+---
+import { getCollection } from "astro:content";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import Prose from "../../components/Prose.astro";
+import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
+import HeadingText from "../../components/headingText.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import PricingGrid from "../../components/PricingGrid.astro";
+import { filterDrafts, getEntrySlug, getPageContent, resolveAsset } from "../../data/utils";
+
+export async function getStaticPaths() {
+    const services = filterDrafts(await getCollection("services"));
+    return services.map((entry) => ({
+        params: { slug: getEntrySlug(entry.data) },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const pageContent = getPageContent("Service Detail");
+
+const featuredImage = resolveAsset("Services", data.featuredImage);
+const ctaLink = data.ctaLink?.trim() || "/contact";
+const ctaText = data.ctaText?.trim() || "Get in touch";
+const isExternalCta = /^https?:\/\//.test(ctaLink);
+// Shown beside the icon; falls back to the first pricing plan.
+const startingPrice = data.startingPrice || data.pricingPlans[0]?.price;
+
+// Other services, for the "Also available" strip at the bottom.
+const currentSlug = getEntrySlug(data);
+const otherServices = filterDrafts(await getCollection("services"))
+    .filter((service) => getEntrySlug(service.data) !== currentSlug)
+    .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title));
+---
+
+<PlainLayout
+    title={`${data.title} | Services`}
+    metaDescription={data.metaDescription?.trim() || data.shortDescription}
+    pageType="project"
+    isBreadcrumbShown={true}
+    pageSmallText="Services"
+    pageHeadingText={data.title}
+    pageMainHeadingtagType="h1"
+    ogType="article"
+    ogImage={featuredImage || undefined}
+    backgroundImg={featuredImage || pageContent.backgroundImage}
+    backgroundImgClass={featuredImage ? "" : pageContent.backgroundImageClass}
+>
+    <div class="wrapper flex flex-col gap-8 my-5">
+        <section class="relative flex flex-col lg:flex-row gap-6 p-6 lg:p-8 rounded-xl dark:bg-dark-teal bg-dark-teal shadow-md shadow-[#000000be] animate-on-scroll">
+            <div class="shrink-0 flex lg:flex-col items-center gap-4 lg:w-40">
+                <span class="grid place-items-center size-20 rounded-full bg-[#183550d7]">
+                    <i class={`${data.iconClass} text-4xl text-lite-green`} aria-hidden="true"></i>
+                </span>
+                {
+                    startingPrice && (
+                        <span class="text-center">
+                            <span class="block text-xs uppercase opacity-70">Starting from</span>
+                            <span class="block text-2xl font-bold text-lite-green">{startingPrice}</span>
+                        </span>
+                    )
+                }
+            </div>
+            <div class="flex flex-col gap-4 grow">
+                <p class="text-base">{data.shortDescription}</p>
+                {
+                    data.servicePoints.length > 0 && (
+                        <div>
+                            <h2 class="text-lg font-bold mb-2">What is included</h2>
+                            <ul class="text-sm dark:text-font-gray flex flex-col gap-1">
+                                {data.servicePoints.map((point) => (
+                                    <li class="flex gap-3">
+                                        <i class="text-dark-green fa-duotone fa-solid fa-circle-check pt-1" aria-hidden="true"></i>
+                                        <span>{point}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )
+                }
+                <div class="flex flex-wrap gap-3 mt-2">
+                    <ButtonLinkUI action={ctaLink} isBgColored={true} iconClass={isExternalCta ? "fa-solid fa-arrow-up-right-from-square" : "fa-solid fa-paper-plane"}>{ctaText}</ButtonLinkUI>
+                    <ButtonLinkUI action="/portfolio" iconClass="fa-solid fa-briefcase">See related work</ButtonLinkUI>
+                </div>
+            </div>
+        </section>
+
+        {
+            data.pricingPlans.length > 0 && (
+                <section class="flex flex-col gap-8">
+                    <HeadingText headText="Pricing" verticalMarginClass="mt-2" />
+                    <PricingGrid plans={data.pricingPlans} fallbackLink={ctaLink} />
+                </section>
+            )
+        }
+
+        {
+            entry.body?.trim() && (
+                <section class="dark:bg-dark-teal bg-dark-teal rounded-xl p-5 lg:px-10">
+                    <Prose>
+                        <div class="content" set:html={entry.rendered?.html}></div>
+                    </Prose>
+                </section>
+            )
+        }
+
+        {
+            otherServices.length > 0 && (
+                <>
+                    <HeadingText headText="Also available" verticalMarginClass="mt-4" />
+                    <div class="serviceCardsHolder mt-6 flex flex-wrap justify-between items-stretch gap-7">
+                        {otherServices.map((service) => (
+                            <ServiceCard
+                                href={`/services/${getEntrySlug(service.data)}/`}
+                                title={service.data.title}
+                                iconClass={service.data.iconClass}
+                                shortDescription={service.data.shortDescription}
+                                points={service.data.servicePoints}
+                                startingPrice={service.data.startingPrice || service.data.pricingPlans[0]?.price}
+                                maxPoints={3}
+                            />
+                        ))}
+                    </div>
+                </>
+            )
+        }
+    </div>
+</PlainLayout>

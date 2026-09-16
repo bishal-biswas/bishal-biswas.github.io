@@ -1,0 +1,73 @@
+---
+import { getCollection } from "astro:content";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { productCategories, getProductCategory } from "../../data/site-data/content";
+import { filterDrafts, getEntrySlug, getPageContent, resolveAsset } from "../../data/utils";
+
+const products = filterDrafts(await getCollection("products")).sort(
+    (a, b) =>
+        Number(b.data.isFeatured) - Number(a.data.isFeatured) ||
+        new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf(),
+);
+
+// Known categories keep their curated order; anything filed under a name that
+// is not in the list still gets a section at the bottom, so nothing vanishes.
+const knownNames = productCategories.map((category) => category.name);
+const extraNames = [...new Set(products.map((product) => product.data.category))]
+    .filter((name) => name && !knownNames.includes(name))
+    .sort();
+
+// Only categories that actually hold something get a heading.
+const sections = [...knownNames, ...extraNames]
+    .map((name) => ({
+        ...getProductCategory(name),
+        items: products.filter((product) => product.data.category === name),
+    }))
+    .filter((section) => section.items.length > 0);
+
+const pageContent = getPageContent("Products");
+---
+
+<PlainLayout
+    title="Products"
+    metaDescription="Books, software, websites, WordPress themes and plugins that Bishal Biswas builds and recommends to other developers."
+    pageType="project"
+    isBreadcrumbShown={true}
+    pageSmallTextBelow={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
+>
+    <div class="wrapper flex flex-col gap-12 my-5">
+        {sections.length === 0 && <p class="text-center py-10 opacity-70">No products are listed yet. Check back soon.</p>}
+        {
+            sections.map((section) => (
+                <section class="product-section">
+                    <span class="heading-wrapper flex items-center relative border-t border-[#919ca1] border-dotted mb-6">
+                        <h2 class="absolute flex items-center gap-3 text-2xl font-bold pr-4 z-[1] dark:bg-body-bg-2 bg-body-bg-2">
+                            <i class={`${section.icon} text-lite-green text-xl`} aria-hidden="true" />
+                            {section.name}
+                        </h2>
+                    </span>
+
+                    {section.blurb && <p class="text-sm dark:text-font-gray mb-5">{section.blurb}</p>}
+
+                    <div class="flexbox flex gap-4 flex-wrap">
+                        {section.items.map(({ data }) => (
+                            <ProductCard
+                                href={`/products/${getEntrySlug(data)}/`}
+                                title={data.title}
+                                description={data.shortDescription}
+                                image={resolveAsset("Products", data.image)}
+                                price={data.price}
+                                isFeatured={data.isFeatured}
+                            />
+                        ))}
+                    </div>
+                </section>
+            ))
+        }
+    </div>
+</PlainLayout>

@@ -1,0 +1,149 @@
+---
+import { getCollection } from "astro:content";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import Prose from "../../components/Prose.astro";
+import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
+import HeadingText from "../../components/headingText.astro";
+import ProductCard from "../../components/ProductCard.astro";
+import { getProductCategory } from "../../data/site-data/content";
+import { filterDrafts, getEntrySlug, getFormattedDate, getPageContent, resolveAsset } from "../../data/utils";
+
+export async function getStaticPaths() {
+    const products = filterDrafts(await getCollection("products"));
+    return products.map((entry) => ({
+        params: { slug: getEntrySlug(entry.data) },
+        props: { entry },
+    }));
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const pageContent = getPageContent("Product Detail");
+
+const image = resolveAsset("Products", data.image);
+const gallery = (data.gallery ?? []).map((file) => resolveAsset("Products", file, "gallery/"));
+const slides = [image, ...gallery].filter(Boolean);
+const category = getProductCategory(data.category);
+const productLink = data.productLink?.trim();
+const productLinkText = data.productLinkText?.trim() || "Get it";
+
+// Other published products in the same category, newest first.
+const currentSlug = getEntrySlug(data);
+const related = filterDrafts(await getCollection("products"))
+    .filter((product) => product.data.category === data.category && getEntrySlug(product.data) !== currentSlug)
+    .sort((a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf())
+    .slice(0, 3);
+---
+
+<PlainLayout
+    isSwiperRequired={gallery.length > 0}
+    title={`${data.title} | Products`}
+    metaDescription={data.metaDescription?.trim() || data.shortDescription}
+    pageType="project"
+    isBreadcrumbShown={true}
+    pageSmallText={data.category}
+    pageHeadingText={data.title}
+    pageMainHeadingtagType="h1"
+    ogType="article"
+    ogImage={image || undefined}
+    backgroundImg={image || pageContent.backgroundImage}
+    backgroundImgClass={image ? "" : pageContent.backgroundImageClass}
+>
+    <div class="wrapper flex flex-col gap-8 my-5">
+        <section class="flex flex-col lg:flex-row gap-6 p-6 lg:p-8 rounded-xl dark:bg-dark-teal bg-dark-teal shadow-md shadow-[#000000be] animate-on-scroll">
+            <div class="lg:w-1/2 w-full flex flex-col gap-4">
+                {
+                    gallery.length > 0 ? (
+                        <swiper-container autoplay="true" class="mySwiper" grab-cursor="true" centered-slides="true" slides-per-view="1" space-between="16" pagination="true">
+                            {slides.map((src) => (
+                                <swiper-slide>
+                                    <img src={src} alt={data.title} class="w-full lg:h-[300px] h-[220px] rounded-lg object-cover" loading="lazy" />
+                                </swiper-slide>
+                            ))}
+                        </swiper-container>
+                    ) : image ? (
+                        <img src={image} alt={data.title} class="w-full lg:h-[300px] h-[220px] rounded-lg object-cover" />
+                    ) : (
+                        <div class="w-full lg:h-[300px] h-[220px] rounded-lg grid place-items-center bg-[#183550d7]">
+                            <i class={`${category.icon} text-6xl text-lite-green`} aria-hidden="true"></i>
+                        </div>
+                    )
+                }
+            </div>
+
+            <div class="lg:w-1/2 w-full flex flex-col gap-4">
+                <span class="flex flex-wrap items-center gap-2">
+                    <a href="/products/" class="px-3 py-[3px] text-sm rounded-full bg-[#183550d7] text-[#58ded6] hover:underline">
+                        <i class={`${category.icon} mr-2`} aria-hidden="true"></i>{data.category}
+                    </a>
+                    {data.isFeatured && <span class="px-3 py-[3px] text-sm rounded-full bg-lite-green text-white">Featured</span>}
+                </span>
+
+                <p class="text-base">{data.shortDescription}</p>
+
+                {
+                    data.price && (
+                        <span>
+                            <span class="block text-xs uppercase opacity-70">Price</span>
+                            <span class="block text-3xl font-bold text-lite-green">{data.price}</span>
+                        </span>
+                    )
+                }
+
+                <span class="text-xs opacity-70">Added {getFormattedDate(data.publishDate)}</span>
+
+                {
+                    (data.tags ?? []).length > 0 && (
+                        <div class="tags text-xs flex flex-wrap gap-1">
+                            {(data.tags ?? []).map((tag) => (
+                                <span class="tag px-2 py-[2px] bg-[#183550d7] text-[#58ded6] rounded-full">#{tag}</span>
+                            ))}
+                        </div>
+                    )
+                }
+
+                <div class="flex flex-wrap gap-3 mt-auto pt-2">
+                    {
+                        productLink && (
+                            <a href={productLink} target="_blank" rel="noopener noreferrer" class="ButtonUI flex gap-2 items-center cursor-pointer rounded-full p-7 py-3 text-teal-white dark:text-font-white text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300 bg-lite-green">
+                                <span>{productLinkText}</span>
+                                <i class="text-lg leading-5 fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
+                            </a>
+                        )
+                    }
+                    <ButtonLinkUI action="/contact" iconClass="fa-solid fa-paper-plane">Ask a question</ButtonLinkUI>
+                </div>
+            </div>
+        </section>
+
+        {
+            entry.body?.trim() && (
+                <section class="dark:bg-dark-teal bg-dark-teal rounded-xl p-5 lg:px-10">
+                    <Prose>
+                        <div class="content" set:html={entry.rendered?.html}></div>
+                    </Prose>
+                </section>
+            )
+        }
+
+        {
+            related.length > 0 && (
+                <>
+                    <HeadingText headText={`More in ${data.category}`} verticalMarginClass="mt-4" />
+                    <div class="flexbox flex gap-4 flex-wrap mt-6">
+                        {related.map((product) => (
+                            <ProductCard
+                                href={`/products/${getEntrySlug(product.data)}/`}
+                                title={product.data.title}
+                                description={product.data.shortDescription}
+                                image={resolveAsset("Products", product.data.image)}
+                                price={product.data.price}
+                                isFeatured={product.data.isFeatured}
+                            />
+                        ))}
+                    </div>
+                </>
+            )
+        }
+    </div>
+</PlainLayout>

@@ -58,7 +58,7 @@ See [LICENSE](./LICENSE) for the full terms.
 │   └── uploads/                   CMS-managed media
 └── src/
     ├── components/                Astro components
-    ├── content/                   Articles, portfolio, snippets, pages
+    ├── content/                   Articles, portfolio, services, products, snippets, pages
     ├── data/site-data/            Site + personal data (JSON + shims)
     ├── layouts/                   Page layouts
     └── pages/                     Routes

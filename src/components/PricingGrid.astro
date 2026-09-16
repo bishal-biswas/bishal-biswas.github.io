@@ -1,0 +1,73 @@
+---
+// Pricing tiers for a service, up to three across. Each plan's button falls
+// back to the service-level CTA link, then /contact, so a plan never renders
+// a dead button.
+interface Plan {
+    name: string;
+    price: string;
+    billingNote?: string;
+    description?: string;
+    features: string[];
+    isHighlighted: boolean;
+    ctaText?: string;
+    ctaLink?: string;
+}
+
+interface Props {
+    plans: Plan[];
+    fallbackLink?: string;
+}
+
+const { plans, fallbackLink = "/contact" } = Astro.props;
+
+const linkFor = (plan: Plan) => plan.ctaLink?.trim() || fallbackLink;
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+---
+
+{
+    plans.length > 0 && (
+        <div class="pricingGrid grid gap-6 items-stretch" class:list={[plans.length === 1 ? "lg:grid-cols-1 lg:max-w-md lg:mx-auto" : plans.length === 2 ? "lg:grid-cols-2" : "lg:grid-cols-3"]}>
+            {plans.map((plan) => {
+                const href = linkFor(plan);
+                return (
+                    <div
+                        class="pricingCard relative flex flex-col gap-4 rounded-xl p-6 dark:bg-dark-teal bg-dark-teal text-teal-white dark:text-font-white shadow-md shadow-[#000000be] border-2 animate-on-scroll"
+                        class:list={[plan.isHighlighted ? "border-lite-green lg:-translate-y-2" : "border-transparent"]}
+                    >
+                        {plan.isHighlighted && (
+                            <span class="absolute -top-3 left-1/2 -translate-x-1/2 text-[10px] uppercase font-semibold tracking-wide px-3 py-1 rounded-full bg-lite-green text-white whitespace-nowrap">
+                                Most popular
+                            </span>
+                        )}
+                        <h3 class="text-lg font-bold">{plan.name}</h3>
+                        <div>
+                            <span class="block text-3xl font-bold text-lite-green">{plan.price}</span>
+                            {plan.billingNote && <span class="block text-xs uppercase opacity-70 mt-1">{plan.billingNote}</span>}
+                        </div>
+                        {plan.description && <p class="text-sm dark:text-font-gray">{plan.description}</p>}
+                        {plan.features.length > 0 && (
+                            <ul class="text-sm dark:text-font-gray flex flex-col gap-2">
+                                {plan.features.map((feature) => (
+                                    <li class="flex gap-3">
+                                        <i class="text-dark-green fa-duotone fa-solid fa-circle-check pt-1" aria-hidden="true"></i>
+                                        <span>{feature}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        )}
+                        <a
+                            href={href}
+                            target={isExternal(href) ? "_blank" : undefined}
+                            rel={isExternal(href) ? "noopener noreferrer" : undefined}
+                            class="ButtonUI mt-auto flex justify-center gap-2 items-center rounded-full py-3 px-6 text-sm uppercase hover:scale-105 transition-all ease-in-out duration-300"
+                            class:list={[plan.isHighlighted ? "bg-lite-green text-white" : "border-2 border-white"]}
+                        >
+                            <span>{plan.ctaText?.trim() || `Choose ${plan.name}`}</span>
+                            <i class={isExternal(href) ? "fa-solid fa-arrow-up-right-from-square" : "fa-solid fa-arrow-right"} aria-hidden="true"></i>
+                        </a>
+                    </div>
+                );
+            })}
+        </div>
+    )
+}

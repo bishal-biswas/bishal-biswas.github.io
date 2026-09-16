@@ -1,5 +1,4 @@
 // Data lives in ./json/*.json so the CMS can edit it.
-import { normalizeList } from "./normalizeList";
 import { skillsStats as skillsStatsData } from "./json/skills-stats.json";
 import offeredServicesData from "./json/offered-services.json";
 import { employmentData as employmentJson } from "./json/employment.json";
@@ -8,13 +7,10 @@ import { certificateData as certificateJson } from "./json/certificates.json";
 import { technologyData as technologyJson } from "./json/technologies.json";
 
 export const skillsStats = skillsStatsData;
-export const offeredServices = {
-    ...offeredServicesData,
-    servicesData: offeredServicesData.servicesData.map((service) => ({
-        ...service,
-        servicesPoints: normalizeList(service.servicesPoints),
-    })),
-};
+// Section heading and intro for the services block on the homepage. The
+// services themselves are Markdown entries in src/content/services/ (the
+// `services` content collection), editable under Services in the CMS.
+export const offeredServices = offeredServicesData;
 export const employmentData = employmentJson;
 export const educationData = educationJson;
 export const certificateData = certificateJson;

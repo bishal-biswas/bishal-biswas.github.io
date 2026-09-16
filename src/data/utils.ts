@@ -160,6 +160,18 @@ function getPortfolioSlug(data: { slug?: string; title: string }) {
     return data.slug?.trim() || data.title.replaceAll(" ", "-").toLowerCase();
 }
 
+// URL segment for a services or products entry: the `slug` field when set,
+// otherwise a URL-safe version of the title (the CMS requires slug, so the
+// fallback only covers entries written by hand).
+function getEntrySlug(data: { slug?: string; title: string }) {
+    const fromField = data.slug?.trim();
+    if (fromField) return fromField;
+    return data.title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "");
+}
+
 function filterFuturePosts(posts: any[]) {
     const today = new Date(); // Get the current date
     return posts.filter((post) => {
@@ -172,4 +184,4 @@ function filterDrafts<T extends { data: { isDraft?: boolean } }>(entries: T[]) {
     return entries.filter((entry) => entry.data.isDraft !== true);
 }
 
-export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, getPortfolioSlug, calculateAge, filterFuturePosts, filterDrafts, plainText, excerpt}
+export {resolveAsset, getPageContent, getFormattedDate, getAllCategories, calculateReadingTime, getCategoryImage, findCategoryCount, getTechStackLogo, getPaths, getPortfolioSlug, getEntrySlug, calculateAge, filterFuturePosts, filterDrafts, plainText, excerpt}

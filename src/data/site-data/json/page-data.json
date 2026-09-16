@@ -42,7 +42,7 @@
     },
     {
       "pageTitle": "Products",
-      "pageSmallText": "Books, software, websites and WordPress work I build and recommend.",
+      "pageSmallText": "Books, software, websites and WordPress themes and plugins I build and recommend.",
       "pageHeadingText": "Products",
       "isSmallBelow": true,
       "backgroundImage": "/assets/images/footer_rays.cafe5d09.png",
@@ -111,6 +111,30 @@
       "isSmallBelow": false,
       "backgroundImage": "",
       "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Services",
+      "pageSmallText": "What I can do for you",
+      "pageHeadingText": "Services",
+      "isSmallBelow": true,
+      "backgroundImage": "/assets/images/bg5.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Service Detail",
+      "pageSmallText": "",
+      "pageHeadingText": "",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/bg5.webp",
+      "backgroundImageClass": ""
+    },
+    {
+      "pageTitle": "Product Detail",
+      "pageSmallText": "",
+      "pageHeadingText": "",
+      "isSmallBelow": false,
+      "backgroundImage": "/assets/images/footer_rays.cafe5d09.png",
+      "backgroundImageClass": "object-fill"
     }
   ]
 }

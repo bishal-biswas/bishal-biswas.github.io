@@ -1,0 +1,57 @@
+---
+import { getCollection } from "astro:content";
+import PlainLayout from "../../layouts/PlainLayout.astro";
+import ServiceCard from "../../components/ServiceCard.astro";
+import ButtonLinkUI from "../../components/ButtonLinkUI.astro";
+import LinksPlaceHolder from "../../components/linksPlaceHolder.astro";
+import { filterDrafts, getEntrySlug, getPageContent } from "../../data/utils";
+
+const services = filterDrafts(await getCollection("services")).sort(
+    (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+
+const pageContent = getPageContent("Services");
+---
+
+<PlainLayout
+    title="Services"
+    metaDescription="Web and software development services offered by Bishal Biswas: static site generation, full stack web applications, .NET APIs and more."
+    pageType="project"
+    isBreadcrumbShown={true}
+    pageSmallTextBelow={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    pageMainHeadingtagType="h1"
+    backgroundImgClass={pageContent.backgroundImageClass}
+    backgroundImg={pageContent.backgroundImage}
+>
+    <div class="wrapper flex flex-col gap-10 my-5">
+        {
+            services.length > 0 ? (
+                <div class="serviceCardsHolder flex flex-wrap justify-between items-stretch gap-7">
+                    {services.map(({ data }) => (
+                        <ServiceCard
+                            href={`/services/${getEntrySlug(data)}/`}
+                            title={data.title}
+                            iconClass={data.iconClass}
+                            shortDescription={data.shortDescription}
+                            points={data.servicePoints}
+                            startingPrice={data.startingPrice || data.pricingPlans[0]?.price}
+                            maxPoints={6}
+                        />
+                    ))}
+                </div>
+            ) : (
+                <p class="text-center py-10 opacity-70">No services are listed yet. Check back soon.</p>
+            )
+        }
+
+        <section class="rounded-xl p-6 lg:p-8 dark:bg-dark-teal bg-dark-teal text-center shadow-md shadow-[#000000be] animate-on-scroll">
+            <h2 class="text-2xl font-bold mb-2">Need something that is not listed?</h2>
+            <p class="text-sm dark:text-font-gray mb-6">Tell me what you are building and I will let you know how I can help.</p>
+            <LinksPlaceHolder Classes="gap-3">
+                <ButtonLinkUI action="/contact" isBgColored={true} iconClass="fa-solid fa-paper-plane">Get in touch</ButtonLinkUI>
+                <ButtonLinkUI action="https://www.upwork.com/freelancers/~0115a5e68520f6bde9" iconClass="text-xl fa-brands fa-upwork">Hire on Upwork</ButtonLinkUI>
+            </LinksPlaceHolder>
+        </section>
+    </div>
+</PlainLayout>

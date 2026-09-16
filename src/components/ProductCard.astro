@@ -1,21 +1,30 @@
 ---
+// One product on /products and in "More in <category>" strips. The card links
+// to the product's own page; the external buy/demo link lives on that page.
 interface Props {
-    prdImageUrl ?: string
-    prdTitle : string
-    prdDescription : string
-    prdLink : string
+    href: string;
+    title: string;
+    description: string;
+    image?: string;
+    price?: string;
+    isFeatured?: boolean;
 }
 
-const {prdImageUrl, prdTitle, prdDescription, prdLink} = Astro.props;
+const { href, title, description, image, price, isFeatured = false } = Astro.props;
 ---
 
-<div class="product rounded-xl border-2 dark:bg-dark-teal bg-font-white shadow shadow-teal-300 dark:border-teal-300 border-lite-green border-dashed flex w-full lg:w-[32%] md:w-[48%] animate-on-scroll">
+<div class="product relative rounded-xl border-2 dark:bg-dark-teal bg-font-white shadow shadow-teal-300 dark:border-teal-300 border-lite-green border-dashed flex w-full lg:w-[32%] md:w-[48%] animate-on-scroll hover:scale-[1.01] transition-transform">
     {
-        prdImageUrl &&
-        <img src={prdImageUrl} alt={prdTitle} class="w-32 h-full rounded-l-xl object-cover">
+        image && (
+            <a href={href} class="shrink-0" tabindex="-1" aria-hidden="true">
+                <img src={image} alt={title} loading="lazy" class="w-32 h-full rounded-l-xl object-cover" />
+            </a>
+        )
     }
-    <div class="details p-3">
-        <a target="_blank" href={prdLink} class="font-semibold line-clamp-2 pb-1 hover:underline">{prdTitle}</a>
-        <span class="line-clamp-3 text-sm">{prdDescription}</span>
+    <div class="details p-3 flex flex-col gap-1 grow">
+        {isFeatured && <span class="text-[10px] uppercase font-semibold text-lite-green">Featured</span>}
+        <a href={href} class="font-semibold line-clamp-2 hover:underline">{title}</a>
+        <span class="line-clamp-3 text-sm">{description}</span>
+        {price && <span class="mt-auto pt-1 text-sm font-bold text-lite-green">{price}</span>}
     </div>
 </div>
