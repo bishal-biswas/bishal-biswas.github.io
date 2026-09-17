@@ -2,7 +2,7 @@
   "blogCategories": [
     {
       "title": "Web Development",
-      "imageFile": "php.png"
+      "imageFile": "https://cdn-icons-png.flaticon.com/256/13408/13408812.png"
     },
     {
       "title": "Freelancing",
@@ -34,7 +34,7 @@
     },
     {
       "title": "Tech Information",
-      "imageFile": "tech-information.webp"
+      "imageFile": "https://anandice.ac.in/wp-content/uploads/2026/06/btech-changeing-the-technology.png"
     }
   ]
 }
