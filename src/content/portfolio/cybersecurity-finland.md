@@ -16,6 +16,7 @@ categories:
   - Astro
 publishDate: 2024-08-05T00:00
 isDraft: false
+isFeatured: false
 workType: Freelance
 techStack:
   - Astro

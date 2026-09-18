@@ -1,0 +1,74 @@
+---
+// Homepage projects block. Shows every portfolio entry with `isFeatured: true`
+// (the "Featured" toggle in the CMS), newest first. The whole block is skipped
+// when nothing is featured.
+import { getCollection } from "astro:content";
+import { filterDrafts, getPaths, getPortfolioSlug, getTechStackLogo, resolveAsset } from "../data/utils";
+
+import ButtonLinkUI from "./ButtonLinkUI.astro";
+import HeadingText from "./headingText.astro";
+import LinksPlaceHolder from "./linksPlaceHolder.astro";
+
+const projects = filterDrafts(await getCollection("portfolio"))
+    .filter(({ data }) => data.isFeatured)
+    .sort((a, b) => new Date(b.data.publishDate).valueOf() - new Date(a.data.publishDate).valueOf());
+
+const skillImgPath = getPaths("Skills");
+---
+
+{
+    projects.length > 0 && (
+        <div class="about mt-14">
+            <HeadingText headText="Featured Projects" />
+
+            <div class="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-7">
+                {projects.map(({ data }) => {
+                    const href = `/portfolio/${getPortfolioSlug(data)}`;
+                    const logos = data.techStack
+                        .map((tech) => ({ tech, logo: getTechStackLogo(tech) }))
+                        .filter(({ logo }) => logo);
+                    return (
+                        <article class="group relative flex flex-col overflow-hidden rounded-lg dark:bg-dark-teal bg-dark-teal dark:text-font-white text-teal-white shadow-md shadow-[#000000be] hover:shadow-lite-green transition-shadow duration-300 animate-on-scroll">
+                            <a href={href} class="block overflow-hidden" tabindex="-1" aria-hidden="true">
+                                <img
+                                    class="w-full h-44 object-cover object-top group-hover:scale-105 transition-transform duration-500 ease-in-out"
+                                    loading="lazy"
+                                    src={resolveAsset("Portfolio", data.featuredImage)}
+                                    alt=""
+                                />
+                            </a>
+                            {data.workType && (
+                                <span
+                                    class="absolute rotate-45 -top-[8px] -right-[34px] h-[51px] w-[100px] text-sm text-center flex justify-center items-end text-white"
+                                    class:list={[data.workType == "Freelance" ? "bg-[#f97316]" : "bg-[#8e0bc0]"]}
+                                >
+                                    {data.workType}
+                                </span>
+                            )}
+                            <div class="flex flex-col gap-3 p-5 grow">
+                                <h3 class="font-bold text-base">
+                                    <a href={href} class="hover:text-lite-green transition-colors">{data.title}</a>
+                                </h3>
+                                <p class="text-sm dark:text-font-gray line-clamp-3">{data.projectBriefDescription}</p>
+                                {logos.length > 0 && (
+                                    <div class="flex flex-wrap gap-2">
+                                        {logos.map(({ tech, logo }) => (
+                                            <img class="size-7 rounded" loading="lazy" src={skillImgPath + logo} alt={tech} title={tech} />
+                                        ))}
+                                    </div>
+                                )}
+                                <a href={href} class="group/link w-fit mt-auto text-sm text-lite-green capitalize font-semibold">
+                                    view project <i class="ml-2 fa-solid fa-arrow-right group-hover/link:pl-1.5 transition-all ease-in-out duration-150" aria-hidden="true"></i>
+                                </a>
+                            </div>
+                        </article>
+                    );
+                })}
+            </div>
+
+            <LinksPlaceHolder Classes="my-5 gap-3">
+                <ButtonLinkUI action="/portfolio" iconClass="fa-solid fa-arrow-right">View all projects</ButtonLinkUI>
+            </LinksPlaceHolder>
+        </div>
+    )
+}

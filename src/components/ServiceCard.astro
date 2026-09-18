@@ -30,7 +30,7 @@ const hiddenCount = points.length - shownPoints.length;
         <a href={href} class="hover:text-lite-green transition-colors">{title}</a>
     </h3>
     <p class="text-sm dark:text-font-gray line-clamp-4">{shortDescription}</p>
-    {
+    <!-- {
         shownPoints.length > 0 && (
             <ul class="text-sm dark:text-font-gray my-1">
                 {shownPoints.map((point) => (
@@ -42,7 +42,7 @@ const hiddenCount = points.length - shownPoints.length;
                 {hiddenCount > 0 && <li class="pl-7 opacity-70">and {hiddenCount} more</li>}
             </ul>
         )
-    }
+    } -->
     <a href={href} class="group w-fit mt-auto text-sm text-lite-green capitalize font-semibold">
         view more <i class="ml-2 fa-solid fa-arrow-right group-hover:pl-1.5 transition-all ease-in-out duration-150" aria-hidden="true"></i>
     </a>

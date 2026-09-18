@@ -103,6 +103,7 @@ collections:
     view_filters:
       - { label: Drafts, field: isDraft, pattern: true }
       - { label: Published, field: isDraft, pattern: false }
+      - { label: Featured, field: isFeatured, pattern: true }
     media_folder: /public/uploads/portfolios
     public_folder: ''
     fields:
@@ -142,6 +143,7 @@ collections:
         field: { name: value, label: Category, widget: string }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
+      - { name: isFeatured, label: Featured, widget: boolean, default: false, hint: 'Featured projects are shown in the project grid on the homepage, newest first.' }
       - { name: workType, label: Work Type, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
       - name: techStack
         label: Tech Stack

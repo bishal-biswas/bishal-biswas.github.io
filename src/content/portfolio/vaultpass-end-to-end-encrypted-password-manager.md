@@ -14,6 +14,7 @@ categories:
   - React
 publishDate: 2026-09-03
 isDraft: false
+isFeatured: false
 workType: Personal
 techStack:
   - React

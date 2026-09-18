@@ -44,6 +44,7 @@ const portfolioCollection = defineCollection({
         categories: stringList,
         publishDate: z.coerce.date(),
         isDraft: z.boolean().default(true),
+        isFeatured: z.boolean().default(false),
         workType: z.string().default(""),
         techStack: stringList,
         isProjectCompleted: z.boolean().default(true),
