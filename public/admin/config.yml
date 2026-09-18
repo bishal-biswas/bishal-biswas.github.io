@@ -103,6 +103,7 @@ collections:
     view_filters:
       - { label: Drafts, field: isDraft, pattern: true }
       - { label: Published, field: isDraft, pattern: false }
+      - { label: Featured, field: isFeatured, pattern: true }
     media_folder: /public/uploads/portfolios
     public_folder: ''
     fields:
@@ -142,6 +143,7 @@ collections:
         field: { name: value, label: Category, widget: string }
       - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
       - { name: isDraft, label: Draft, widget: boolean, default: true }
+      - { name: isFeatured, label: Featured, widget: boolean, default: false, hint: 'Featured projects are shown in the project grid on the homepage, newest first.' }
       - { name: workType, label: Work Type, widget: string, required: false, default: '', hint: 'e.g. Freelance, Personal' }
       - name: techStack
         label: Tech Stack
@@ -159,6 +161,149 @@ collections:
       - { name: clientPic, label: Client Photo URL, widget: string, required: false, hint: 'Full URL - this one is not a repo file.' }
       - { name: clientReview, label: Client Review, widget: text, required: false }
       - { name: body, label: Body, widget: markdown }
+
+  # ---------------------------------------------------------------- services
+  # URL comes from the `slug` FIELD: /services/<slug>/
+  # Also feeds the "What I can do for you" cards on the homepage.
+  - name: services
+    label: Services
+    label_singular: Service
+    description: Services offered, rendered at /services/<slug>/ and as cards on the homepage
+    folder: src/content/services
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{order}}. {{title}}"
+    sortable_fields: [order, title, publishDate, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
+    media_folder: /public/uploads/services
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /services/<slug>/. Changing this on a published service breaks its existing links.'
+      - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Used for SEO and social share cards. Falls back to the Short Description when empty.' }
+      - { name: iconClass, label: Icon Class, widget: string, default: 'fa-solid fa-code', hint: 'Font Awesome class shown on the card and the page, e.g. fa-solid fa-globe' }
+      - { name: shortDescription, label: Short Description, widget: text, hint: 'One paragraph. Shown on the cards and at the top of the service page.' }
+      - name: servicePoints
+        label: Bullet Points
+        widget: list
+        required: false
+        hint: 'What is included. The first few appear on the card, all of them on the page.'
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Point, widget: string }
+      - { name: featuredImage, label: Featured Image, widget: image, required: false, hint: 'Optional hero background for the service page. Bare filename; the site prepends /uploads/services/' }
+      - { name: startingPrice, label: Starting Price, widget: string, required: false, hint: 'Free text, e.g. $499 or Rs 20,000. Leave empty to show no price.' }
+      - { name: ctaText, label: Button Text, widget: string, required: false, hint: 'Defaults to "Get in touch".' }
+      - { name: ctaLink, label: Button Link, widget: string, required: false, hint: 'Defaults to /contact. A full URL (Upwork, Calendly) works too.' }
+      - name: pricingPlans
+        label: Pricing Plans
+        label_singular: Plan
+        widget: list
+        required: false
+        max: 3
+        collapsed: true
+        summary: '{{fields.name}} - {{fields.price}}'
+        hint: 'Up to three tiers, shown as a pricing grid on the service page. Leave empty to hide the section.'
+        fields:
+          - { name: name, label: Plan Name, widget: string, hint: 'e.g. Basic, Standard, Premium' }
+          - { name: price, label: Price, widget: string, hint: 'Free text, e.g. $499, Rs 20,000 or Custom' }
+          - { name: billingNote, label: Billing Note, widget: string, required: false, hint: 'Small text under the price, e.g. one-time, per month, starting from' }
+          - { name: description, label: Description, widget: text, required: false, hint: 'One line on who this plan suits.' }
+          - name: features
+            label: Features
+            widget: list
+            required: false
+            hint: 'What the plan includes, one per line.'
+            # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+            field: { name: value, label: Feature, widget: string }
+          - { name: isHighlighted, label: Highlight as Popular, widget: boolean, default: false, hint: 'Gives the plan a coloured border and a "Most popular" badge.' }
+          - { name: ctaText, label: Button Text, widget: string, required: false, hint: 'Defaults to "Choose <plan name>".' }
+          - { name: ctaLink, label: Button Link, widget: string, required: false, hint: 'Defaults to the service Button Link, then /contact.' }
+      - { name: order, label: Order, widget: number, value_type: int, default: 0, hint: 'Lower numbers come first on the homepage and /services.' }
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely, homepage included.' }
+      - { name: body, label: Body, widget: markdown, required: false, hint: 'The long-form description: who it is for, how you work, what they get.' }
+
+  # ---------------------------------------------------------------- products
+  # URL comes from the `slug` FIELD: /products/<slug>/
+  - name: products
+    label: Products
+    label_singular: Product
+    description: Products rendered at /products/<slug>/ and grouped by category on /products
+    folder: src/content/products
+    create: true
+    extension: md
+    format: yaml-frontmatter
+    slug: '{{fields.slug}}'
+    identifier_field: title
+    summary: "{{isDraft | ternary('[Draft] ', '')}}{{title}} - {{category}}"
+    sortable_fields: [publishDate, title, category, isDraft]
+    view_filters:
+      - { label: Drafts, field: isDraft, pattern: true }
+      - { label: Published, field: isDraft, pattern: false }
+      - { label: Featured, field: isFeatured, pattern: true }
+    media_folder: /public/uploads/products
+    public_folder: ''
+    fields:
+      - { name: title, label: Title, widget: string }
+      - name: slug
+        label: Slug
+        widget: string
+        required: true
+        pattern: ['^[a-z0-9]+(?:-[a-z0-9]+)*$', 'Lowercase letters, numbers and hyphens only']
+        hint: 'Becomes the URL: /products/<slug>/. Changing this on a published product breaks its existing links.'
+      - { name: metaDescription, label: Meta Description, widget: text, required: false, hint: 'Used for SEO and social share cards. Falls back to the Short Description when empty.' }
+      - { name: shortDescription, label: Short Description, widget: text, hint: 'One paragraph. Shown on the card and at the top of the product page.' }
+      - name: image
+        label: Image
+        widget: image
+        required: false
+        # Repeated from the collection on purpose - see the portfolio note.
+        media_folder: /public/uploads/products
+        public_folder: ''
+        hint: 'Bare filename; the site prepends /uploads/products/. Use "Replace with URL" for an external image (Amazon, Udemy...).'
+      - name: gallery
+        label: Gallery
+        widget: list
+        required: false
+        media_folder: /public/uploads/products/gallery
+        public_folder: ''
+        field: { name: screenshot, label: Screenshot, widget: image }
+        hint: 'Extra screenshots for a slider on the product page. Stored in /uploads/products/gallery/ - a different folder from the main image.'
+      - name: category
+        label: Category
+        widget: select
+        default: Software
+        # These are the sections on /products, in order. Keep them in step
+        # with productCategories in src/data/site-data/content.js.
+        options:
+          - Books
+          - Software
+          - Websites
+          - WordPress Themes
+          - WordPress Plugins
+      - { name: price, label: Price, widget: string, required: false, hint: 'Free text, e.g. $19, Rs 499 or Free. Leave empty to show no price.' }
+      - { name: productLink, label: Product Link, widget: string, required: false, hint: 'Buy, download or demo URL. Rendered as the main button on the product page.' }
+      - { name: productLinkText, label: Product Link Text, widget: string, required: false, hint: 'Defaults to "Get it". e.g. Buy on Amazon, Download, View demo.' }
+      - name: tags
+        label: Tags
+        widget: list
+        required: false
+        # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
+        field: { name: value, label: Tag, widget: string }
+      - { name: isFeatured, label: Featured, widget: boolean, default: false, hint: 'Featured products are listed first in their category.' }
+      - { name: publishDate, label: Publish Date, widget: datetime, format: 'YYYY-MM-DD', date_format: 'YYYY-MM-DD', time_format: false, picker_utc: true }
+      - { name: isDraft, label: Draft, widget: boolean, default: true, hint: 'Drafts are excluded from the site entirely.' }
+      - { name: body, label: Body, widget: markdown, required: false, hint: 'The full description: features, screenshots, how to get it.' }
 
   # ---------------------------------------------------------------- snippets
   # URL comes from the `slug` FIELD: /snippets/<slug>/
@@ -362,33 +507,6 @@ collections:
                 output_code_only: true
                 hint: 'Paste the network snippet (AdSense, Ezoic, a plain <img> link). Rendered verbatim, scripts included - only paste code you trust.'
 
-      - name: products
-        label: Products
-        file: src/data/site-data/json/products.json
-        fields:
-          - name: products
-            label: Products
-            widget: list
-            label_singular: Product
-            summary: '{{fields.productTitle}}'
-            fields:
-              - { name: productTitle, label: Title, widget: string }
-              - { name: productDescription, label: Description, widget: text }
-              - { name: productLink, label: Link, widget: string, required: false }
-              - { name: productImage, label: Image URL, widget: string, hint: 'Full URL - these are external images.' }
-              - name: productCategory
-                label: Category
-                widget: select
-                default: Books
-                # These are the sections on /products, in order. Keep them in
-                # step with productCategories in src/data/site-data/content.js.
-                options:
-                  - Books
-                  - Software
-                  - Websites
-                  - WordPress Themes
-                  - WordPress Plugins
-      
   # ----------------------------------------------------------- personal info
   # Facts about Bishal: profile, photos, resume, and the career history shown on
   # the Skills page (education, employment, certificates, technologies).
@@ -572,26 +690,15 @@ collections:
               - { name: isTechStack, label: Show in tech stack, widget: boolean, default: true }
 
       - name: services
-        label: Services Offered
+        label: Services Section
         file: src/data/site-data/json/offered-services.json
+        # Only the heading around the homepage cards lives here. The services
+        # themselves are the Services collection (src/content/services/).
         fields:
-          - { name: titleText, label: Section Title, widget: string }
-          - name: servicesData
-            label: Services
-            widget: list
-            label_singular: Service
-            summary: '{{fields.title}}'
-            fields:
-              - { name: id, label: ID, widget: number, value_type: int }
-              - { name: title, label: Title, widget: string }
-              - { name: shortDescription, label: Short Description, widget: text }
-              - name: servicesPoints
-                label: Bullet Points
-                widget: list
-                # Decap's plain comma list blocks the space key (decap-cms#4646), so each item gets its own input.
-                field: { name: value, label: Point, widget: string }
-              - { name: iconClass, label: Icon Class, widget: string, hint: 'Font Awesome class, e.g. fa-solid fa-code' }
-      
+          - { name: titleText, label: Section Title, widget: string, hint: 'Heading above the service cards on the homepage.' }
+          - { name: introText, label: Intro Text, widget: text, required: false, hint: 'Optional paragraph under the heading.' }
+          - { name: viewAllText, label: View All Button Text, widget: string, required: false, default: 'View all services', hint: 'Label of the button that links to /services.' }
+
       - name: global-stats
         label: Homepage Stats
         file: src/data/site-data/json/global-stats.json

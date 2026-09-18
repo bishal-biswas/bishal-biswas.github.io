@@ -1,6 +1,6 @@
 import type { APIRoute } from "astro";
 import { getCollection } from "astro:content";
-import { excerpt, filterFuturePosts, getPortfolioSlug, plainText, resolveAsset } from "../data/utils";
+import { excerpt, filterFuturePosts, getEntrySlug, getPortfolioSlug, plainText, resolveAsset } from "../data/utils";
 
 // Static search index, generated at build time and fetched by /search.
 // GitHub Pages can't run a search API, so the whole index ships as one file.
@@ -54,6 +54,38 @@ export const GET: APIRoute = async () => {
             excerpt: excerpt(entry.data.metaDescription),
             date: entry.data.publishDate,
             tags: entry.data.tags ?? [],
+            body: plainText(entry.body).slice(0, MAX_BODY_CHARS),
+        });
+    }
+
+    // ---- Services
+    const services = await getCollection("services", ({ data }) => data.isDraft === false);
+    for (const entry of services) {
+        items.push({
+            type: "Service",
+            title: entry.data.title,
+            url: `/services/${getEntrySlug(entry.data)}/`,
+            excerpt: excerpt(entry.data.shortDescription),
+            date: entry.data.publishDate,
+            image: resolveAsset("Services", entry.data.featuredImage),
+            imageBase: "",
+            tags: entry.data.servicePoints.slice(0, 4).map((point) => point.split(" - ")[0]),
+            body: plainText(entry.body).slice(0, MAX_BODY_CHARS),
+        });
+    }
+
+    // ---- Products
+    const products = await getCollection("products", ({ data }) => data.isDraft === false);
+    for (const entry of products) {
+        items.push({
+            type: "Product",
+            title: entry.data.title,
+            url: `/products/${getEntrySlug(entry.data)}/`,
+            excerpt: excerpt(entry.data.shortDescription),
+            date: entry.data.publishDate,
+            image: resolveAsset("Products", entry.data.image),
+            imageBase: "",
+            tags: [...new Set([entry.data.category, ...(entry.data.tags ?? [])])],
             body: plainText(entry.body).slice(0, MAX_BODY_CHARS),
         });
     }

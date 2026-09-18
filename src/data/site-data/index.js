@@ -8,7 +8,7 @@ export {
     certificateData,
     technologyData,
 } from "./skills";
-export { blogCategories, products, productCategories } from "./content";
+export { blogCategories, productCategories, getProductCategory } from "./content";
 export { pageData } from "./pageData";
 export { siteFiles } from "./siteFiles";
 export { personalFiles } from "./personalFiles";

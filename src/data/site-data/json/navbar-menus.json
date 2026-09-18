@@ -23,6 +23,17 @@
       ]
     },
     {
+      "menuTitle": "Services",
+      "menuURL": "/services",
+      "hasSubMenu": false,
+      "subMenuList": [
+        {
+          "menuTitle": "",
+          "menuURL": ""
+        }
+      ]
+    },
+    {
       "menuTitle": "Resources",
       "menuURL": "javascript:void(0)",
       "hasSubMenu": true,

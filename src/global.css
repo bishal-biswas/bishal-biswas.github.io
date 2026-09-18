@@ -4,6 +4,10 @@
 /* re-create your old `darkMode: "class"` behavior */
 @custom-variant dark (&:is(.dark *));
 
+/* v4 wraps hover: in @media (hover: hover), which disables it on touch
+   devices. Restore the v3 behavior so taps trigger hover styles. */
+@custom-variant hover (&:hover);
+
 @layer base {
   * {
     @apply transition-colors duration-300 ease-in-out;
@@ -73,9 +77,13 @@
   animation-timing-function: cubic-bezier(0.2, 0, 0, 1);
 }
 
-/* The header holds still instead of cross-fading with the page body. */
-.site-header {
-  view-transition-name: site-header;
+/* The header holds still instead of cross-fading with the page body.
+   Desktop only: a named element becomes a backdrop root, which would stop
+   the mobile sidebar's backdrop-blur from seeing the page behind it. */
+@media (min-width: 1024px) {
+  .site-header {
+    view-transition-name: site-header;
+  }
 }
 
 /* Both ends of the featured-image morph are object-fit: cover, so the

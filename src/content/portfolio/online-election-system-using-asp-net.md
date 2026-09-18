@@ -32,6 +32,7 @@ categories:
   - SQL Server
 publishDate: 2019-08-05T21:43
 isDraft: false
+isFeatured: false
 workType: Personal
 techStack:
   - ASP.Net

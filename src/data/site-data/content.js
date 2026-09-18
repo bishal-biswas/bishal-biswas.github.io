@@ -1,16 +1,17 @@
 // Data lives in ./json/*.json so the CMS can edit it.
 import { blogCategories as blogCategoriesData } from "./json/blog-categories.json";
-import { products as productsData } from "./json/products.json";
 
 export const blogCategories = blogCategoriesData;
-export const products = productsData;
 
 /**
  * The sections on /products, in the order they are rendered. A product whose
- * productCategory matches a `name` lands in that section; anything else gets a
+ * `category` matches a `name` lands in that section; anything else gets a
  * section of its own at the bottom, so a typo never hides a product.
  *
- * Keep the names in step with the `productCategory` options in
+ * Products themselves are Markdown entries in src/content/products/ (the
+ * `products` content collection), editable under Products in the CMS.
+ *
+ * Keep the names in step with the `category` options in
  * public/admin/config.yml - that select is what the CMS offers when adding one.
  */
 export const productCategories = [
@@ -40,3 +41,11 @@ export const productCategories = [
         blurb: "Plugins worth installing, and the ones I maintain myself.",
     },
 ];
+
+/** Section metadata for a category name, with a generic fallback for unknown ones. */
+export function getProductCategory(name) {
+    return (
+        productCategories.find((category) => category.name === name) ??
+        { name, icon: "fa-solid fa-box", blurb: "" }
+    );
+}

@@ -1,0 +1,49 @@
+---
+// One service, as shown on the homepage and on /services. Everything links
+// through to the service's own page at /services/<slug>/.
+interface Props {
+    href: string;
+    title: string;
+    iconClass: string;
+    shortDescription: string;
+    points?: string[];
+    startingPrice?: string;
+    // How many bullet points to show before "and N more". 0 hides the list.
+    maxPoints?: number;
+}
+
+const { href, title, iconClass, shortDescription, points = [], startingPrice, maxPoints = 4 } = Astro.props;
+const shownPoints = points.slice(0, maxPoints);
+const hiddenCount = points.length - shownPoints.length;
+---
+
+<div class="serviceCards relative flex flex-col gap-3 w-full lg:w-[48%] dark:bg-dark-teal bg-dark-teal dark:text-teal-white dark:text-font-white text-teal-white rounded-lg p-5 shadow-md shadow-[#000000be] animate-on-scroll">
+    {
+        startingPrice && (
+            <span class="absolute top-4 right-4 text-xs font-semibold uppercase px-3 py-1 rounded-full bg-[#183550d7] text-[#58ded6]">
+                From {startingPrice}
+            </span>
+        )
+    }
+    <i class="dark:text-font-gray text-4xl" class:list={[iconClass]} aria-hidden="true"></i>
+    <h3 class="font-bold text-base dark:text-teal-white dark:text-font-white text-teal-white pr-24">
+        <a href={href} class="hover:text-lite-green transition-colors">{title}</a>
+    </h3>
+    <p class="text-sm dark:text-font-gray line-clamp-4">{shortDescription}</p>
+    <!-- {
+        shownPoints.length > 0 && (
+            <ul class="text-sm dark:text-font-gray my-1">
+                {shownPoints.map((point) => (
+                    <li class="flex gap-3">
+                        <i class="text-dark-green fa-duotone fa-solid fa-circle-check pt-1" aria-hidden="true"></i>
+                        <span>{point}</span>
+                    </li>
+                ))}
+                {hiddenCount > 0 && <li class="pl-7 opacity-70">and {hiddenCount} more</li>}
+            </ul>
+        )
+    } -->
+    <a href={href} class="group w-fit mt-auto text-sm text-lite-green capitalize font-semibold">
+        view more <i class="ml-2 fa-solid fa-arrow-right group-hover:pl-1.5 transition-all ease-in-out duration-150" aria-hidden="true"></i>
+    </a>
+</div>

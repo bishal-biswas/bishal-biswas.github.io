@@ -6,6 +6,7 @@ import HeroLinks from "../components/HeroLinks.astro";
 import PraiseCards from "../components/PraiseCards.astro";
 import VideoBio from "../components/VideoBio.astro";
 import AboutText from "../components/AboutText.astro";
+import FeaturedProjects from "../components/FeaturedProjects.astro";
 import ServicesCards from "../components/ServicesCards.astro";
 import ButtonLinkUI from "../components/ButtonLinkUI.astro";
 import { getPaths } from "../data/utils";
@@ -50,6 +51,8 @@ const pageContent = pageData.filter(page => page.pageTitle == "Home")[0];
 
 	<AboutText />
 
+    <FeaturedProjects />
+
     <ServicesCards />
-    
+
 </ColumnLayout>
