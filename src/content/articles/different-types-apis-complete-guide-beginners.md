@@ -4,10 +4,10 @@ slug: different-types-apis-complete-guide-beginners
 metaDescription: Learn about different types of APIs, including REST, SOAP,
   GraphQL, WebSockets, RPC, and more. Understand how APIs work and when to use
   each type.
-image: https://www.google.com/s2/favicons?domain=https%3A%2F%2Fbishal-biswas.github.io&sz=32
+image: different-types-apis-complete-guide-beginners.webp
 author: Bishal Biswas
-publishDate: 2026-09-02
-isDraft: true
+publishDate: 2026-09-19
+isDraft: false
 category: Tech Information
 tags:
   - API
