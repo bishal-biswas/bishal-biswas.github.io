@@ -1,14 +1,19 @@
 ---
-title : How to Install MongoDB on Your Ubuntu VPS
-slug : how-to-install-mongodb-in-vps
-image : how-to-install-mongodb-in-vps.jpg
-author : Bishal Biswas
-publishDate : 2026-01-16T08:30
-isDraft : false
-metaDescription :  Explore my developer portfolio, built with Astro and powered by Vercel & Supabase. Discover articles on web development, project case studies on my blog.
-category : Tech Information
-tags : [MongoDB, Ununtu, VPS]
-includeFancyBox : true
+includeFancyBox: true
+title: How to Install MongoDB on Your Ubuntu VPS
+slug: how-to-install-mongodb-in-vps
+metaDescription: Explore my developer portfolio, built with Astro and powered by
+  Vercel & Supabase. Discover articles on web development, project case studies
+  on my blog.
+image: how-to-install-mongodb-in-vps.jpg
+author: Bishal Biswas
+publishDate: 2026-01-16T08:30
+isDraft: false
+category: Tech Information
+tags:
+  - MongoDB
+  - Ubuntu
+  - VPS
 ---
 
 Are you setting up a new Ubuntu Virtual Private Server (VPS) and need a robust database solution? MongoDB is a popular NoSQL database that offers flexibility and scalability, making it an excellent choice for modern web applications. This guide will walk you through the process of installing MongoDB on your Ubuntu VPS, covering versions like Focal (20.04), Jammy (22.04), and even the latest Noble (24.04).
