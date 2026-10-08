@@ -14,7 +14,7 @@ tags:
 ---
 ## Here is a Temporary fix for Microsoft Office 2010 Activation Wizard Popup
 
-![Stop Microsoft Office 2010 Activation Wizard Popup](stop-microsoft-office-2010-activation-wizard-popup.webp "OSPPREARM EXE File")
+![Stop Microsoft Office 2010 Activation Wizard Popup](/uploads/articles/stop-microsoft-office-2010-activation-wizard-popup.webp "OSPPREARM EXE File")
 
 Run this `OSPPREARM.EXE` file as Administrator. You can find it in Windows installed disk at **`Program Files (x86)\Common Files\Microsoft Shared\OfficeSoftwareProtectionPlatform`**
 
