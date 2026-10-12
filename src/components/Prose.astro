@@ -4,3 +4,12 @@
   prose-headings:underline pors">
   <slot />
 </div>
+
+<style>
+  :global(.prose table) {
+    display: block;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+</style>

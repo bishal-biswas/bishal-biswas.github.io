@@ -56,7 +56,7 @@ function TOCGenerator() {
         var currentUl = ul;
 
         headings.forEach(function (heading) {
-            // heading.setAttribute("id", heading.textContent.replaceAll(" ", "-"));
+            heading.id = heading.id.replace(/^\d+[-_.\s]*/, "") || "section";
             var level = parseInt(heading.tagName.charAt(1));
 
             while (level < currentLevel) {
@@ -89,7 +89,7 @@ function TOCGenerator() {
             anchor.addEventListener('click', function (e) {
               e.preventDefault();
       
-              const target = document.querySelector(this.getAttribute('href'));
+              const target = document.getElementById(this.getAttribute('href').slice(1));
               const navbarHeight = document.querySelector('header').offsetHeight;
               window.scrollTo({
                 top: target.offsetTop - navbarHeight,
