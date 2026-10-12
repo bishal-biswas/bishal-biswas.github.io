@@ -5,7 +5,7 @@ image: what-is-html-a-beginner-s-complete-guide.webp
 author: Bishal Biswas
 publishDate: 2026-08-29
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - HTML
   - Web Designing

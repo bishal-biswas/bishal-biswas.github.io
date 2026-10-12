@@ -8,7 +8,7 @@ image: html-tables-explained.webp
 author: Bishal Biswas
 publishDate: 2026-10-13
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - HTML table tags
   - HTML table rows and columns

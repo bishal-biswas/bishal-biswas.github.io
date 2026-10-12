@@ -8,7 +8,7 @@ image: css-selectors-explained.webp
 author: Bishal Biswas
 publishDate: 2026-09-10
 isDraft: false
-category: Web Development
+category: CSS
 tags:
   - CSS
   - CSS selectors

@@ -8,7 +8,7 @@ image: html-semantic-elements.webp
 author: Bishal Biswas
 publishDate: 2026-09-05
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - semantic HTML
   - HTML semantic tags

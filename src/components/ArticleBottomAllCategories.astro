@@ -13,7 +13,9 @@ for (let i = 0; i < allBlogPosts.length; i++) categAllArticles.push(allBlogPosts
 /* var allCategories = null 
 allCategories = getAllCategories(categAllArticles); */
 
-const uniqueArr = [...new Set(categAllArticles)];
+const uniqueArr = [...new Set(categAllArticles)].sort(
+    (a, b) => findCategoryCount(b, categAllArticles) - findCategoryCount(a, categAllArticles)
+);
 
 ---
 

@@ -8,7 +8,7 @@ image: html-forms-inputs-labels-buttons.webp
 author: Bishal Biswas
 publishDate: 2026-10-12
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - HTML input types
   - HTML labels

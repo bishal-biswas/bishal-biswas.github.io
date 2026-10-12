@@ -5,7 +5,7 @@ image: article-thumbnail-1-.jpg
 author: Bishal Biswas
 publishDate: 2026-08-31
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - HTML
   - HTML Elements

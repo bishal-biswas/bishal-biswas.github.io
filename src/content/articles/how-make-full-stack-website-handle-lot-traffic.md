@@ -5,7 +5,7 @@ image: https://mir-s3-cdn-cf.behance.net/project_modules/disp/ab775e77150233.5c7
 author: Bishal Biswas
 publishDate: 2026-09-15
 isDraft: true
-category: Web Development
+category: HTML
 tags:
   - Full Stack Website
 ---

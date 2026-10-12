@@ -8,7 +8,7 @@ image: https://mw-hr.sgp1.digitaloceanspaces.com/media/blog_images/1714892538827
 author: Bishal Biswas
 publishDate: 2026-09-11
 isDraft: false
-category: Web Development
+category: CSS
 tags:
   - CSS Flexbox
   - CSS Grid tutorial
