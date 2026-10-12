@@ -64,17 +64,17 @@ const { post } = Astro.props;
     }
 </style>
 
-<article class="flex flex-col lg:flex-row gap-3 lg:w-[73%]">
-    <div class="toc-container lg:w-[25%]">
-        <div class="TOC border dark:bg-dark-teal bg-dark-teal border-[#70ba65] shadow-lg lg:shadow-[#70ba65] rounded-lg sticky top-24" >
-            <span class="uppercase font-semibold p-2 block bg-lite-green rounded-tr-lg rounded-tl-lg" >Table of Content</span>
+<article class="grid grid-cols-1 lg:grid-cols-[14rem_minmax(0,1fr)] gap-3 min-w-0">
+    <div class="toc-container min-w-0">
+        <div class="TOC border dark:bg-dark-teal bg-dark-teal border-[#70ba65] shadow-lg lg:shadow-[#70ba65] rounded-lg lg:sticky lg:top-24 lg:max-h-[calc(100vh-6rem)] lg:overflow-y-auto" >
+            <span class="sticky top-0 z-[1] uppercase font-semibold p-2 block bg-lite-green rounded-tr-lg rounded-tl-lg" >Table of Content</span>
             <ul class="p-2 leading-5 transition-all ease-in-out duration-300 text-sm" >
                 <!-- Table Of Content List will be Here -->
             </ul>
         </div>
     </div>
 
-    <div class="article-content lg:w-[75%]">
+    <div class="article-content min-w-0">
         <div class="post-body dark:bg-dark-teal bg-dark-teal p-4 rounded-lg text-sm">
             <Prose>
                 <slot />

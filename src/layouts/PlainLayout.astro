@@ -92,7 +92,7 @@ if(pageType == "article"){
                 }
                 
                 {
-                    isBreadcrumbShown && <BreadcrumbsHolder />
+                    isBreadcrumbShown && <BreadcrumbsHolder articleTitle={pageType == "article" ? pageHeadingText : undefined} />
                 }
                 
                 {

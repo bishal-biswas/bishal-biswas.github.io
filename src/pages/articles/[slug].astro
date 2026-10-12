@@ -109,7 +109,7 @@ const articleDescription = plainBody.length > 80
     <link rel="stylesheet" href="/assets/styles/prism.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css"/>
 
-    <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5" >
+    <div slot="heroSection" class="article-info-top flex justify-center items-center gap-5 flex-wrap lg: flex-nowrap" >
         <span title="Published on" class="articleDate flex gap-3 items-center rounded-tr-lg rounded-tl-lg" >
             <i class="fa-solid fa-calendar-days"></i>
             <span class="date">{getFormattedDate(entry.data.publishDate)}</span>
@@ -128,7 +128,7 @@ const articleDescription = plainBody.length > 80
     </div>
     
     <!-- Article Container -->
-    <div class="articlesContainer flex flex-col lg:flex-row w-full gap-3">
+    <div class="articlesContainer grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_20rem] items-start w-full gap-6">
         <BlogContent post={entry as never} set:html={entry.rendered?.html}/>
         
         <ArticleSidebar />

@@ -3,6 +3,12 @@ import { Breadcrumbs } from "astro-breadcrumbs";
 import "astro-breadcrumbs/breadcrumbs.css";
 
 import "../../astro-breadcrumbs-config.scss"
+
+interface Props {
+    articleTitle?: string;
+}
+
+const { articleTitle } = Astro.props;
 ---
 
 <span class="my-7 block rounded-full border-white border-2 w-fit px-4 p-3 capitalize">
