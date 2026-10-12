@@ -8,7 +8,7 @@ image: html-attributes-class-id-href-src.webp
 author: Bishal Biswas
 publishDate: 2026-10-14
 isDraft: false
-category: Web Development
+category: HTML
 tags:
   - HTML class attribute
   - HTML id attribute
