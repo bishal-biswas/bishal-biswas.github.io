@@ -1,6 +1,9 @@
 name: Deploy to GitHub Pages
 
 on:
+  # Every day at 12:00 PM IST (06:30 UTC)
+  schedule:
+    - cron: "30 6 * * *"
   # Trigger the workflow every time you push to the `main` branch
   # Using a different branch name? Replace `main` with your branch’s name
   push:
