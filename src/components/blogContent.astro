@@ -12,6 +12,7 @@ interface Props {
 }
 
 const { post } = Astro.props;
+
 ---
 
 <style is:inline>
@@ -61,6 +62,35 @@ const { post } = Astro.props;
     }
     @keyframes scroll-reveal {
         to {background-size: 100% 100%;}
+    }
+
+    .article-code-block {
+        position: relative;
+    }
+
+    .article-code-copy-button {
+        position: absolute;
+        top: .75rem;
+        right: .75rem;
+        z-index: 1;
+        border: 1px solid #70ba65;
+        border-radius: .375rem;
+        padding: .35rem .6rem;
+        background: rgba(20, 35, 34, .95);
+        color: #fff;
+        font: inherit;
+        font-size: .75rem;
+        cursor: pointer;
+    }
+
+    .article-code-copy-button:hover {
+        background: #70ba65;
+        color: #102015;
+    }
+
+    .article-code-copy-button:focus-visible {
+        outline: 2px solid #70ba65;
+        outline-offset: 2px;
     }
 </style>
 
@@ -193,6 +223,71 @@ const { post } = Astro.props;
     addSpan(allTextContent);
     
     //#endregion
+
+    document.querySelectorAll(".article-content .post-body pre.astro-code").forEach((pre) => {
+        const code = pre.querySelector("code");
+        if (!code || pre.parentElement?.classList.contains("article-code-block")) {
+            return;
+        }
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "article-code-block";
+        pre.parentNode.insertBefore(wrapper, pre);
+        wrapper.appendChild(pre);
+
+        const button = document.createElement("button");
+        button.className = "article-code-copy-button";
+        button.type = "button";
+        button.textContent = "Copy";
+        button.setAttribute("aria-label", "Copy code snippet");
+        button.addEventListener("click", async () => {
+            button.disabled = true;
+            try {
+                const text = code.textContent ?? "";
+                if (navigator.clipboard?.writeText) {
+                    try {
+                        await navigator.clipboard.writeText(text);
+                    } catch {
+                        copyArticleCodeFallback(text);
+                    }
+                } else {
+                    copyArticleCodeFallback(text);
+                }
+
+                button.textContent = "Copied!";
+                button.setAttribute("aria-label", "Code snippet copied");
+            } catch (error) {
+                console.error("Unable to copy article code snippet.", error);
+                button.textContent = "Copy failed";
+                button.setAttribute("aria-label", "Unable to copy code snippet");
+            } finally {
+                window.setTimeout(() => {
+                    button.disabled = false;
+                    button.textContent = "Copy";
+                    button.setAttribute("aria-label", "Copy code snippet");
+                }, 2000);
+            }
+        });
+        wrapper.appendChild(button);
+    });
+
+    function copyArticleCodeFallback(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.setAttribute("readonly", "");
+        textArea.style.position = "fixed";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.select();
+
+        try {
+            if (!document.execCommand("copy")) {
+                throw new Error("The browser did not copy the code snippet.");
+            }
+        } finally {
+            textArea.remove();
+        }
+    }
     
     // Select all the section elements
     const sections = document.querySelectorAll(".prose h2, .prose h3");
