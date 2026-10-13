@@ -109,7 +109,9 @@ degrades to a "not connected yet" notice rather than failing.
 ## Deployment
 
 Every push to `main` triggers `.github/workflows/deploy.yml`, which builds the
-site and publishes it to GitHub Pages. The Pages source must be set to
+site and publishes it to GitHub Pages. The same workflow also runs on a
+schedule (four times a day) so posts with a future `publishDate` go live on
+their day without a push. The Pages source must be set to
 **GitHub Actions** (not "Deploy from a branch"), or GitHub also runs Jekyll,
 which fails on `.astro` files and strips the `_astro/` asset directory.
 `public/.nojekyll` guards against the latter.

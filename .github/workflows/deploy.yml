@@ -1,9 +1,14 @@
 name: Deploy to GitHub Pages
 
 on:
-  # Every day at 12:00 PM IST (06:30 UTC)
+  # Rebuild so posts with a future publishDate go live on their day.
+  # publishDate is date-only, so it parses as 00:00 UTC (05:30 IST); the
+  # 00:17 UTC run is the first one after a post comes due.
+  # GitHub's scheduler is best-effort: runs are often late and can be dropped
+  # outright under load, worst at :00 and :30. Hence the odd minute, and the
+  # three later runs as backups (05:47, 11:47, 17:47, 23:47 IST).
   schedule:
-    - cron: "30 6 * * *"
+    - cron: "17 0,6,12,18 * * *"
   # Trigger the workflow every time you push to the `main` branch
   # Using a different branch name? Replace `main` with your branch’s name
   push:
