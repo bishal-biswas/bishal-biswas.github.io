@@ -29,6 +29,7 @@ interface Props {
     backgroundImg ?: string
     backgroundImgClass ?: string
     isLargeWidth ?: boolean
+    isFullWidth ?: boolean
     isSwiperRequired ?: boolean
 }
 
@@ -37,7 +38,7 @@ metaDescription,
 pageSmallText, pageSmallTextBelow, isPageSmallTextDark = false, 
 pageHeadingText, pageMainHeadingtagType="p", 
 isMainHeadingDoubleLined = false, isMainHeadinglarge = false, isBreadcrumbShown, pageType,
-isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isSwiperRequired = false,
+isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isFullWidth=false, isSwiperRequired = false,
 heroImgTransitionName,
 ogType, ogImage
 } = Astro.props;
@@ -47,6 +48,7 @@ let isDarkImage;
 if(pageType == "article"){
     isDarkImage = true;
 }
+
 ---
 
 <!DOCTYPE html>
@@ -67,7 +69,8 @@ if(pageType == "article"){
         <Navbar />
 
         <main class="dark:bg-body-bg-2 bg-body-bg-2 flex flex-col justify-center items-center w-full z-[1] rounded-md" class:list={[
-            isLargeWidth ? "lg:max-w-[1280px]" : "lg:max-w-[1210px]"
+            (isFullWidth == false) && isLargeWidth ? "lg:max-w-[1280px]" : "lg:max-w-[1210px]",
+            isFullWidth && "lg:max-w-full"
         ]}>
             
             <HeroSection 

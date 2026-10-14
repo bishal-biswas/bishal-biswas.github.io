@@ -1,0 +1,1169 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="character-emoji-finder"
+    title="Character & Emoji Finder - Search Unicode Symbols, Copy & Paste, Free & Online"
+    metaDescription="Search 8,000+ emoji and Unicode symbols by name, keyword, :shortcode: or U+ code point. Copy in one click and get the HTML entity, CSS, JavaScript and UTF-8 codes."
+    pageHeadingText="Character & Emoji Finder"
+>
+    <div slot="tool" id="cf-root" class="flex flex-col gap-3">
+        <div class="tool-row" style="justify-content:space-between">
+            <div class="cf-tabs" role="tablist" aria-label="Browse">
+                <button type="button" role="tab" class="cf-tab" data-tab="emoji" aria-selected="true">Emoji</button>
+                <button type="button" role="tab" class="cf-tab" data-tab="chars" aria-selected="false">Characters</button>
+                <button type="button" role="tab" class="cf-tab" data-tab="recent" aria-selected="false"><i class="fa-solid fa-clock-rotate-left"></i> Recent</button>
+                <button type="button" role="tab" class="cf-tab" data-tab="inspect" aria-selected="false"><i class="fa-solid fa-microscope"></i> Inspect<span class="cf-wide"> text</span></button>
+            </div>
+            <div id="cf-tones" class="cf-tones" role="group" aria-label="Emoji skin tone"></div>
+        </div>
+
+        <div id="cf-search-wrap" class="cf-search">
+            <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i>
+            <input
+                id="cf-q"
+                class="tool-input"
+                type="search"
+                autocomplete="off"
+                spellcheck="false"
+                aria-label="Search emoji and characters"
+                placeholder="Search - heart, arrow, check, :wave:, U+2713, &amp;rarr; or paste a symbol"
+            />
+        </div>
+
+        <div id="cf-chips" class="cf-chips" aria-label="Categories"></div>
+
+        <div class="cf-main">
+            <div class="cf-left">
+                <div class="tool-row" style="justify-content:space-between;min-height:1.6rem">
+                    <span id="cf-status" class="tool-note" aria-live="polite">Loading characters…</span>
+                    <button id="cf-all" type="button" class="cf-link" hidden></button>
+                </div>
+                <div id="cf-grid" class="cf-grid" aria-label="Characters"></div>
+
+                <div id="cf-inspect" class="cf-inspect" hidden>
+                    <label class="tool-label" for="cf-text">Paste text to break it into characters</label>
+                    <textarea id="cf-text" class="tool-input" spellcheck="false" placeholder="Paste anything - a username that will not validate, a string with a hidden character, an emoji sequence…"></textarea>
+                    <p id="cf-text-stats" class="tool-note"></p>
+                    <div id="cf-text-list" class="cf-text-list"></div>
+                </div>
+            </div>
+
+            <aside id="cf-detail" class="cf-detail" aria-label="Character details">
+                <p class="tool-note">Pick a symbol to see its code point, HTML entity and escapes.</p>
+            </aside>
+        </div>
+
+        <div class="cf-compose">
+            <input id="cf-out" class="tool-input" aria-label="Your text" placeholder="Your text - build a string from several symbols" />
+            <select id="cf-mode" class="tool-select" aria-label="What a click does">
+                <option value="copy">Click copies the symbol</option>
+                <option value="add">Click adds it to your text</option>
+            </select>
+            <button id="cf-copy-out" type="button" class="tool-btn"><i class="fa-regular fa-copy"></i> Copy text</button>
+            <button id="cf-clear-out" type="button" class="tool-btn-ghost">Clear</button>
+        </div>
+    </div>
+
+    <h2>Find any emoji or symbol and copy it in one click</h2>
+    <p>
+        This <strong>character and emoji finder</strong> searches every emoji in Emoji 17.0 and more than six
+        thousand hand-picked Unicode symbols: arrows, math operators, currency signs, check marks, box-drawing
+        lines, accented letters and more. Click a symbol to copy it, or switch the click mode to collect several
+        into one string. The data loads once and everything else happens in your browser.
+    </p>
+    <p>The search box understands more than names:</p>
+    <ul>
+        <li><strong>Names and everyday words</strong> - <code>heart</code>, <code>tick</code>, <code>degree</code>, <code>bullet</code>, <code>rupee</code>. Emoji also match their keywords, so <code>laugh</code> finds 😂 and <code>bye</code> finds 👋.</li>
+        <li><strong>Shortcodes</strong> - <code>:thumbsup:</code>, <code>:rocket:</code>, <code>:white_check_mark:</code>, as used on GitHub, Slack and Discord.</li>
+        <li><strong>Code points</strong> - <code>U+2713</code>, <code>0x1F600</code>, <code>→</code> or a bare <code>2192</code>.</li>
+        <li><strong>HTML entities</strong> - <code>&amp;rarr;</code>, <code>&amp;nbsp;</code>, <code>&amp;#9733;</code>.</li>
+        <li><strong>The symbol itself</strong> - paste <code>™</code> or <code>🫠</code> to find out what it is called and how to type it in code.</li>
+    </ul>
+    <p>
+        If a symbol is not in the curated sets, the <em>Search all Unicode</em> link downloads the names of all
+        named code points (roughly 40,000 of them, excluding the CJK ideographs, which are numbered rather than named)
+        and searches those too.
+    </p>
+
+    <h2>The character sets</h2>
+    <p>
+        The <em>Characters</em> tab groups symbols the way people actually look for them, not the way the Unicode
+        block list orders them. <em>Popular</em> collects the hundred-odd symbols people copy most. The other sets
+        are <em>Arrows</em>, <em>Math</em>, <em>Currency</em>, <em>Punctuation</em>, <em>Spaces &amp; invisible</em>,
+        <em>Accented letters</em>, <em>Greek</em>, <em>Cyrillic</em>, <em>Superscript &amp; subscript</em>,
+        <em>Numbers &amp; fractions</em>, <em>Shapes</em>, <em>Box drawing</em>, <em>Misc symbols</em>,
+        <em>Dingbats</em>, <em>Keyboard &amp; technical</em>, <em>Letterlike</em>, <em>Fancy text letters</em>,
+        <em>Music</em>, <em>Chess, cards &amp; dice</em>, <em>Braille</em> and plain <em>ASCII</em>.
+    </p>
+
+    <h2>Every format a developer needs</h2>
+    <p>
+        Select a symbol and the side panel shows it in each notation you are likely to paste somewhere. Here is
+        what each one is for, using the waving hand 👋 (U+1F44B) as the example:
+    </p>
+    <ul>
+        <li><strong>HTML entity</strong> - <code>&amp;#x1F44B;</code>, or a named entity such as <code>&amp;rarr;</code> where one exists. Safe in any HTML file whatever its encoding.</li>
+        <li><strong>HTML decimal</strong> - <code>&amp;#128075;</code>. Same thing in base 10, still common in older CMS templates.</li>
+        <li><strong>CSS</strong> - <code>\1F44B</code>, for <code>content: "\1F44B";</code> in a <code>::before</code> rule.</li>
+        <li><strong>JavaScript</strong> - <code>\u&#123;1F44B&#125;</code>. The braces are ES2015 syntax. Without them, <code>\u</code> takes exactly four hex digits and cannot reach past U+FFFF.</li>
+        <li><strong>JSON, Java and C#</strong> - <code>👋</code>. These languages escape UTF-16 code units, so characters above U+FFFF are written as a surrogate pair.</li>
+        <li><strong>Python</strong> - <code>\U0001F44B</code>: a capital U followed by eight hex digits.</li>
+        <li><strong>UTF-8 bytes</strong> - <code>F0 9F 91 8B</code>. Useful when a hex dump, a database column or a byte-length limit is involved.</li>
+        <li><strong>URL encoded</strong> - <code>%F0%9F%91%8B</code>, for query strings. The <a href="/tools/url-encoder-decoder">URL encoder</a> handles whole strings.</li>
+    </ul>
+
+    <h3>Why "👋🏽".length is 4 in JavaScript</h3>
+    <p>
+        A string can be counted three ways, and they rarely agree. <strong>Graphemes</strong> are what a reader
+        sees as one character. <strong>Code points</strong> are Unicode's units: 👋🏽 is two of them, the hand
+        followed by a skin-tone modifier. <strong>UTF-16 code units</strong> are what JavaScript's
+        <code>.length</code> counts: each of those two code points sits above U+FFFF and needs a surrogate pair,
+        so the total is four. A family emoji built with zero-width joiners can be one grapheme and eleven code
+        units. The <em>Inspect text</em> tab shows all three counts plus the UTF-8 byte size, which is the number
+        that matters for a <code>VARCHAR</code> limit or an SMS segment.
+    </p>
+
+    <h2>Invisible characters, and how to catch them</h2>
+    <p>
+        Some of the most useful entries in Unicode cannot be seen. The <em>Spaces &amp; invisible</em> set
+        labels each one with its short alias, so you can see what you are copying:
+    </p>
+    <ul>
+        <li><strong>NBSP</strong> (U+00A0) - a space that never breaks a line. Keeps <code>10&nbsp;km</code> together.</li>
+        <li><strong>ZWSP</strong> (U+200B) - a zero-width space. It marks a place where a long word may break, and it is also the classic culprit when two strings that look identical fail to compare equal.</li>
+        <li><strong>ZWJ</strong> (U+200D) - the zero-width joiner that glues emoji into sequences like 👩‍💻 and 🏳️‍🌈.</li>
+        <li><strong>BOM</strong> (U+FEFF) - the byte-order mark some Windows editors add to the start of a file. It can break shebang lines, CSV headers and JSON parsers.</li>
+        <li><strong>Bidi controls</strong> (U+202A to U+202E, U+2066 to U+2069) - these reorder how text is displayed. The "Trojan Source" attack used them to make code display differently from how it compiles.</li>
+    </ul>
+    <p>
+        Paste suspicious text into <em>Inspect text</em> and every invisible or control character is flagged in
+        the breakdown.
+    </p>
+
+    <h3>Skin tones and emoji sequences</h3>
+    <p>
+        The swatches next to the tabs apply one of the five Fitzpatrick skin-tone modifiers to every emoji that
+        supports them, and the finder remembers your choice. The modifier is a separate code point placed after
+        the base emoji, which is why toned emoji are longer strings. Multi-person emoji such as 🧑‍🤝‍🧑 use the
+        same tone for everyone.
+    </p>
+
+    <h2>Why some symbols show up as empty boxes</h2>
+    <p>
+        A blank box, nicknamed <em>tofu</em>, means no font on your device has a glyph for that code point. The
+        character itself is fine: copy it and it will display wherever a suitable font exists. Emoji are tied to
+        operating system updates, so the side panel shows each emoji's version. Anything from Emoji 16.0 or 17.0
+        may show as tofu on phones and PCs that have not been updated recently. For symbols, the Noto fonts from
+        Google cover almost every block.
+    </p>
+
+    <h2>A warning about "fancy text" letters</h2>
+    <p>
+        The bold, italic, script and double-struck letters under <em>Fancy text letters</em> are popular for
+        social-media bios, and they are not styled text. They come from the <em>Mathematical Alphanumeric
+        Symbols</em> block and exist so that equations can tell variables apart. A screen reader may read 𝐇𝐞𝐥𝐥𝐨
+        as "mathematical bold capital H, mathematical bold small e…". Search engines may not match them to normal
+        letters, and many fonts lack them. Use them as decoration, not for anything people need to read or
+        search.
+    </p>
+
+    <h2>Related tools</h2>
+    <p>
+        To escape a whole document rather than one character, use the
+        <a href="/tools/html-entity-encoder">HTML entity encoder</a>. The <a href="/tools/regex-tester">regex tester</a>
+        is handy for checking a <code>\p&#123;Emoji&#125;</code> or <code>[ -‏]</code> pattern against real text.
+    </p>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const DATA_URL = "/assets/data/unicode/chars.json";
+        const NAMES_URL = "/assets/data/unicode/names.txt";
+        const RESULT_LIMIT = 600;
+        const RECENT_LIMIT = 60;
+        const INSPECT_LIMIT = 2000;
+
+        // localStorage can throw (private mode, blocked storage) - the tool
+        // must keep working without it.
+        const store = {
+            get(key) { try { return localStorage.getItem(key); } catch (e) { return null; } },
+            set(key, value) { try { localStorage.setItem(key, value); } catch (e) { /* ignore */ } },
+        };
+
+        const GROUP_ICONS = { smileys: "😀", people: "👋", animals: "🐻", food: "🍔", travel: "✈️", activities: "⚽", objects: "💡", symbols: "🔣", flags: "🏁" };
+        const TONES = [
+            { label: "Default skin tone", color: "#ffc83d" },
+            { label: "Light skin tone", color: "#f7dece" },
+            { label: "Medium-light skin tone", color: "#f3d2a2" },
+            { label: "Medium skin tone", color: "#d5ab88" },
+            { label: "Medium-dark skin tone", color: "#af7e57" },
+            { label: "Dark skin tone", color: "#7c533e" },
+        ];
+        const CATEGORY_NAMES = {
+            Lu: "Uppercase letter", Ll: "Lowercase letter", Lt: "Titlecase letter", Lm: "Modifier letter", Lo: "Letter",
+            Mn: "Combining mark", Mc: "Spacing mark", Me: "Enclosing mark",
+            Nd: "Digit", Nl: "Letter number", No: "Number",
+            Pc: "Connector punctuation", Pd: "Dash", Ps: "Opening punctuation", Pe: "Closing punctuation",
+            Pi: "Opening quote", Pf: "Closing quote", Po: "Punctuation",
+            Sm: "Math symbol", Sc: "Currency symbol", Sk: "Modifier symbol", So: "Symbol",
+            Zs: "Space", Zl: "Line separator", Zp: "Paragraph separator",
+            Cc: "Control character", Cf: "Format character", Cs: "Surrogate", Co: "Private use", Cn: "Unassigned",
+        };
+        const CATEGORY_TESTS = Object.keys(CATEGORY_NAMES).map(code => [code, new RegExp(`^\\p{${code}}$`, "u")]);
+        const INVISIBLE = /^[\p{Z}\p{Cc}\p{Cf}͏ᅟᅠ឴឵᠋-᠏⠀ㅤ︀-️ﾠ]$/u;
+        const MARK = /^\p{M}$/u;
+
+        const state = {
+            tab: "emoji",
+            group: null,     // emoji group id
+            set: "popular",  // character set id
+            query: "",
+            tone: Number(store.get("cf-tone")) || 0,
+            mode: store.get("cf-mode") === "add" ? "add" : "copy",
+            fullSearch: false,
+            selected: null,
+            items: [],       // what the grid is showing, indexed by data-i
+        };
+
+        let data = null;
+        const emojiItems = [];
+        const charByCp = new Map();
+        const itemByChar = new Map(); // key: string without VS16
+        const entityToCp = new Map();
+        let fullNames = null;         // Map cp -> name, from names.txt
+        let computedRanges = [];
+        let fullIndex = null;
+        let namesPromise = null;
+
+        // ---- Helpers --------------------------------------------------------
+
+        const hex = (cp, width = 4) => cp.toString(16).toUpperCase().padStart(width, "0");
+        const codePoints = str => Array.from(str, ch => ch.codePointAt(0));
+        const keyOf = str => str.replace(/️/g, "");
+        const words = str => " " + String(str).toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+        const titleCase = name => name.toLowerCase().replace(/(^|[\s-])([a-z])/g, (m, sep, letter) => sep + letter.toUpperCase());
+        const segment = text => typeof Intl !== "undefined" && Intl.Segmenter
+            ? Array.from(new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text), s => s.segment)
+            : Array.from(text);
+
+        function category(cp) {
+            const ch = String.fromCodePoint(cp);
+            const hit = CATEGORY_TESTS.find(([, re]) => re.test(ch));
+            return hit ? hit[0] : "Cn";
+        }
+
+        function blockOf(cp) {
+            if (!data) return "";
+            let lo = 0, hi = data.blocks.length - 1;
+            while (lo <= hi) {
+                const mid = (lo + hi) >> 1;
+                const [start, end, name] = data.blocks[mid];
+                if (cp < start) hi = mid - 1;
+                else if (cp > end) lo = mid + 1;
+                else return name;
+            }
+            return "No block";
+        }
+
+        // Hangul syllables are named by an algorithm rather than listed.
+        const JAMO_L = ["G", "GG", "N", "D", "DD", "R", "M", "B", "BB", "S", "SS", "", "J", "JJ", "C", "K", "T", "P", "H"];
+        const JAMO_V = ["A", "AE", "YA", "YAE", "EO", "E", "YEO", "YE", "O", "WA", "WAE", "OE", "YO", "U", "WEO", "WE", "WI", "YU", "EU", "YI", "I"];
+        const JAMO_T = ["", "G", "GG", "GS", "N", "NJ", "NH", "D", "L", "LG", "LM", "LB", "LS", "LT", "LP", "LH", "M", "B", "BS", "S", "SS", "NG", "J", "C", "K", "T", "P", "H"];
+
+        function computedName(cp) {
+            if (cp >= 0xAC00 && cp <= 0xD7A3) {
+                const index = cp - 0xAC00;
+                return "HANGUL SYLLABLE " + JAMO_L[Math.floor(index / 588)] + JAMO_V[Math.floor((index % 588) / 28)] + JAMO_T[index % 28];
+            }
+            const range = computedRanges.find(([start, end]) => cp >= start && cp <= end);
+            if (!range) return null;
+            if (/^CJK Ideograph/.test(range[2])) return "CJK UNIFIED IDEOGRAPH-" + hex(cp);
+            if (/^Tangut Ideograph/.test(range[2])) return "TANGUT IDEOGRAPH-" + hex(cp);
+            return "<" + range[2].toLowerCase() + ">";
+        }
+
+        function nameOf(cp) {
+            const item = charByCp.get(cp);
+            if (item) return item.name;
+            if (fullNames && fullNames.has(cp)) return fullNames.get(cp);
+            return computedName(cp);
+        }
+
+        // ---- Items ----------------------------------------------------------
+        // Every grid cell is an item: { ch, name, type, kw?, group?, tones?, v?, sc?, abbr? }
+
+        function charItem(cp) {
+            if (charByCp.has(cp)) return charByCp.get(cp);
+            return { ch: String.fromCodePoint(cp), type: "char", generic: true };
+        }
+
+        function itemFor(str) {
+            const cps = codePoints(str);
+            const known = itemByChar.get(keyOf(str));
+            // "™" and "❤" default to text presentation - without VS16 they are
+            // the plain character. "⚽" defaults to emoji, so it stays emoji.
+            if (known && known.type === "emoji" && cps.length === 1 && known.ch.includes("\uFE0F") && charByCp.has(cps[0])) return charByCp.get(cps[0]);
+            if (known) return known;
+            if (cps.length === 1) return charItem(cps[0]);
+            return { ch: str, type: "seq", generic: true };
+        }
+
+        function shown(item) {
+            return item.tones && state.tone ? item.tones[state.tone - 1] : item.ch;
+        }
+
+        function displayName(item) {
+            if (item.type === "emoji") return item.n.charAt(0).toUpperCase() + item.n.slice(1);
+            if (item.name) return titleCase(item.name);
+            const names = codePoints(item.ch).map(cp => nameOf(cp));
+            if (names.every(Boolean)) return names.map(titleCase).join(" + ");
+            return codePoints(item.ch).map(cp => "U+" + hex(cp)).join(" ");
+        }
+
+        // What the grid cell shows: invisible characters get their alias, and
+        // combining marks sit on a dotted circle so there is something to see.
+        function cellLabel(item) {
+            const str = shown(item);
+            const cps = codePoints(str);
+            if (cps.length === 1 && INVISIBLE.test(str)) {
+                const known = charByCp.get(cps[0]);
+                return { text: known && known.abbr ? known.abbr : hex(cps[0]), invisible: true };
+            }
+            if (cps.length === 1 && MARK.test(str)) return { text: "◌" + str };
+            return { text: str };
+        }
+
+        function indexData() {
+            data.emoji.forEach(e => {
+                const item = { ch: e.e, n: e.n, type: "emoji", kw: e.k || "", sc: e.s || "", group: e.g, v: e.v, tones: e.t || null };
+                item.name = null;
+                emojiItems.push(item);
+                itemByChar.set(keyOf(e.e), item);
+                (e.t || []).forEach((variant, index) => {
+                    itemByChar.set(keyOf(variant), Object.assign({}, item, { ch: variant, tones: null, n: e.n + ": " + TONES[index + 1].label.toLowerCase() }));
+                });
+            });
+            Object.entries(data.chars).forEach(([key, [name, kw, abbr]]) => {
+                const cp = parseInt(key, 16);
+                const item = { ch: String.fromCodePoint(cp), name, kw: kw || "", abbr: abbr || null, type: "char" };
+                charByCp.set(cp, item);
+                // Emoji win for lookups: "❤" should open the emoji entry.
+                if (!itemByChar.has(keyOf(item.ch))) itemByChar.set(keyOf(item.ch), item);
+            });
+            Object.entries(data.entities).forEach(([cpHex, name]) => {
+                const cp = parseInt(cpHex, 16);
+                if (!entityToCp.has(name.toLowerCase())) entityToCp.set(name.toLowerCase(), cp);
+                entityToCp.set(name, cp);
+            });
+        }
+
+        function setItems(set) {
+            const items = [];
+            set.cps.split(",").forEach(part => {
+                const [a, b] = part.split("-").map(h => parseInt(h, 16));
+                for (let cp = a; cp <= (b === undefined ? a : b); cp++) items.push(charByCp.get(cp));
+            });
+            return items.filter(Boolean);
+        }
+
+        // ---- Search ---------------------------------------------------------
+
+        function haystack(item) {
+            if (item.hay === undefined) {
+                item.hay = words([item.n || item.name || "", item.kw || "", item.sc || ""].join(" "));
+                item.nameWords = words(item.n || item.name || "");
+            }
+            return item.hay;
+        }
+
+        // Code points, escapes and entities: U+2713, 0x2713, ✓, \u{1F600},
+        // &#10003;, &#x2713;, &check; - several separated by spaces also work.
+        function parseCodeQuery(q) {
+            const parts = q.trim().split(/[\s,]+/).filter(Boolean);
+            const cps = [];
+            for (const part of parts) {
+                let m = part.match(/^(?:u\+|0x|\\u\{?|\\x\{?|&#x|\\)([0-9a-f]{1,6})\}?;?$/i);
+                if (m) { cps.push(parseInt(m[1], 16)); continue; }
+                m = part.match(/^&#(\d{1,7});?$/);
+                if (m) { cps.push(parseInt(m[1], 10)); continue; }
+                m = part.match(/^&([a-z][a-z0-9]*);?$/i);
+                if (m && (entityToCp.has(m[1]) || entityToCp.has(m[1].toLowerCase()))) {
+                    cps.push(entityToCp.get(m[1]) ?? entityToCp.get(m[1].toLowerCase()));
+                    continue;
+                }
+                return null;
+            }
+            const valid = cps.filter(cp => cp <= 0x10FFFF && (cp < 0xD800 || cp > 0xDFFF));
+            return valid.length ? valid : null;
+        }
+
+        function search(q) {
+            const results = [];
+            const seen = new Set();
+            const add = item => {
+                const key = keyOf(item.ch);
+                if (!seen.has(key)) { seen.add(key); results.push(item); }
+            };
+
+            const coded = parseCodeQuery(q);
+            if (coded) {
+                // A run of code points might be one emoji sequence (U+1F44B U+1F3FD).
+                if (coded.length > 1) {
+                    const joined = itemByChar.get(keyOf(String.fromCodePoint(...coded)));
+                    if (joined) add(joined);
+                }
+                coded.forEach(cp => add(itemFor(String.fromCodePoint(cp))));
+                return { items: results, kind: "code" };
+            }
+
+            // Anything non-ASCII cannot match an English name, so treat it as
+            // pasted symbols and look each one up.
+            if (/[^\x00-\x7F]/.test(q)) {
+                segment(q).filter(g => g.trim()).slice(0, 200).forEach(g => add(itemFor(g)));
+                return { items: results, kind: "paste" };
+            }
+
+            // A bare 4-6 digit hex string is probably a code point, but it
+            // could also be part of a name, so show it first and keep going.
+            if (/^[0-9a-f]{4,6}$/i.test(q.trim())) {
+                const cp = parseInt(q.trim(), 16);
+                if (cp <= 0x10FFFF && (cp < 0xD800 || cp > 0xDFFF)) add(itemFor(String.fromCodePoint(cp)));
+            }
+
+            const tokens = words(q.replace(/:/g, " ")).trim().split(" ").filter(Boolean);
+            if (!tokens.length) return { items: results, kind: "text" };
+            const phrase = " " + tokens.join(" ");
+
+            const scored = [];
+            const consider = (item, order) => {
+                const hay = haystack(item);
+                if (!tokens.every(t => hay.includes(" " + t))) return;
+                // 0 exact name, 1 whole words in the name, 2 word prefixes in
+                // the name, 3 keyword-only. Within 1 and 2, shorter names
+                // first: "red heart" before "heart with arrow".
+                const padded = item.nameWords + " ";
+                let score = 3;
+                if (item.nameWords === phrase) score = 0;
+                else if (tokens.every(t => padded.includes(" " + t + " "))) score = 1;
+                else if (tokens.every(t => item.nameWords.includes(" " + t))) score = 2;
+                scored.push([score, score === 1 || score === 2 ? item.nameWords.length : 0, order, item]);
+            };
+            let order = 0;
+            emojiItems.forEach(item => consider(item, order++));
+            charByCp.forEach(item => consider(item, order++));
+            if (state.fullSearch && fullIndex) {
+                fullIndex.forEach(entry => {
+                    if (charByCp.has(entry.cp)) return;
+                    if (!tokens.every(t => entry.hay.includes(" " + t))) return;
+                    const item = charItem(entry.cp);
+                    item.name = entry.name;
+                    item.hay = entry.hay;
+                    item.nameWords = entry.hay;
+                    consider(item, order++);
+                });
+            }
+            scored.sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]).forEach(([, , , item]) => add(item));
+            return { items: results, kind: "text" };
+        }
+
+        function loadNames() {
+            if (!namesPromise) {
+                namesPromise = fetch(NAMES_URL)
+                    .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.text(); })
+                    .then(text => {
+                        const map = new Map();
+                        const ranges = [];
+                        let cp = 0;
+                        text.split("\n").forEach(line => {
+                            if (!line) return;
+                            if (line[0] === "@") {
+                                const [start, end, label] = line.slice(1).split(";");
+                                ranges.push([parseInt(start, 16), parseInt(end, 16), label]);
+                                return;
+                            }
+                            const sep = line.indexOf(";");
+                            cp += parseInt(line.slice(0, sep), 36);
+                            map.set(cp, line.slice(sep + 1));
+                        });
+                        fullNames = map;
+                        computedRanges = ranges;
+                    })
+                    .catch(err => {
+                        namesPromise = null;
+                        if (window.showNotification) window.showNotification("Could not load the Unicode name list - check your connection and try again.", "error");
+                        throw err;
+                    });
+            }
+            return namesPromise;
+        }
+
+        function buildFullIndex() {
+            if (fullIndex) return;
+            fullIndex = [];
+            fullNames.forEach((name, cp) => {
+                // Skip controls and the numbered ideograph names - nobody
+                // searches for "CJK COMPATIBILITY IDEOGRAPH-F900" by name.
+                if (/IDEOGRAPH-|COMPONENT-|CHARACTER-[0-9A-F]{4,5}$/.test(name)) return;
+                fullIndex.push({ cp, name, hay: words(name) });
+            });
+        }
+
+        // ---- Rendering ------------------------------------------------------
+
+        const grid = $("cf-grid");
+
+        function renderGrid(items, sections) {
+            state.items = items;
+            grid.textContent = "";
+            const frag = document.createDocumentFragment();
+            let first = true;
+            items.slice(0, RESULT_LIMIT).forEach((item, index) => {
+                if (sections && sections[index]) {
+                    const header = document.createElement("div");
+                    header.className = "cf-section";
+                    header.textContent = sections[index];
+                    frag.appendChild(header);
+                }
+                const cell = document.createElement("button");
+                cell.type = "button";
+                cell.className = "cf-cell" + (item.type === "emoji" ? " cf-is-emoji" : "");
+                cell.dataset.i = index;
+                const label = cellLabel(item);
+                cell.textContent = label.text;
+                if (label.invisible) cell.classList.add("cf-invisible");
+                const name = displayName(item);
+                cell.title = name;
+                cell.setAttribute("aria-label", name);
+                cell.tabIndex = first ? 0 : -1;
+                first = false;
+                if (state.selected && keyOf(shown(state.selected)) === keyOf(shown(item))) cell.classList.add("is-selected");
+                frag.appendChild(cell);
+            });
+            if (!items.length) {
+                const empty = document.createElement("p");
+                empty.className = "tool-note cf-empty";
+                empty.textContent = state.tab === "recent" && !state.query
+                    ? "Nothing here yet - symbols you copy or add will show up here."
+                    : "No matches. Try a shorter word, a code point like U+2605, or search all of Unicode.";
+                frag.appendChild(empty);
+            }
+            grid.appendChild(frag);
+            grid.scrollTop = 0;
+        }
+
+        function renderChips() {
+            const chips = $("cf-chips");
+            chips.textContent = "";
+            let list = [];
+            if (state.tab === "emoji") list = data.emojiGroups.map(g => ({ id: g.id, label: GROUP_ICONS[g.id] + " " + g.label, active: g.id === state.group }));
+            if (state.tab === "chars") list = data.sets.map(s => ({ id: s.id, label: s.label, active: s.id === state.set }));
+            chips.hidden = !list.length;
+            list.forEach(chip => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "cf-chip";
+                button.dataset.id = chip.id;
+                button.textContent = chip.label;
+                button.setAttribute("aria-pressed", String(chip.active && !state.query));
+                chips.appendChild(button);
+            });
+            const active = chips.querySelector('[aria-pressed="true"]');
+            if (active) chips.scrollLeft = Math.max(0, active.offsetLeft - chips.clientWidth / 2 + active.clientWidth / 2);
+        }
+
+        function recentItems() {
+            let recent = [];
+            try { recent = JSON.parse(store.get("cf-recent") || "[]"); } catch (e) { recent = []; }
+            return Array.isArray(recent) ? recent.filter(s => typeof s === "string" && s).map(itemFor) : [];
+        }
+
+        function render() {
+            if (!data) return;
+            const inspecting = state.tab === "inspect";
+            $("cf-inspect").hidden = !inspecting;
+            grid.hidden = inspecting;
+            $("cf-search-wrap").hidden = inspecting;
+            $("cf-status").parentElement.hidden = inspecting;
+            document.querySelectorAll(".cf-tab").forEach(tab => tab.setAttribute("aria-selected", String(tab.dataset.tab === state.tab)));
+            renderChips();
+            if (inspecting) { $("cf-chips").hidden = true; renderInspect(); return; }
+
+            const status = $("cf-status");
+            const allButton = $("cf-all");
+            allButton.hidden = true;
+
+            if (state.query.trim()) {
+                const { items, kind } = search(state.query);
+                const emojiCount = items.filter(i => i.type === "emoji").length;
+                // Keep emoji and characters visually apart in mixed results.
+                const sections = {};
+                let ordered = items;
+                if (kind === "text" && emojiCount && emojiCount < items.length) {
+                    const emojiPart = items.filter(i => i.type === "emoji");
+                    const charPart = items.filter(i => i.type !== "emoji");
+                    ordered = emojiPart.concat(charPart);
+                    sections[0] = `Emoji · ${emojiPart.length}`;
+                    sections[emojiPart.length] = `Characters · ${charPart.length}`;
+                }
+                renderGrid(ordered, sections);
+                const capped = ordered.length > RESULT_LIMIT ? ` - showing the first ${RESULT_LIMIT}` : "";
+                status.textContent = kind === "text"
+                    ? `${ordered.length.toLocaleString()} result${ordered.length === 1 ? "" : "s"}${capped}${state.fullSearch ? " across all of Unicode" : ""}`
+                    : `${ordered.length} character${ordered.length === 1 ? "" : "s"} found`;
+                if (kind === "text" && !state.fullSearch) {
+                    allButton.hidden = false;
+                    allButton.textContent = `Search all ${data.totalNamed.toLocaleString()} Unicode names`;
+                }
+                if (kind !== "text" && !fullNames && ordered.some(item => item.generic)) loadNames().then(() => render(), () => {});
+                followView(`q:${state.fullSearch}:${state.query}`, ordered);
+                return;
+            }
+
+            let items = [];
+            if (state.tab === "emoji") {
+                const group = data.emojiGroups.find(g => g.id === state.group) || data.emojiGroups[0];
+                state.group = group.id;
+                items = emojiItems.filter(e => e.group === group.group);
+                status.textContent = `${items.length} emoji · ${group.label}`;
+            } else if (state.tab === "chars") {
+                const set = data.sets.find(s => s.id === state.set) || data.sets[0];
+                state.set = set.id;
+                items = setItems(set);
+                status.textContent = `${items.length} characters · ${set.label}`;
+            } else if (state.tab === "recent") {
+                items = recentItems();
+                status.textContent = items.length ? `${items.length} recently used` : "Recently used";
+                if (items.length) {
+                    allButton.hidden = false;
+                    allButton.textContent = "Clear recent";
+                }
+            }
+            renderGrid(items);
+            followView(`${state.tab}:${state.group}:${state.set}`, items);
+        }
+
+        // Select the first item whenever the view changes (new query, tab or
+        // category), but leave a hand-picked selection alone on re-renders
+        // that keep the view, such as a skin-tone change.
+        function followView(view, items) {
+            if (state.view !== view && items.length) select(items[0], false);
+            state.view = view;
+        }
+
+        // ---- Detail panel ---------------------------------------------------
+
+        function formats(str, item) {
+            const cps = codePoints(str);
+            const units = [];
+            for (let i = 0; i < str.length; i++) units.push(hex(str.charCodeAt(i)));
+            const rows = [
+                ["Character", str],
+                ["Code point", cps.map(cp => "U+" + hex(cp)).join(" ")],
+                ["HTML entity", cps.map(cp => data.entities[cp.toString(16)] ? `&${data.entities[cp.toString(16)]};` : `&#x${hex(cp, 1)};`).join("")],
+                ["HTML decimal", cps.map(cp => `&#${cp};`).join("")],
+                ["CSS", cps.map(cp => "\\" + hex(cp, 1)).join("")],
+                ["JavaScript", cps.map(cp => (cp > 0xFFFF ? `\\u{${hex(cp)}}` : `\\u${hex(cp)}`)).join("")],
+                ["JSON · Java · C#", units.map(u => "\\u" + u).join("")],
+                ["Python", cps.map(cp => (cp > 0xFFFF ? `\\U${hex(cp, 8)}` : `\\u${hex(cp)}`)).join("")],
+                ["UTF-8 bytes", Array.from(new TextEncoder().encode(str), b => hex(b, 2)).join(" ")],
+                ["UTF-16", units.join(" ")],
+                ["URL encoded", encodeURIComponent(str)],
+            ];
+            if (item.sc) rows.push(["Shortcode", item.sc.split(" ").map(code => `:${code}:`).join(" ")]);
+            return rows;
+        }
+
+        function select(item, scroll) {
+            state.selected = item;
+            grid.querySelectorAll(".cf-cell.is-selected").forEach(cell => cell.classList.remove("is-selected"));
+            const key = keyOf(shown(item));
+            const cell = Array.from(grid.querySelectorAll(".cf-cell")).find(c => keyOf(shown(state.items[c.dataset.i])) === key);
+            if (cell) {
+                cell.classList.add("is-selected");
+                if (scroll) cell.scrollIntoView({ block: "nearest" });
+            }
+            renderDetail();
+        }
+
+        function renderDetail() {
+            const item = state.selected;
+            const panel = $("cf-detail");
+            if (!item) return;
+            const str = shown(item);
+            const cps = codePoints(str);
+            const needsNames = cps.some(cp => !nameOf(cp)) && !fullNames;
+            if (needsNames) loadNames().then(renderDetail, () => {});
+
+            panel.textContent = "";
+            const head = document.createElement("div");
+            head.className = "cf-d-head";
+            const glyph = document.createElement("div");
+            glyph.className = "cf-d-glyph" + (item.type === "emoji" ? " cf-is-emoji" : "");
+            const label = cellLabel(Object.assign({}, item, { tones: null, ch: str }));
+            glyph.textContent = label.text;
+            if (label.invisible) glyph.classList.add("cf-invisible");
+            const text = document.createElement("div");
+            text.style.minWidth = "0";
+            const name = document.createElement("p");
+            name.className = "cf-d-name";
+            name.textContent = needsNames ? "Looking up the name…" : displayName(item);
+            if (item.type === "emoji" && state.tone && item.tones) name.textContent += ", " + TONES[state.tone].label.toLowerCase();
+            const meta = document.createElement("p");
+            meta.className = "tool-note";
+            if (item.type === "emoji") {
+                const group = data.emojiGroups.find(g => g.group === item.group);
+                meta.textContent = `Emoji ${item.v.toFixed(1)}${group ? " · " + group.label : ""}`;
+            } else if (cps.length === 1) {
+                meta.textContent = `${CATEGORY_NAMES[category(cps[0])]} · ${blockOf(cps[0])}`;
+            } else {
+                meta.textContent = `Sequence of ${cps.length} code points`;
+            }
+            text.append(name, meta);
+            head.append(glyph, text);
+
+            const actions = document.createElement("div");
+            actions.className = "tool-row";
+            const copyButton = document.createElement("button");
+            copyButton.type = "button";
+            copyButton.className = "tool-btn";
+            copyButton.innerHTML = '<i class="fa-regular fa-copy"></i> Copy';
+            copyButton.addEventListener("click", () => { copy(str, "Copied " + str); remember(str); });
+            const addButton = document.createElement("button");
+            addButton.type = "button";
+            addButton.className = "tool-btn-ghost";
+            addButton.innerHTML = '<i class="fa-solid fa-plus"></i> Add to text';
+            addButton.addEventListener("click", () => { append(str); remember(str); });
+            actions.append(copyButton, addButton);
+
+            const list = document.createElement("dl");
+            list.className = "cf-codes";
+            formats(str, item).slice(1).forEach(([labelText, value]) => {
+                const row = document.createElement("div");
+                row.className = "cf-code-row";
+                const dt = document.createElement("dt");
+                dt.textContent = labelText;
+                const dd = document.createElement("dd");
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "cf-code";
+                button.title = "Copy " + labelText;
+                const code = document.createElement("code");
+                code.textContent = value;
+                const icon = document.createElement("i");
+                icon.className = "fa-regular fa-copy";
+                icon.setAttribute("aria-hidden", "true");
+                button.append(code, icon);
+                button.addEventListener("click", () => copy(value, `Copied ${labelText.toLowerCase()}: ${value}`));
+                dd.appendChild(button);
+                row.append(dt, dd);
+                list.appendChild(row);
+            });
+
+            const flash = document.createElement("p");
+            flash.id = "cf-flash";
+            flash.className = "tool-success";
+            flash.setAttribute("aria-live", "polite");
+            panel.append(head, actions, flash, list);
+        }
+
+        // ---- Actions --------------------------------------------------------
+
+        let flashTimer = 0;
+        function flash(message) {
+            const el = $("cf-flash");
+            if (!el) return;
+            el.textContent = message;
+            clearTimeout(flashTimer);
+            flashTimer = setTimeout(() => { el.textContent = ""; }, 1800);
+        }
+
+        function copy(text, message) {
+            const fallback = () => {
+                // Older browsers and insecure contexts: copy through a hidden textarea.
+                const area = document.createElement("textarea");
+                area.value = text;
+                area.setAttribute("readonly", "");
+                area.style.cssText = "position:fixed;opacity:0;left:-9999px";
+                document.body.appendChild(area);
+                area.select();
+                let ok = false;
+                try { ok = document.execCommand("copy"); } catch (e) { ok = false; }
+                area.remove();
+                if (ok) flash(message);
+                else if (window.showNotification) window.showNotification("Could not reach the clipboard - select the symbol and press Ctrl+C.", "warning");
+            };
+            if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => flash(message), fallback);
+            else fallback();
+        }
+
+        function append(str) {
+            const out = $("cf-out");
+            const start = out.selectionStart ?? out.value.length;
+            const end = out.selectionEnd ?? out.value.length;
+            // Insert at the caret if the user has placed one, else at the end.
+            const atCaret = document.activeElement === out || out.dataset.caret === "1";
+            const pos = atCaret ? [start, end] : [out.value.length, out.value.length];
+            out.value = out.value.slice(0, pos[0]) + str + out.value.slice(pos[1]);
+            const caret = pos[0] + str.length;
+            out.setSelectionRange(caret, caret);
+            flash("Added " + str + " to your text");
+        }
+
+        function remember(str) {
+            let recent = [];
+            try { recent = JSON.parse(store.get("cf-recent") || "[]"); } catch (e) { recent = []; }
+            if (!Array.isArray(recent)) recent = [];
+            recent = [str].concat(recent.filter(s => s !== str)).slice(0, RECENT_LIMIT);
+            store.set("cf-recent", JSON.stringify(recent));
+        }
+
+        function activate(item) {
+            select(item, false);
+            const str = shown(item);
+            if (state.mode === "add") append(str);
+            else copy(str, "Copied " + str);
+            remember(str);
+        }
+
+        // ---- Inspect text ---------------------------------------------------
+
+        function renderInspect() {
+            const text = $("cf-text").value;
+            const statsEl = $("cf-text-stats");
+            const list = $("cf-text-list");
+            list.textContent = "";
+            if (!text) { statsEl.textContent = ""; return; }
+            if (!fullNames) {
+                statsEl.textContent = "Loading Unicode names…";
+                loadNames().then(() => { if (state.tab === "inspect") renderInspect(); }, () => {});
+                return;
+            }
+            const graphemes = segment(text);
+            const cps = codePoints(text);
+            const bytes = new TextEncoder().encode(text).length;
+            let flagged = 0;
+            const frag = document.createDocumentFragment();
+            graphemes.slice(0, INSPECT_LIMIT).forEach(g => {
+                const gcps = codePoints(g);
+                const hidden = gcps.some(cp => {
+                    const ch = String.fromCodePoint(cp);
+                    return cp !== 0x20 && cp !== 0x0A && cp !== 0x0D && cp !== 0x09 && cp !== 0x200D && cp !== 0xFE0F && INVISIBLE.test(ch);
+                });
+                if (hidden) flagged++;
+                const row = document.createElement("button");
+                row.type = "button";
+                row.className = "cf-row" + (hidden ? " cf-flag" : "");
+                const item = itemFor(g);
+                const glyph = document.createElement("span");
+                glyph.className = "cf-row-glyph";
+                const label = g === "\n" || g === "\r\n" ? { text: "↵" } : cellLabel(Object.assign({}, item, { tones: null, ch: g }));
+                glyph.textContent = label.text;
+                if (label.invisible) glyph.classList.add("cf-invisible");
+                const codes = document.createElement("code");
+                codes.textContent = gcps.map(cp => "U+" + hex(cp)).join(" ");
+                const name = document.createElement("span");
+                name.className = "cf-row-name";
+                name.textContent = displayName(item);
+                row.append(glyph, codes, name);
+                row.addEventListener("click", () => select(item, false));
+                frag.appendChild(row);
+            });
+            list.appendChild(frag);
+            const extra = graphemes.length > INSPECT_LIMIT ? ` - listing the first ${INSPECT_LIMIT}` : "";
+            statsEl.textContent =
+                `${graphemes.length.toLocaleString()} graphemes · ${cps.length.toLocaleString()} code points · ` +
+                `${text.length.toLocaleString()} UTF-16 units (JS .length) · ${bytes.toLocaleString()} UTF-8 bytes` + extra +
+                (flagged ? ` · ⚠ ${flagged} invisible or control character${flagged === 1 ? "" : "s"}` : "");
+        }
+
+        // ---- Events ---------------------------------------------------------
+
+        document.querySelectorAll(".cf-tab").forEach(tab => {
+            tab.addEventListener("click", () => {
+                state.tab = tab.dataset.tab;
+                state.query = "";
+                state.fullSearch = false;
+                $("cf-q").value = "";
+                syncUrl();
+                if (state.tab === "inspect" && !$("cf-text").value) $("cf-text").value = "Café vs Café · 👩🏽‍💻 · hidden​space";
+                render();
+            });
+        });
+
+        $("cf-chips").addEventListener("click", event => {
+            const chip = event.target.closest(".cf-chip");
+            if (!chip) return;
+            if (state.tab === "emoji") state.group = chip.dataset.id;
+            else state.set = chip.dataset.id;
+            state.query = "";
+            $("cf-q").value = "";
+            syncUrl();
+            render();
+        });
+        // Let a vertical mouse wheel scroll the chip strip sideways.
+        $("cf-chips").addEventListener("wheel", event => {
+            const chips = $("cf-chips");
+            if (Math.abs(event.deltaY) > Math.abs(event.deltaX) && chips.scrollWidth > chips.clientWidth) {
+                chips.scrollLeft += event.deltaY;
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        grid.addEventListener("click", event => {
+            const cell = event.target.closest(".cf-cell");
+            if (!cell) return;
+            grid.querySelectorAll('.cf-cell[tabindex="0"]').forEach(c => { c.tabIndex = -1; });
+            cell.tabIndex = 0;
+            activate(state.items[cell.dataset.i]);
+        });
+        grid.addEventListener("focusin", event => {
+            const cell = event.target.closest(".cf-cell");
+            if (cell && state.items[cell.dataset.i] !== state.selected) select(state.items[cell.dataset.i], false);
+        });
+
+        // Arrow keys move between cells (one tab stop for the whole grid).
+        grid.addEventListener("keydown", event => {
+            const cell = event.target.closest(".cf-cell");
+            if (!cell || !["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown", "Home", "End"].includes(event.key)) return;
+            const cells = Array.from(grid.querySelectorAll(".cf-cell"));
+            const index = cells.indexOf(cell);
+            let target = null;
+            if (event.key === "ArrowLeft") target = cells[index - 1];
+            else if (event.key === "ArrowRight") target = cells[index + 1];
+            else if (event.key === "Home") target = cells[0];
+            else if (event.key === "End") target = cells[cells.length - 1];
+            else {
+                const down = event.key === "ArrowDown";
+                const top = cell.offsetTop;
+                const left = cell.offsetLeft;
+                const candidates = down ? cells.slice(index + 1) : cells.slice(0, index).reverse();
+                const rowTop = (candidates.find(c => (down ? c.offsetTop > top : c.offsetTop < top)) || {}).offsetTop;
+                if (rowTop !== undefined) {
+                    const row = candidates.filter(c => c.offsetTop === rowTop);
+                    target = row.reduce((best, c) => (Math.abs(c.offsetLeft - left) < Math.abs(best.offsetLeft - left) ? c : best), row[0]);
+                }
+            }
+            if (!target) return;
+            event.preventDefault();
+            cell.tabIndex = -1;
+            target.tabIndex = 0;
+            target.focus();
+            target.scrollIntoView({ block: "nearest" });
+        });
+
+        let searchTimer = 0;
+        $("cf-q").addEventListener("input", () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                state.query = $("cf-q").value;
+                state.fullSearch = state.fullSearch && !!state.query.trim();
+                syncUrl();
+                render();
+            }, 120);
+        });
+        $("cf-q").addEventListener("keydown", event => {
+            if (event.key === "Escape") {
+                $("cf-q").value = "";
+                state.query = "";
+                syncUrl();
+                render();
+            } else if (event.key === "ArrowDown" || event.key === "Enter") {
+                const first = grid.querySelector(".cf-cell");
+                if (!first) return;
+                event.preventDefault();
+                if (event.key === "Enter") first.click();
+                else first.focus();
+            }
+        });
+
+        $("cf-all").addEventListener("click", () => {
+            if (state.tab === "recent" && !state.query.trim()) {
+                store.set("cf-recent", "[]");
+                render();
+                return;
+            }
+            $("cf-status").textContent = "Loading the full Unicode name list…";
+            loadNames().then(() => {
+                buildFullIndex();
+                state.fullSearch = true;
+                render();
+            }, () => render());
+        });
+
+        $("cf-text").addEventListener("input", () => {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(renderInspect, 150);
+        });
+
+        $("cf-mode").value = state.mode;
+        $("cf-mode").addEventListener("change", () => {
+            state.mode = $("cf-mode").value;
+            store.set("cf-mode", state.mode);
+        });
+
+        $("cf-out").addEventListener("blur", () => { $("cf-out").dataset.caret = "1"; });
+        $("cf-copy-out").addEventListener("click", () => {
+            const value = $("cf-out").value;
+            if (!value) {
+                if (window.showNotification) window.showNotification("Your text is empty - switch the click mode to “adds it to your text” and pick some symbols.", "warning");
+                return;
+            }
+            copy(value, "Copied your text");
+            if (!$("cf-flash") && window.showNotification) window.showNotification("Copied your text.", "success");
+        });
+        $("cf-clear-out").addEventListener("click", () => {
+            $("cf-out").value = "";
+            delete $("cf-out").dataset.caret;
+        });
+
+        function renderTones() {
+            const wrap = $("cf-tones");
+            wrap.textContent = "";
+            TONES.forEach((tone, index) => {
+                const button = document.createElement("button");
+                button.type = "button";
+                button.className = "cf-tone";
+                button.style.background = tone.color;
+                button.title = tone.label;
+                button.setAttribute("aria-label", tone.label);
+                button.setAttribute("aria-pressed", String(index === state.tone));
+                button.addEventListener("click", () => {
+                    state.tone = index;
+                    store.set("cf-tone", String(index));
+                    renderTones();
+                    render();
+                    if (state.selected) renderDetail();
+                });
+                wrap.appendChild(button);
+            });
+        }
+
+        function syncUrl() {
+            try {
+                const url = new URL(window.location.href);
+                if (state.query.trim()) url.searchParams.set("q", state.query.trim());
+                else url.searchParams.delete("q");
+                history.replaceState(history.state, "", url);
+            } catch (e) { /* ignore */ }
+        }
+
+        // ---- Boot -----------------------------------------------------------
+
+        renderTones();
+        fetch(DATA_URL)
+            .then(res => { if (!res.ok) throw new Error("HTTP " + res.status); return res.json(); })
+            .then(json => {
+                data = json;
+                indexData();
+                state.group = data.emojiGroups[0].id;
+                const initial = new URLSearchParams(window.location.search).get("q");
+                if (initial) {
+                    $("cf-q").value = initial;
+                    state.query = initial;
+                }
+                render();
+            })
+            .catch(() => {
+                $("cf-status").textContent = "Could not load the character data - check your connection and reload the page.";
+                $("cf-status").className = "tool-error";
+            });
+    })();
+    </script>
+
+    <style is:inline>
+        #cf-root [hidden] { display: none !important; }
+        .cf-is-emoji { font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif; }
+        .cf-tabs { display: flex; flex-wrap: wrap; gap: .3rem; padding: .25rem; border-radius: 9999px; background: var(--tool-btn-ghost-bg); border: 1px solid var(--tool-btn-ghost-border); }
+        .cf-tab { border: none; background: transparent; color: var(--tool-btn-ghost-text); border-radius: 9999px; padding: .4rem .9rem; font-size: .85rem; font-weight: 600; cursor: pointer; }
+        .cf-tab[aria-selected="true"] { background: var(--tool-btn-bg); color: var(--tool-btn-text); }
+        .cf-tones { display: flex; gap: .3rem; align-items: center; }
+        .cf-tone { width: 1.3rem; height: 1.3rem; border-radius: 9999px; border: 2px solid transparent; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,.15); }
+        .cf-tone[aria-pressed="true"] { border-color: var(--tool-btn-bg); transform: scale(1.15); }
+        .cf-search { position: relative; }
+        .cf-search > i { position: absolute; left: .95rem; top: 50%; transform: translateY(-50%); color: var(--tool-secondary-text); pointer-events: none; }
+        .cf-search .tool-input { padding-left: 2.5rem; font-size: 1rem; }
+        .cf-chips { display: flex; gap: .4rem; overflow-x: auto; padding-bottom: .3rem; scrollbar-width: thin; scrollbar-color: var(--tool-btn-ghost-border) transparent; }
+        .cf-chip { flex: none; white-space: nowrap; font-size: .8rem; padding: .3rem .8rem; border-radius: 9999px; cursor: pointer; background: var(--tool-btn-ghost-bg); color: var(--tool-btn-ghost-text); border: 1px solid var(--tool-btn-ghost-border); }
+        .cf-chip[aria-pressed="true"] { background: var(--tool-btn-bg); color: var(--tool-btn-text); border-color: transparent; font-weight: 600; }
+        .cf-main { display: grid; gap: 1rem; }
+        @media (min-width: 1024px) { .cf-main { grid-template-columns: minmax(0, 1fr) 20rem; } }
+        .cf-left { min-width: 0; display: flex; flex-direction: column; gap: .4rem; }
+        .cf-link { background: none; border: none; padding: 0; color: var(--tool-btn-ghost-text); font-size: .8rem; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+        #cf-root { --cf-h: clamp(11rem, calc(100vh - 27rem), 25rem); }
+        .cf-grid, .cf-inspect { height: var(--cf-h); }
+        .cf-detail { height: calc(var(--cf-h) + 2rem); }
+        .cf-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(2.75rem, 1fr)); gap: .3rem; align-content: start;
+            overflow-y: auto; padding: .4rem; border-radius: .9rem; background: var(--tool-input-bg); border: 1px solid var(--tool-input-border);
+        }
+        .cf-cell {
+            display: flex; align-items: center; justify-content: center; min-width: 0; height: 2.75rem; border-radius: .55rem; border: 1px solid transparent;
+            background: transparent; color: var(--tool-input-text); font-size: 1.45rem; line-height: 1; cursor: pointer;
+            font-family: system-ui, "Segoe UI Symbol", "Noto Sans Symbols", "Noto Sans Symbols 2", "Apple Symbols", "Cambria Math", "Noto Sans Math", sans-serif;
+            transition: background .1s ease, transform .1s ease;
+        }
+        .cf-cell.cf-is-emoji { font-size: 1.6rem; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif; }
+        .cf-cell:hover { background: var(--tool-btn-ghost-bg); transform: scale(1.12); }
+        .cf-cell:focus-visible { outline: 2px solid var(--tool-btn-bg); outline-offset: 1px; }
+        .cf-cell.is-selected { background: var(--tool-btn-ghost-bg); border-color: var(--tool-btn-bg); }
+        .cf-invisible { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace !important; font-size: .62rem !important; font-weight: 700; letter-spacing: .02em; border: 1px dashed var(--tool-btn-ghost-border) !important; color: var(--tool-secondary-text) !important; border-radius: .35rem; }
+        .cf-section { grid-column: 1 / -1; font-size: .72rem; text-transform: uppercase; letter-spacing: .06em; font-weight: 700; color: var(--tool-label-text); padding: .3rem .2rem 0; }
+        .cf-empty { grid-column: 1 / -1; padding: 1rem; text-align: center; }
+        .cf-detail { overflow-y: auto; padding: 1rem; border-radius: .9rem; background: var(--tool-input-bg); border: 1px solid var(--tool-input-border); display: flex; flex-direction: column; gap: .7rem; }
+        .cf-d-head { display: flex; gap: .9rem; align-items: center; }
+        .cf-d-glyph {
+            flex: none; width: 4.5rem; height: 4.5rem; display: flex; align-items: center; justify-content: center; border-radius: .9rem;
+            background: var(--tool-btn-ghost-bg); color: var(--tool-input-text); font-size: 2.6rem; line-height: 1;
+            font-family: system-ui, "Segoe UI Symbol", "Noto Sans Symbols", "Noto Sans Symbols 2", "Apple Symbols", "Cambria Math", sans-serif;
+        }
+        .cf-d-glyph.cf-is-emoji { font-size: 3rem; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", "Twemoji Mozilla", sans-serif; }
+        .cf-d-glyph.cf-invisible { font-size: .85rem !important; }
+        .cf-d-name { font-weight: 700; color: var(--tool-input-text); line-height: 1.3; overflow-wrap: anywhere; }
+        .cf-detail .tool-btn, .cf-detail .tool-btn-ghost { padding: .45rem 1rem; font-size: .82rem; }
+        #cf-flash { min-height: 1.1rem; margin: -.3rem 0; font-size: .78rem; overflow-wrap: anywhere; }
+        .cf-codes { display: flex; flex-direction: column; gap: .35rem; margin: 0; }
+        .cf-code-row dt { font-size: .68rem; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; color: var(--tool-label-text); }
+        .cf-code-row dd { margin: 0; }
+        .cf-code {
+            width: 100%; display: flex; align-items: center; justify-content: space-between; gap: .5rem; text-align: left; cursor: pointer;
+            background: var(--tool-btn-ghost-bg); border: 1px solid var(--tool-btn-ghost-border); border-radius: .5rem; padding: .3rem .55rem; color: var(--tool-input-text);
+        }
+        .cf-code code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .8rem; overflow-wrap: anywhere; }
+        .cf-code i { flex: none; font-size: .75rem; opacity: .55; }
+        .cf-code:hover i { opacity: 1; color: var(--tool-btn-bg); }
+        .cf-inspect { display: flex; flex-direction: column; gap: .5rem; min-height: 0; }
+        .cf-inspect textarea.tool-input { min-height: 5rem; height: 5rem; flex: none; }
+        .cf-text-list { flex: 1; min-height: 0; overflow-y: auto; display: flex; flex-direction: column; gap: .25rem; border-radius: .9rem; border: 1px solid var(--tool-input-border); background: var(--tool-input-bg); padding: .4rem; }
+        .cf-row { display: grid; grid-template-columns: 2.4rem minmax(6rem, auto) 1fr; gap: .6rem; align-items: center; text-align: left; padding: .25rem .4rem; border-radius: .5rem; border: 1px solid transparent; background: transparent; color: var(--tool-input-text); cursor: pointer; }
+        .cf-row:hover { background: var(--tool-btn-ghost-bg); }
+        .cf-row.cf-flag { border-color: #e0a100; background: rgba(224, 161, 0, .12); }
+        .cf-row-glyph { font-size: 1.3rem; text-align: center; font-family: "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", system-ui, sans-serif; }
+        .cf-row-glyph.cf-invisible { padding: .1rem 0; }
+        .cf-row code { font-size: .75rem; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; color: var(--tool-secondary-text); }
+        .cf-row-name { font-size: .82rem; overflow-wrap: anywhere; }
+        .cf-compose { display: grid; gap: .5rem; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; }
+        .cf-compose #cf-out { grid-column: 1 / -1; }
+        .cf-compose .tool-select { min-width: 0; }
+        .cf-compose .tool-btn, .cf-compose .tool-btn-ghost { white-space: nowrap; }
+        @media (min-width: 768px) {
+            .cf-compose { grid-template-columns: minmax(0, 1fr) auto auto auto; }
+            .cf-compose #cf-out { grid-column: auto; }
+            .cf-compose .tool-select { width: auto; }
+        }
+        .cf-compose #cf-out { font-size: 1.05rem; }
+        @media (max-width: 1023px) {
+            .cf-grid, .cf-inspect { height: clamp(10rem, 34vh, 22rem); }
+            .cf-detail { height: auto; max-height: 13rem; }
+            /* The pinned-tool effect needs the panel to fit the screen; on
+               phones this one cannot, so let it scroll with the page. */
+            .tool-stage:has(#cf-root) { position: relative; top: auto; }
+        }
+        @media (max-width: 639px) {
+            .cf-tab { padding: .35rem .65rem; font-size: .8rem; }
+            .cf-tab i, .cf-wide { display: none; }
+            .cf-compose .tool-btn i { display: none; }
+        }
+    </style>
+</ToolShell>

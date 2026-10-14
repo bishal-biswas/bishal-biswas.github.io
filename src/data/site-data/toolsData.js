@@ -45,6 +45,7 @@ export const toolsData = [
     { slug: "javascript-obfuscator", name: "JavaScript Obfuscator", icon: "fa-shield-halved", category: "Text & Code", blurb: "Rename and disguise JavaScript to make it harder to read and understand." },
     { slug: "sql-formatter", name: "SQL Formatter", icon: "fa-database", category: "Text & Code", blurb: "Format and beautify SQL queries for readability." },
     { slug: "html-preview", name: "HTML Preview", icon: "fa-eye", category: "Text & Code", blurb: "Write HTML and see it rendered live in a sandboxed preview." },
+    { slug: "character-emoji-finder", name: "Character & Emoji Finder", icon: "fa-icons", category: "Text & Code", blurb: "Search emoji and Unicode symbols, copy them, and get HTML, CSS and JS codes." },
 ];
 
 export const toolCategories = [...new Set(toolsData.map(t => t.category))];
