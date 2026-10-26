@@ -32,7 +32,8 @@ export const getStaticPaths = (async () => {
   });
 }) satisfies GetStaticPaths;
 
-const BlogPosts = filterDrafts(await getCollection('article'));
+// Scheduled posts have no page yet, so they must not appear as previous/next.
+const BlogPosts = filterFuturePosts(filterDrafts(await getCollection('article')));
 
 interface navButtons {
     data : {
