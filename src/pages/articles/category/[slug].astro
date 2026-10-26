@@ -22,7 +22,7 @@ allBlogPosts2 = filterFuturePosts(allBlogPosts2);
 let count : number =0;
 export async function getStaticPaths() {
 
-    const allBlogPosts = filterDrafts(await getCollection("article"));
+    const allBlogPosts = filterFuturePosts(filterDrafts(await getCollection("article")));
     allBlogPosts.sort(
         (a, b) =>
             new Date(b.data.publishDate).valueOf() -

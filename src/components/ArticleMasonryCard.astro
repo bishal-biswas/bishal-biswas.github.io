@@ -1,0 +1,57 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getFormattedDate, resolveAsset, calculateReadingTime } from "../data/utils";
+import { getArticleSummary } from "../data/articles";
+
+interface Props {
+    post: CollectionEntry<"article">
+}
+
+const { post } = Astro.props;
+const href = "/articles/" + post.data.slug;
+const categorySlug = post.data.category.toLowerCase().replaceAll(" ", "-");
+---
+
+<!-- grid-row-end is set by the masonry script on the listing page; without JS
+     the cards simply sit in an ordinary top-aligned grid. -->
+<article class="masonry-card self-start">
+    <div class="masonry-card-inner group flex flex-col rounded-2xl bg-dark-teal p-4 shadow-sm shadow-[#000000be] hover:shadow-xl hover:-translate-y-1 transition-all ease-in-out duration-300">
+        <a href={href} class="block overflow-hidden rounded-xl" tabindex="-1" aria-hidden="true">
+            <img
+                src={resolveAsset("Article", post.data.image)}
+                alt=""
+                loading="lazy"
+                decoding="async"
+                style={`view-transition-name: article-image-${post.data.slug}`}
+                class="w-full h-auto aspect-[16/9] object-cover group-hover:scale-105 transition-transform ease-in-out duration-500"
+            />
+        </a>
+
+        <div class="flex flex-col gap-3 px-1 pt-5 pb-1">
+            <a href={"/articles/category/" + categorySlug}
+                class="flex items-center gap-2 text-xs text-dark-green dark:text-lite-green-2 hover:underline w-fit">
+                <i class="fa-solid fa-tag" aria-hidden="true"></i>#{post.data.category}
+            </a>
+
+            <h2 class="text-lg font-bold uppercase leading-snug text-[#00283a] dark:text-font-white hover:text-lite-green">
+                <a href={href}>{post.data.title}</a>
+            </h2>
+
+            <p class="text-sm leading-relaxed text-font-gray">
+                {getArticleSummary(post, 150)}{" "}
+                <a href={href} class="text-dark-green dark:text-lite-green-2 hover:underline whitespace-nowrap">Read more<span class="sr-only"> about {post.data.title}</span></a>
+            </p>
+
+            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 border-t border-dotted border-gray-500/50 pt-3 text-[11px] uppercase tracking-wide text-font-gray">
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-regular fa-clock" aria-hidden="true"></i>
+                    <time datetime={post.data.publishDate.toISOString()}>{getFormattedDate(post.data.publishDate)}</time>
+                </span>
+                <span class="flex items-center gap-1.5">
+                    <i class="fa-regular fa-hourglass-half" aria-hidden="true"></i>
+                    {calculateReadingTime(post.body ?? "")}
+                </span>
+            </div>
+        </div>
+    </div>
+</article>

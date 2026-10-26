@@ -1,0 +1,90 @@
+---
+import PlainLayout from "../../../layouts/PlainLayout.astro";
+import HeadingText from "../../../components/headingText.astro";
+import ArticlePagination from "../../../components/ArticlePagination.astro";
+import SectionDivider from "../../../components/SectionDivider.astro";
+import ArticleBottomAllCategories from "../../../components/ArticleBottomAllCategories.astro";
+import ArticleLayoutSwitcher from "../../../components/ArticleLayoutSwitcher.astro";
+import ArticleMagazineCard from "../../../components/ArticleMagazineCard.astro";
+import { getPublishedArticles } from "../../../data/articles";
+import { getPageContent } from "../../../data/utils";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+    // One lead story + three beside it + six in the two-column list below.
+    return paginate(await getPublishedArticles(), { pageSize: 10 });
+}
+
+interface Props {
+    page: Page<CollectionEntry<"article">>
+}
+
+const { page } = Astro.props;
+const { data, ...paginationData } = page;
+const [lead, ...others] = data;
+const sidePosts = others.slice(0, 3);
+const morePosts = others.slice(3);
+const pageContent = getPageContent("Articles");
+
+const metaDescription = page.currentPage > 1
+    ? `Articles and tutorials on web development, .NET and C# by Bishal Biswas - magazine view, page ${page.currentPage} of ${page.lastPage}.`
+    : "Articles and tutorials on web development, .NET, C# and software engineering, written by Bishal Biswas.";
+---
+
+<PlainLayout
+    isBreadcrumbShown={true}
+    pageMainHeadingtagType="h1"
+    isMainHeadingDoubleLined={true}
+    pageSmallText={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    isMainHeadinglarge={true}
+    isLargeWidth={true}
+    title={page.currentPage > 1 ? `Articles - Page ${page.currentPage}` : "Articles"}
+    {metaDescription}
+    noindex={true}
+    backgroundImg={pageContent.backgroundImage}
+>
+    <div class="articlesContainer lg:mt-24 mt-20 w-full">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <HeadingText headText="Recently Published" TagType="span" />
+            <ArticleLayoutSwitcher current="magazine" />
+        </div>
+
+        {
+            lead && (
+                <div class="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-10 lg:gap-14 my-10">
+                    <ArticleMagazineCard post={lead} variant="feature" />
+
+                    {sidePosts.length > 0 && (
+                        <div class="flex flex-col divide-y divide-gray-500/30">
+                            {sidePosts.map((post) => (
+                                <div class="py-7 first:pt-0 last:pb-0">
+                                    <ArticleMagazineCard {post} />
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+            )
+        }
+
+        {
+            morePosts.length > 0 && (
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-x-14 border-t border-gray-500/30 mb-10">
+                    {morePosts.map((post) => (
+                        <div class="py-7 border-b border-gray-500/30">
+                            <ArticleMagazineCard {post} />
+                        </div>
+                    ))}
+                </div>
+            )
+        }
+    </div>
+
+    <SectionDivider />
+
+    <ArticlePagination {paginationData} />
+
+    <ArticleBottomAllCategories />
+</PlainLayout>

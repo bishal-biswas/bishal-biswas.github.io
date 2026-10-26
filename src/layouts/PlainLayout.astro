@@ -31,6 +31,7 @@ interface Props {
     isLargeWidth ?: boolean
     isFullWidth ?: boolean
     isSwiperRequired ?: boolean
+    noindex ?: boolean
 }
 
 const {title = "Page Title", 
@@ -40,7 +41,7 @@ pageHeadingText, pageMainHeadingtagType="p",
 isMainHeadingDoubleLined = false, isMainHeadinglarge = false, isBreadcrumbShown, pageType,
 isHeadContentAbove = false, isHeroContentSectionShown = true, isLargeWidth = false, isFullWidth=false, isSwiperRequired = false,
 heroImgTransitionName,
-ogType, ogImage
+ogType, ogImage, noindex
 } = Astro.props;
 
 let {backgroundImg, backgroundImgClass} = Astro.props;
@@ -53,7 +54,7 @@ if(pageType == "article"){
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-<HeadTag {title} {metaDescription} {ogType} {ogImage}>
+<HeadTag {title} {metaDescription} {ogType} {ogImage} {noindex}>
     {
         isSwiperRequired &&
         <script is:inline src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>

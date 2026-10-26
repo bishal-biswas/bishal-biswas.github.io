@@ -1,0 +1,75 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getFormattedDate, resolveAsset } from "../data/utils";
+import { getArticleSummary } from "../data/articles";
+import { personalFiles } from "../data/site-data/personalFiles";
+import { personaInfo } from "../data/site-data/profile";
+
+interface Props {
+    post: CollectionEntry<"article">,
+    // "feature" = the big lead story; "row" = thumbnail beside the text.
+    variant?: "feature" | "row"
+}
+
+const { post, variant = "row" } = Astro.props;
+const href = "/articles/" + post.data.slug;
+const categorySlug = post.data.category.toLowerCase().replaceAll(" ", "-");
+const isFeature = variant === "feature";
+
+// Only the site owner has a photo on file; anyone else gets their initials.
+const isOwner = post.data.author.trim().toLowerCase() === personaInfo.fullName.trim().toLowerCase();
+const initials = post.data.author.split(/\s+/).map((word) => word[0]).join("").slice(0, 2).toUpperCase();
+---
+
+<article
+    class="magazine-card group"
+    class:list={[isFeature ? "flex flex-col gap-6" : "grid grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:grid-cols-[minmax(0,1fr)_minmax(0,1.6fr)] gap-4 sm:gap-6 items-start"]}
+>
+    <a href={href} class="block overflow-hidden rounded-xl bg-dark-teal shadow-sm shadow-[#000000be]" tabindex="-1" aria-hidden="true">
+        <img
+            src={resolveAsset("Article", post.data.image)}
+            alt=""
+            loading={isFeature ? "eager" : "lazy"}
+            decoding="async"
+            style={`view-transition-name: article-image-${post.data.slug}`}
+            class="w-full object-cover group-hover:scale-105 transition-transform ease-in-out duration-500"
+            class:list={[isFeature ? "aspect-[16/9]" : "aspect-square"]}
+        />
+    </a>
+
+    <div class="flex flex-col" class:list={[isFeature ? "gap-4" : "gap-2"]}>
+        <a href={"/articles/category/" + categorySlug}
+            class="text-sm font-medium text-dark-green dark:text-lite-green-2 hover:underline w-fit">
+            {post.data.category}
+        </a>
+
+        <h2
+            class="font-bold text-[#00283a] dark:text-font-white hover:text-lite-green"
+            class:list={[isFeature
+                ? "text-3xl sm:text-4xl lg:text-5xl font-extrabold leading-[1.05] tracking-tight"
+                : "text-lg sm:text-xl leading-snug line-clamp-3"]}
+        >
+            <a href={href}>{post.data.title}</a>
+        </h2>
+
+        <p class="text-font-gray leading-relaxed"
+            class:list={[isFeature ? "text-base sm:text-lg" : "text-sm sm:text-base line-clamp-3 max-sm:hidden"]}>
+            {getArticleSummary(post, isFeature ? 220 : 170)}
+        </p>
+
+        <div class="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm" class:list={[isFeature ? "mt-2" : "mt-1"]}>
+            {
+                isFeature && (
+                    isOwner
+                        ? <img src={personalFiles.profilePicture} alt="" class="size-11 rounded-full object-cover mr-2" />
+                        : <span class="size-11 rounded-full bg-lite-green text-white font-bold grid place-items-center mr-2">{initials}</span>
+                )
+            }
+            <span class="font-semibold text-[#00283a] dark:text-font-white">{post.data.author}</span>
+            <span class="text-font-gray" aria-hidden="true">·</span>
+            <time datetime={post.data.publishDate.toISOString()} class="font-mono text-xs text-font-gray">
+                {getFormattedDate(post.data.publishDate)}
+            </time>
+        </div>
+    </div>
+</article>

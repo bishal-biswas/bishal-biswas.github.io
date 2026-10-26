@@ -5,25 +5,13 @@ import HeadingText from "../../components/headingText.astro";
 import ArticlePagination from "../../components/ArticlePagination.astro";
 import SectionDivider from "../../components/SectionDivider.astro";
 import ArticleBottomAllCategories from "../../components/ArticleBottomAllCategories.astro";
-import { filterFuturePosts, getPaths } from "../../data/utils";
+import ArticleLayoutSwitcher from "../../components/ArticleLayoutSwitcher.astro";
+import { getPublishedArticles } from "../../data/articles";
 import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
 import { pageData } from "../../data/site-data/pageData";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
-    let allBlogPosts = await getCollection("article", ({ data }:{data:any}) => {
-        return data.isDraft === false;
-    });
-
-    allBlogPosts.sort(
-        (a:CollectionEntry<"article">, b:CollectionEntry<"article">) =>
-            new Date(b.data.publishDate).valueOf() -
-            new Date(a.data.publishDate).valueOf(),
-    );
-    
-    allBlogPosts = filterFuturePosts(allBlogPosts);
-
-    return paginate(allBlogPosts, { pageSize: 8 });
+    return paginate(await getPublishedArticles(), { pageSize: 8 });
 }
 interface Props {
     page : {
@@ -72,7 +60,10 @@ const metaDescription = page.currentPage > 1
 
     <!-- Article Container -->
     <div class="articlesContainer lg:mt-24 mt-20 w-full">
-       <HeadingText headText="Recently Published" TagType="span" />
+       <div class="flex flex-wrap items-end justify-between gap-4">
+           <HeadingText headText="Recently Published" TagType="span" />
+           <ArticleLayoutSwitcher current="classic" />
+       </div>
        <div class="blog-container flex flex-wrap justify-between items-center w-full my-10 gap-5">
            {
                page.data.map((post : any, index: any) => (

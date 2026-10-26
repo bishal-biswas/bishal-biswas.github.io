@@ -10,13 +10,16 @@ interface Props {
     // Open Graph object type for this page: "website" | "article" | "profile"
     ogType?: string,
     // Page specific share image. Relative paths are resolved against `site`.
-    ogImage?: string
+    ogImage?: string,
+    // Keep the page out of search results while still letting crawlers follow
+    // its links, e.g. the alternate /articles layouts.
+    noindex?: boolean
 }
 
 const defaultOgImage = getPaths("Other Files") + "thumbnail.webp";
 const defaultDescription = personaInfo.Bio.bioText;
 
-const {metaDescription = defaultDescription, title, ogType = "website", ogImage = defaultOgImage} = Astro.props;
+const {metaDescription = defaultDescription, title, ogType = "website", ogImage = defaultOgImage, noindex = false} = Astro.props;
 
 // Social crawlers require absolute URLs, so resolve anything relative against the configured site.
 const canonicalURL = new URL(Astro.url.pathname, Astro.site).href;
@@ -36,6 +39,7 @@ const socialImageURL = new URL(ogImage, Astro.site).href;
         title={title}
         description={metaDescription}
         canonical={canonicalURL}
+        noindex={noindex}
         openGraph={{
             basic: {
                 title: `${title}`,
