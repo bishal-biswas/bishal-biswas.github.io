@@ -1,8 +1,10 @@
 ---
-title: "HTML Headings, Paragraphs and Text Formatting Tags"
+title: HTML Headings, Paragraphs and Text Formatting Tags
 slug: html-headings-paragraphs-text-formatting
-metaDescription: Learn how to use HTML headings, paragraphs and text formatting tags like strong, em, mark and code correctly, with simple examples for beginners.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Text
+metaDescription: Learn how to use HTML headings, paragraphs and text formatting
+  tags like strong, em, mark and code correctly, with simple examples for
+  beginners.
+image: html-headings-paragraphs-text-formatting.webp
 author: Bishal Biswas
 publishDate: 2026-10-30
 isDraft: false
