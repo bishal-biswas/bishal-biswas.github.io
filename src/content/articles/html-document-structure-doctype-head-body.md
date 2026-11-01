@@ -1,8 +1,10 @@
 ---
 title: "HTML Document Structure Explained: doctype, head and body"
 slug: html-document-structure-doctype-head-body
-metaDescription: Learn the basic structure of an HTML document, including the doctype, html, head and body elements, with a simple starter template for beginners.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Structure
+metaDescription: Learn the basic structure of an HTML document, including the
+  doctype, html, head and body elements, with a simple starter template for
+  beginners.
+image: html-document-structure-doctype-head-body.webp
 author: Bishal Biswas
 publishDate: 2026-10-28
 isDraft: false
