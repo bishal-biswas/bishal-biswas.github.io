@@ -1,83 +1,89 @@
 ---
 import PlainLayout from "../../layouts/PlainLayout.astro";
-import BlogArticleCards from "../../components/BlogArticleCards.astro";
 import HeadingText from "../../components/headingText.astro";
 import ArticlePagination from "../../components/ArticlePagination.astro";
 import SectionDivider from "../../components/SectionDivider.astro";
 import ArticleBottomAllCategories from "../../components/ArticleBottomAllCategories.astro";
 import ArticleLayoutSwitcher from "../../components/ArticleLayoutSwitcher.astro";
+import ArticleMasonryCard from "../../components/ArticleMasonryCard.astro";
 import { getPublishedArticles } from "../../data/articles";
+import { getPageContent } from "../../data/utils";
+import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
-import { pageData } from "../../data/site-data/pageData";
 
 export async function getStaticPaths({ paginate }: { paginate: any }) {
-    return paginate(await getPublishedArticles(), { pageSize: 8 });
+    return paginate(await getPublishedArticles(), { pageSize: 9 });
 }
 interface Props {
-    page : {
-        data : CollectionEntry<"article">[],
-        start: number,
-        end: number,
-        size: number,
-        total: number,
-        currentPage: number,
-        lastPage: number,
-        url: {
-            current: string,
-            next: string,
-            prev: string,
-            first: string,
-            last: string
-        }
-    };
+    page: Page<CollectionEntry<"article">>
 }
 const { page } = Astro.props;
-const { data , ...paginationData} = page;
+const { data, ...paginationData } = page;
 
-const pageContent = pageData.filter(page => page.pageTitle == "Articles")[0];
+const pageContent = getPageContent("Articles");
 
-// Page 2+ needs its own description, otherwise every paginated page competes
-// with page 1 for the same snippet in search results.
 const metaDescription = page.currentPage > 1
-    ? `Articles and tutorials on web development, .NET and C# by Bishal Biswas - page ${page.currentPage} of ${page.lastPage}.`
+    ? `Articles and tutorials on web development, .NET and C# by Bishal Biswas - masonry view, page ${page.currentPage} of ${page.lastPage}.`
     : "Articles and tutorials on web development, .NET, C# and software engineering, written by Bishal Biswas.";
-
 ---
 
-<PlainLayout 
-    isBreadcrumbShown={true} 
-    pageMainHeadingtagType="h1" 
-    isMainHeadingDoubleLined={true} 
+<PlainLayout
+    isBreadcrumbShown={true}
+    pageMainHeadingtagType="h1"
+    isMainHeadingDoubleLined={true}
     pageSmallText={pageContent.pageSmallText}
     pageHeadingText={pageContent.pageHeadingText}
     isMainHeadinglarge={true}
-    isLargeWidth = {true}
+    isLargeWidth={true}
     title={page.currentPage > 1 ? `Articles - Page ${page.currentPage}` : "Articles"}
     {metaDescription}
-    
     backgroundImg={pageContent.backgroundImage}
-    >
-
-    <!-- Article Container -->
+>
     <div class="articlesContainer lg:mt-24 mt-20 w-full">
-       <div class="flex flex-wrap items-end justify-between gap-4">
-           <HeadingText headText="Recently Published" TagType="span" />
-           <ArticleLayoutSwitcher current="classic" />
-       </div>
-       <div class="blog-container flex flex-wrap justify-between items-center w-full my-10 gap-5">
-           {
-               page.data.map((post : any, index: any) => (
-                   <BlogArticleCards {post} {index} />
-               ))
-           }
-       </div>
-    </div>  
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <HeadingText headText="Recently Published" TagType="span" />
+            <ArticleLayoutSwitcher current="masonry" />
+        </div>
 
-    <SectionDivider />  
+        <div class="masonry-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 my-10">
+            {data.map((post) => <ArticleMasonryCard {post} />)}
+        </div>
+    </div>
 
-    <ArticlePagination
-        {paginationData}
-    />  
+    <SectionDivider />
 
+    <ArticlePagination {paginationData} />
     <ArticleBottomAllCategories />
 </PlainLayout>
+
+<style>
+    .masonry-grid { row-gap: 1.5rem; }
+    .masonry-grid.is-packed { grid-auto-rows: 4px; row-gap: 0; }
+    .masonry-grid.is-packed :global(.masonry-card) { padding-bottom: 1.5rem; }
+</style>
+
+<script>
+    function packMasonry() {
+        document.querySelectorAll<HTMLElement>(".masonry-grid").forEach((grid) => {
+            grid.classList.add("is-packed");
+            const row = parseFloat(getComputedStyle(grid).gridAutoRows) || 4;
+            const cards = grid.querySelectorAll<HTMLElement>(".masonry-card");
+
+            const size = (card: HTMLElement) => {
+                const inner = card.firstElementChild as HTMLElement;
+                const gap = parseFloat(getComputedStyle(card).paddingBottom) || 0;
+                card.style.gridRowEnd = `span ${Math.ceil((inner.getBoundingClientRect().height + gap) / row)}`;
+            };
+
+            const observer = new ResizeObserver((entries) =>
+                entries.forEach((entry) => size(entry.target.parentElement as HTMLElement)),
+            );
+            cards.forEach((card) => {
+                size(card);
+                observer.observe(card.firstElementChild as HTMLElement);
+            });
+        });
+    }
+
+    packMasonry();
+</script>

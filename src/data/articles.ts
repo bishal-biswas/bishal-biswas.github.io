@@ -21,8 +21,8 @@ export function getArticleSummary(post: CollectionEntry<"article">, len = 160) {
  * route the layout's paginated pages live under.
  */
 export const articleLayouts = [
-    { key: "classic", label: "Classic", icon: "fa-solid fa-table-cells-large", base: "/articles" },
-    { key: "masonry", label: "Masonry", icon: "fa-solid fa-grip", base: "/articles/masonry" },
+    { key: "masonry", label: "Masonry", icon: "fa-solid fa-grip", base: "/articles" },
+    { key: "classic", label: "Classic", icon: "fa-solid fa-table-cells-large", base: "/articles/classic" },
     { key: "magazine", label: "Magazine", icon: "fa-solid fa-newspaper", base: "/articles/magazine" },
 ] as const;
 

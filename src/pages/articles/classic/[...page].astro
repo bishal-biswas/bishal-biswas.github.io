@@ -1,0 +1,58 @@
+---
+import PlainLayout from "../../../layouts/PlainLayout.astro";
+import BlogArticleCards from "../../../components/BlogArticleCards.astro";
+import HeadingText from "../../../components/headingText.astro";
+import ArticlePagination from "../../../components/ArticlePagination.astro";
+import SectionDivider from "../../../components/SectionDivider.astro";
+import ArticleBottomAllCategories from "../../../components/ArticleBottomAllCategories.astro";
+import ArticleLayoutSwitcher from "../../../components/ArticleLayoutSwitcher.astro";
+import { getPublishedArticles } from "../../../data/articles";
+import { getPageContent } from "../../../data/utils";
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+
+export async function getStaticPaths({ paginate }: { paginate: any }) {
+    return paginate(await getPublishedArticles(), { pageSize: 8 });
+}
+
+interface Props {
+    page: Page<CollectionEntry<"article">>
+}
+
+const { page } = Astro.props;
+const { data, ...paginationData } = page;
+const pageContent = getPageContent("Articles");
+
+const metaDescription = page.currentPage > 1
+    ? `Articles and tutorials on web development, .NET and C# by Bishal Biswas - classic view, page ${page.currentPage} of ${page.lastPage}.`
+    : "Articles and tutorials on web development, .NET, C# and software engineering, written by Bishal Biswas.";
+---
+
+<PlainLayout
+    isBreadcrumbShown={true}
+    pageMainHeadingtagType="h1"
+    isMainHeadingDoubleLined={true}
+    pageSmallText={pageContent.pageSmallText}
+    pageHeadingText={pageContent.pageHeadingText}
+    isMainHeadinglarge={true}
+    isLargeWidth={true}
+    title={page.currentPage > 1 ? `Articles - Page ${page.currentPage}` : "Articles"}
+    {metaDescription}
+    noindex={true}
+    backgroundImg={pageContent.backgroundImage}
+>
+    <div class="articlesContainer lg:mt-24 mt-20 w-full">
+        <div class="flex flex-wrap items-end justify-between gap-4">
+            <HeadingText headText="Recently Published" TagType="span" />
+            <ArticleLayoutSwitcher current="classic" />
+        </div>
+        <div class="blog-container flex flex-wrap justify-between items-center w-full my-10 gap-5">
+            {data.map((post, index) => <BlogArticleCards {post} {index} />)}
+        </div>
+    </div>
+
+    <SectionDivider />
+
+    <ArticlePagination {paginationData} />
+    <ArticleBottomAllCategories />
+</PlainLayout>
