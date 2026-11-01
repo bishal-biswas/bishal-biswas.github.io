@@ -1,0 +1,910 @@
+---
+import ToolShell from "../../components/ToolShell.astro";
+---
+
+<ToolShell
+    slug="code-block-image-generator"
+    title="Code Block Image Generator - Turn Code into PNG Images Free"
+    metaDescription="Turn code into beautiful PNG images online for free. Pick a language and theme, align the code, split long snippets across multiple pages and download instantly."
+    pageHeadingText="Code Block Image Generator"
+>
+    <div slot="tool" id="cbi-root" class="flex flex-col gap-3">
+        <div class="cbi-grid">
+            <div>
+                <label class="tool-label" for="cbi-lang">Language</label>
+                <select id="cbi-lang" class="tool-select"></select>
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-file">File name</label>
+                <input id="cbi-file" class="tool-input" type="text" value="debounce.js" placeholder="Optional" spellcheck="false" />
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-theme">Theme</label>
+                <select id="cbi-theme" class="tool-select"></select>
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-bg">Background</label>
+                <select id="cbi-bg" class="tool-select"></select>
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-size">Image size</label>
+                <select id="cbi-size" class="tool-select"></select>
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-font">Font</label>
+                <select id="cbi-font" class="tool-select"></select>
+            </div>
+        </div>
+
+        <div class="cbi-panes">
+            <div class="cbi-pane">
+                <div class="cbi-pane-head">
+                    <label class="tool-label" for="cbi-code">Your code</label>
+                    <button id="cbi-break" type="button" class="cbi-link" title="Start a new page at the cursor"><i class="fa-solid fa-file-circle-plus"></i> Insert page break</button>
+                </div>
+                <textarea id="cbi-code" class="tool-input" spellcheck="false" wrap="off" placeholder="Paste or type your code here..."></textarea>
+            </div>
+            <div class="cbi-pane">
+                <div class="cbi-pane-head">
+                    <span class="tool-label">Preview</span>
+                    <div id="cbi-nav" class="cbi-nav" hidden>
+                        <button id="cbi-prev" type="button" class="cbi-link" aria-label="Previous page"><i class="fa-solid fa-chevron-left"></i></button>
+                        <span id="cbi-page"></span>
+                        <button id="cbi-next" type="button" class="cbi-link" aria-label="Next page"><i class="fa-solid fa-chevron-right"></i></button>
+                    </div>
+                </div>
+                <div class="cbi-stage"><canvas id="cbi-canvas" role="img" aria-label="Preview of the generated code image"></canvas></div>
+            </div>
+        </div>
+
+        <div class="cbi-grid">
+            <div>
+                <label class="tool-label" for="cbi-fs">Font size</label>
+                <input id="cbi-fs" class="tool-input" type="number" min="8" max="48" value="16" />
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-pad">Padding</label>
+                <select id="cbi-pad" class="tool-select">
+                    <option value="0">None</option>
+                    <option value="16">Small</option>
+                    <option value="32" selected>Medium</option>
+                    <option value="64">Large</option>
+                </select>
+            </div>
+            <div>
+                <label class="tool-label" for="cbi-lpp">Lines per page</label>
+                <input id="cbi-lpp" class="tool-input" type="number" min="0" value="0" title="0 fills each page automatically" />
+            </div>
+            <div class="cbi-field" id="cbi-wrap-field">
+                <label class="tool-label" for="cbi-wrap">Wrap at column</label>
+                <input id="cbi-wrap" class="tool-input" type="number" min="0" value="80" title="0 turns wrapping off" />
+            </div>
+            <div class="cbi-field" id="cbi-scale-field">
+                <label class="tool-label" for="cbi-scale">Resolution</label>
+                <select id="cbi-scale" class="tool-select">
+                    <option value="1">1x</option>
+                    <option value="2" selected>2x</option>
+                    <option value="3">3x</option>
+                    <option value="4">4x</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="cbi-opts">
+            <div class="cbi-group">
+                <span class="tool-label">Text align</span>
+                <div class="cbi-seg" id="cbi-ta" role="group" aria-label="Text align">
+                    <button type="button" data-v="0" aria-label="Align lines left" title="Align lines left"><i class="fa-solid fa-align-left"></i></button>
+                    <button type="button" data-v="0.5" aria-label="Center lines" title="Center lines"><i class="fa-solid fa-align-center"></i></button>
+                    <button type="button" data-v="1" aria-label="Align lines right" title="Align lines right"><i class="fa-solid fa-align-right"></i></button>
+                </div>
+            </div>
+            <div class="cbi-group">
+                <span class="tool-label">Block position</span>
+                <div class="cbi-seg" id="cbi-ha" role="group" aria-label="Horizontal block position">
+                    <button type="button" data-v="0" aria-label="Move block left" title="Move block left"><i class="fa-solid fa-arrow-left"></i></button>
+                    <button type="button" data-v="0.5" aria-label="Center block horizontally" title="Center block horizontally"><i class="fa-solid fa-arrows-left-right"></i></button>
+                    <button type="button" data-v="1" aria-label="Move block right" title="Move block right"><i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+            </div>
+            <div class="cbi-group">
+                <span class="tool-label">Vertical</span>
+                <div class="cbi-seg" id="cbi-va" role="group" aria-label="Vertical block position">
+                    <button type="button" data-v="0" aria-label="Move block to top" title="Move block to top"><i class="fa-solid fa-arrow-up"></i></button>
+                    <button type="button" data-v="0.5" aria-label="Center block vertically" title="Center block vertically"><i class="fa-solid fa-arrows-up-down"></i></button>
+                    <button type="button" data-v="1" aria-label="Move block to bottom" title="Move block to bottom"><i class="fa-solid fa-arrow-down"></i></button>
+                </div>
+            </div>
+            <label class="cbi-check"><input id="cbi-chrome" type="checkbox" checked /> Window bar</label>
+            <label class="cbi-check"><input id="cbi-nums" type="checkbox" checked /> Line numbers</label>
+            <label class="cbi-check"><input id="cbi-pnum" type="checkbox" checked /> Page numbers</label>
+        </div>
+
+        <div class="tool-row">
+            <button id="cbi-dl" type="button" class="tool-btn"><i class="fa-solid fa-download"></i> <span id="cbi-dl-text">Download image</span></button>
+            <button id="cbi-zip" type="button" class="tool-btn-ghost" hidden><i class="fa-solid fa-file-zipper"></i> <span id="cbi-zip-text">Download all</span></button>
+            <button id="cbi-copy" type="button" class="tool-btn-ghost"><i class="fa-regular fa-copy"></i> Copy image</button>
+            <span id="cbi-status" class="tool-note" role="status"></span>
+        </div>
+    </div>
+
+    <h2>Turn code into a clean, shareable image</h2>
+    <p>
+        This <strong>code block image generator</strong> turns a snippet into a syntax-highlighted PNG. Choose the programming
+        language, paste your code and download the image. It works well for social posts, slides, documentation and
+        tutorials, anywhere a plain text block would lose its formatting.
+    </p>
+
+    <h2>How to create a code image</h2>
+    <ol>
+        <li>Pick a language, or leave it on <strong>Auto-detect</strong>.</li>
+        <li>Type or paste your code. The preview updates as you go.</li>
+        <li>Adjust the theme, background, font and alignment.</li>
+        <li>Click <strong>Download image</strong>.</li>
+    </ol>
+
+    <h2>Splitting long code across multiple pages</h2>
+    <p>
+        Long snippets don't have to shrink into an unreadable image. There are three ways to spread them across several images:
+    </p>
+    <ul>
+        <li><strong>Fixed image sizes</strong> such as Instagram Portrait fill each page and move the rest to the next one.</li>
+        <li><strong>Lines per page</strong> starts a new page after the number of code lines you set.</li>
+        <li><strong>Page breaks</strong> let you choose the split yourself. Put <code>---page---</code> on its own line, or use the Insert page break button.</li>
+    </ul>
+    <p>
+        Line numbers carry on from one page to the next and every page comes out the same size, which makes the results a good fit
+        for carousels. Use <strong>Download all</strong> to get every page in a single ZIP file.
+    </p>
+
+    <h2>Aligning your code</h2>
+    <ul>
+        <li><strong>Text align</strong> lines up each line of code to the left, center or right of the block.</li>
+        <li><strong>Block position</strong> moves the whole block inside the window and keeps its indentation intact. This is usually what you want for code.</li>
+        <li><strong>Vertical</strong> places the block at the top, middle or bottom, which shows on fixed sizes and on pages with fewer lines than the longest one.</li>
+    </ul>
+
+    <h2>Is my code private?</h2>
+    <p>
+        Yes. The image is drawn on a canvas in your browser and your code is never uploaded. Only the syntax highlighter and the
+        fonts are downloaded from a public CDN, and they receive nothing you type. If your code is a mess, tidy it first with the
+        <a href="/tools/javascript-formatter">JavaScript formatter</a> or the <a href="/tools/sql-formatter">SQL formatter</a>.
+    </p>
+
+    <style is:inline>
+        #cbi-root [hidden] { display: none !important; }
+        .cbi-grid { display: grid; gap: .6rem; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        @media (min-width: 768px) { .cbi-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+        @media (min-width: 1024px) { .cbi-grid { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+        #cbi-root .tool-input, #cbi-root .tool-select { padding: .5rem .7rem; font-size: .85rem; }
+
+        .cbi-panes { display: grid; gap: .75rem; }
+        @media (min-width: 1024px) { .cbi-panes { grid-template-columns: 1fr 1fr; } }
+        .cbi-pane { display: flex; flex-direction: column; min-width: 0; }
+        .cbi-pane-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 1.6rem; }
+        .cbi-pane-head .tool-label { margin-bottom: 0; }
+
+        .cbi-link { background: none; border: none; cursor: pointer; font-size: .78rem; color: var(--tool-label-text); padding: .1rem .35rem; border-radius: .35rem; }
+        .cbi-link:hover:not(:disabled) { color: var(--tool-input-text); background: var(--tool-btn-ghost-bg); }
+        .cbi-link:disabled { opacity: .35; cursor: default; }
+        .cbi-nav { display: flex; align-items: center; gap: .25rem; font-size: .78rem; color: var(--tool-label-text); }
+
+        #cbi-code, .cbi-stage { height: 20rem; }
+        #cbi-root #cbi-code { min-height: 0; white-space: pre; overflow: auto; resize: none; }
+        @media (min-width: 1024px) {
+            #cbi-code, .cbi-stage { height: max(13rem, calc(100vh - 31rem)); }
+        }
+        .cbi-stage {
+            display: flex; align-items: center; justify-content: center; overflow: hidden; padding: .5rem;
+            border: 1px solid var(--tool-input-border); border-radius: .75rem;
+            background: repeating-conic-gradient(rgba(128, 128, 128, .16) 0 25%, transparent 0 50%) 0 0 / 16px 16px;
+        }
+        #cbi-canvas { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; }
+
+        .cbi-opts { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .6rem 1.1rem; }
+        .cbi-seg { display: inline-flex; border: 1px solid var(--tool-input-border); border-radius: .6rem; overflow: hidden; background: var(--tool-input-bg); }
+        .cbi-seg button { padding: .35rem .7rem; font-size: .8rem; color: var(--tool-input-text); cursor: pointer; background: none; border: none; }
+        .cbi-seg button + button { border-left: 1px solid var(--tool-input-border); }
+        .cbi-seg button[aria-pressed="true"] { background: var(--tool-btn-bg); color: var(--tool-btn-text); }
+        .cbi-check { display: inline-flex; align-items: center; gap: .35rem; font-size: .85rem; color: var(--tool-input-text); cursor: pointer; padding-bottom: .35rem; }
+        .cbi-check input { accent-color: var(--tool-btn-bg); }
+        #cbi-status.is-error { color: #d14343; }
+
+        /* This panel is taller than short or narrow screens, where a sticky
+           stage would leave its bottom out of reach. */
+        @media (max-width: 1023px), (max-height: 720px) {
+            .tool-stage:has(#cbi-root) { position: relative; top: auto; }
+        }
+    </style>
+
+    <script is:inline>
+    (function () {
+        const $ = id => document.getElementById(id);
+        const CDN = "https://cdn.jsdelivr.net/npm/";
+        const HLJS = CDN + "@highlightjs/cdn-assets@11.11.1/";
+        const BREAK = "---page---";
+        const MAX_SIDE = 32767, MAX_AREA = 120e6;
+
+        const SAMPLE = [
+            "// Wait until calls stop before running fn",
+            "export function debounce(fn, delay = 300) {",
+            "  let timer = null;",
+            "",
+            "  return function (...args) {",
+            "    clearTimeout(timer);",
+            "    timer = setTimeout(() => fn.apply(this, args), delay);",
+            "  };",
+            "}",
+            "",
+            "const onResize = debounce(() => {",
+            "  console.log(`Width: ${window.innerWidth}px`);",
+            "}, 150);",
+            "",
+            "window.addEventListener(\"resize\", onResize);"
+        ].join("\n");
+
+        // lazy: not in the highlight.js common bundle, fetched when selected.
+        const LANGS = [
+            ["bash", "Bash"], ["c", "C"], ["csharp", "C#"], ["cpp", "C++"], ["css", "CSS"],
+            ["dart", "Dart", 1], ["diff", "Diff"], ["dockerfile", "Dockerfile", 1], ["elixir", "Elixir", 1],
+            ["go", "Go"], ["graphql", "GraphQL"], ["haskell", "Haskell", 1], ["xml", "HTML / XML"], ["ini", "INI / TOML"],
+            ["java", "Java"], ["javascript", "JavaScript / JSX"], ["json", "JSON"], ["kotlin", "Kotlin"], ["less", "Less"],
+            ["lua", "Lua"], ["makefile", "Makefile"], ["markdown", "Markdown"], ["matlab", "MATLAB", 1], ["nginx", "Nginx", 1],
+            ["objectivec", "Objective-C"], ["perl", "Perl"], ["php", "PHP"], ["powershell", "PowerShell", 1], ["python", "Python"],
+            ["r", "R"], ["ruby", "Ruby"], ["rust", "Rust"], ["scala", "Scala", 1], ["scss", "SCSS"], ["shell", "Shell session"],
+            ["sql", "SQL"], ["swift", "Swift"], ["typescript", "TypeScript / TSX"], ["vbnet", "VB.NET"], ["yaml", "YAML"]
+        ];
+
+        const THEMES = {
+            "one-dark": { label: "One Dark", bg: "#282c34", fg: "#abb2bf", muted: "#5c6370", kw: "#c678dd", str: "#98c379", num: "#d19a66", com: "#7f848e", fn: "#61afef", type: "#e5c07b", attr: "#d19a66", vari: "#e06c75", tag: "#e06c75", meta: "#56b6c2", add: "#98c379", del: "#e06c75" },
+            "github-dark": { label: "GitHub Dark", bg: "#0d1117", fg: "#c9d1d9", muted: "#6e7681", kw: "#ff7b72", str: "#a5d6ff", num: "#79c0ff", com: "#8b949e", fn: "#d2a8ff", type: "#ffa657", attr: "#79c0ff", vari: "#ffa657", tag: "#7ee787", meta: "#79c0ff", add: "#aff5b4", del: "#ffdcd7" },
+            dracula: { label: "Dracula", bg: "#282a36", fg: "#f8f8f2", muted: "#6272a4", kw: "#ff79c6", str: "#f1fa8c", num: "#bd93f9", com: "#6272a4", fn: "#50fa7b", type: "#8be9fd", attr: "#50fa7b", vari: "#ffb86c", tag: "#ff79c6", meta: "#bd93f9", add: "#50fa7b", del: "#ff5555" },
+            nord: { label: "Nord", bg: "#2e3440", fg: "#d8dee9", muted: "#616e88", kw: "#81a1c1", str: "#a3be8c", num: "#b48ead", com: "#7b88a1", fn: "#88c0d0", type: "#8fbcbb", attr: "#8fbcbb", vari: "#d8dee9", tag: "#81a1c1", meta: "#5e81ac", add: "#a3be8c", del: "#bf616a" },
+            monokai: { label: "Monokai", bg: "#272822", fg: "#f8f8f2", muted: "#75715e", kw: "#f92672", str: "#e6db74", num: "#ae81ff", com: "#88846f", fn: "#a6e22e", type: "#66d9ef", attr: "#a6e22e", vari: "#fd971f", tag: "#f92672", meta: "#66d9ef", add: "#a6e22e", del: "#f92672" },
+            "github-light": { label: "GitHub Light", bg: "#ffffff", fg: "#24292f", muted: "#8c959f", kw: "#cf222e", str: "#0a3069", num: "#0550ae", com: "#6e7781", fn: "#8250df", type: "#953800", attr: "#0550ae", vari: "#953800", tag: "#116329", meta: "#0550ae", add: "#116329", del: "#82071e" },
+            "solarized-light": { label: "Solarized Light", bg: "#fdf6e3", fg: "#586e75", muted: "#93a1a1", kw: "#859900", str: "#2aa198", num: "#d33682", com: "#7c8f8f", fn: "#268bd2", type: "#b58900", attr: "#b58900", vari: "#cb4b16", tag: "#268bd2", meta: "#6c71c4", add: "#859900", del: "#dc322f" }
+        };
+
+        // highlight.js scope -> palette key
+        const SCOPES = {
+            keyword: "kw", "selector-tag": "kw", operator: "kw", doctag: "kw",
+            string: "str", regexp: "str", char: "str", quote: "str",
+            number: "num", literal: "num", symbol: "num", bullet: "num",
+            comment: "com",
+            title: "fn", section: "fn",
+            type: "type", built_in: "type", "selector-class": "type", "selector-pseudo": "type",
+            attr: "attr", attribute: "attr", property: "attr", "selector-attr": "attr", "selector-id": "attr",
+            variable: "vari", "template-variable": "vari", params: "vari",
+            tag: "tag", name: "tag",
+            meta: "meta", link: "meta",
+            addition: "add", deletion: "del", subst: "fg"
+        };
+
+        const BACKGROUNDS = {
+            ocean: { label: "Ocean", stops: ["#0f766e", "#2563eb"] },
+            sunset: { label: "Sunset", stops: ["#f97316", "#db2777"] },
+            violet: { label: "Violet", stops: ["#7c3aed", "#ec4899"] },
+            midnight: { label: "Midnight", stops: ["#0f172a", "#334155"] },
+            mint: { label: "Mint", stops: ["#a7f3d0", "#67e8f9"] },
+            theme: { label: "Theme color" },
+            white: { label: "White", solid: "#ffffff" },
+            none: { label: "Transparent" }
+        };
+
+        const SIZES = {
+            auto: { label: "Fit to code" },
+            square: { label: "Square 1080 x 1080", w: 1080, h: 1080 },
+            portrait: { label: "Portrait 1080 x 1350", w: 1080, h: 1350 },
+            story: { label: "Story 1080 x 1920", w: 1080, h: 1920 },
+            wide: { label: "Widescreen 1920 x 1080", w: 1920, h: 1080 },
+            og: { label: "Social card 1200 x 630", w: 1200, h: 630 },
+            a4: { label: "A4 page 1240 x 1754", w: 1240, h: 1754 }
+        };
+
+        const FONTS = {
+            jetbrains: { label: "JetBrains Mono", family: "JetBrains Mono", file: "@fontsource/jetbrains-mono@5.2.8/files/jetbrains-mono-latin-400-normal.woff2" },
+            fira: { label: "Fira Code", family: "Fira Code", file: "@fontsource/fira-code@5.2.7/files/fira-code-latin-400-normal.woff2" },
+            source: { label: "Source Code Pro", family: "Source Code Pro", file: "@fontsource/source-code-pro@5.2.7/files/source-code-pro-latin-400-normal.woff2" },
+            system: { label: "System mono" }
+        };
+
+        function fill(id, items, selected) {
+            $(id).innerHTML = "";
+            items.forEach(([value, label]) => $(id).add(new Option(label, value, false, value === selected)));
+        }
+        const labelled = map => Object.keys(map).map(k => [k, map[k].label]);
+        fill("cbi-lang", [["auto", "Auto-detect"], ["plaintext", "Plain text"]].concat(LANGS), "javascript");
+        fill("cbi-theme", labelled(THEMES), "one-dark");
+        fill("cbi-bg", labelled(BACKGROUNDS), "ocean");
+        fill("cbi-size", labelled(SIZES), "auto");
+        fill("cbi-font", labelled(FONTS), "jetbrains");
+
+        const code = $("cbi-code");
+        const canvas = $("cbi-canvas");
+        code.value = SAMPLE;
+
+        const align = { "cbi-ta": 0, "cbi-ha": 0, "cbi-va": 0 };
+        let page = 0;
+        let doc = null;
+        let notice = "";
+
+        /* ---- Script and font loading ---- */
+        const lazyLangs = new Set(LANGS.filter(l => l[2]).map(l => l[0]));
+        const failedLangs = new Set();
+        let hljsState = "loading";
+
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const s = document.createElement("script");
+                s.src = src;
+                s.onload = resolve;
+                s.onerror = reject;
+                document.head.appendChild(s);
+            });
+        }
+        loadScript(HLJS + "highlight.min.js").then(
+            () => { hljsState = "ready"; render(); },
+            () => { hljsState = "failed"; render(); }
+        );
+
+        const pendingLangs = new Set();
+        function ensureLanguage(lang) {
+            if (!lazyLangs.has(lang) || window.hljs.getLanguage(lang) || failedLangs.has(lang) || pendingLangs.has(lang)) return;
+            pendingLangs.add(lang);
+            loadScript(HLJS + "languages/" + lang + ".min.js")
+                .catch(() => failedLangs.add(lang))
+                .then(() => { pendingLangs.delete(lang); render(); });
+        }
+
+        const loadedFonts = new Set();
+        function ensureFont(key) {
+            const f = FONTS[key];
+            if (!f.file || loadedFonts.has(key)) return;
+            loadedFonts.add(key);
+            new FontFace(f.family, "url(" + CDN + f.file + ")").load()
+                .then(face => {
+                    document.fonts.add(face);
+                    widthFont = ""; // widths measured with the fallback font are stale
+                    render();
+                })
+                .catch(() => {}); // the monospace fallback in the font stack takes over
+        }
+
+        /* ---- Source -> highlighted lines ---- */
+        function toLines(html) {
+            const tpl = document.createElement("template");
+            tpl.innerHTML = html;
+            const lines = [[]];
+            const push = (t, k) => {
+                const line = lines[lines.length - 1];
+                const last = line[line.length - 1];
+                if (last && last.k === k) last.t += t;
+                else line.push({ t, k });
+            };
+            (function walk(node, k) {
+                node.childNodes.forEach(child => {
+                    if (child.nodeType === Node.TEXT_NODE) {
+                        child.nodeValue.split("\n").forEach((part, i) => {
+                            if (i) lines.push([]);
+                            if (part) push(part, k);
+                        });
+                        return;
+                    }
+                    let next = k;
+                    for (const cls of child.classList) {
+                        const scope = SCOPES[cls.replace(/^hljs-/, "")];
+                        if (scope) next = scope;
+                        if (cls === "class_") next = "type";
+                    }
+                    walk(child, next);
+                });
+            })(tpl.content, "fg");
+            return lines;
+        }
+
+        let parsedKey = null, parsed = null;
+        function parse(lang) {
+            const ready = hljsState === "ready";
+            const usable = ready && lang !== "plaintext" && (lang === "auto" || window.hljs.getLanguage(lang));
+            if (ready && lang !== "auto" && lang !== "plaintext") ensureLanguage(lang);
+
+            const key = lang + "|" + usable + "|" + code.value;
+            if (key === parsedKey) return parsed;
+
+            const clean = [];
+            const breaks = new Set();
+            code.value.replace(/\r\n?/g, "\n").replace(/\t/g, "    ").split("\n").forEach(line => {
+                if (line.trim().toLowerCase() === BREAK) breaks.add(clean.length);
+                else clean.push(line);
+            });
+            while (clean.length && !clean[clean.length - 1].trim()) clean.pop();
+
+            const text = clean.join("\n");
+            let lines = null, detected = "";
+            if (usable) {
+                try {
+                    const res = lang === "auto"
+                        ? window.hljs.highlightAuto(text)
+                        : window.hljs.highlight(text, { language: lang, ignoreIllegals: true });
+                    lines = toLines(res.value);
+                    if (lang === "auto" && res.language) detected = res.language;
+                } catch (e) { lines = null; }
+            }
+            if (!lines) lines = clean.map(l => (l ? [{ t: l, k: "fg" }] : []));
+
+            parsedKey = key;
+            parsed = { lines: clean.length ? lines : [], breaks, detected };
+            return parsed;
+        }
+
+        /* ---- Measuring and wrapping ---- */
+        const mctx = document.createElement("canvas").getContext("2d");
+        let widths = new Map(), widthFont = "";
+        function setMeasureFont(font) {
+            if (font !== widthFont) { widthFont = font; widths = new Map(); mctx.font = font; }
+        }
+        function textWidth(t) {
+            let w = widths.get(t);
+            if (w === undefined) {
+                if (widths.size > 50000) widths.clear();
+                w = mctx.measureText(t).width;
+                widths.set(t, w);
+            }
+            return w;
+        }
+        const segsWidth = segs => segs.reduce((sum, s) => sum + textWidth(s.t), 0);
+
+        function wrapLine(segs, maxW, num) {
+            const full = segsWidth(segs);
+            if (full <= maxW) return [{ segs, w: full, indent: 0, num }];
+
+            const chars = [];
+            segs.forEach(s => Array.from(s.t).forEach(ch => chars.push({ ch, k: s.k })));
+
+            let lead = 0;
+            while (lead < chars.length && chars[lead].ch === " ") lead++;
+            let hang = textWidth(" ".repeat(lead));
+            if (hang > maxW / 2) hang = 0;
+
+            const rows = [];
+            let i = 0;
+            while (i < chars.length) {
+                const indent = rows.length ? hang : 0;
+                const avail = maxW - indent;
+                let j = i, used = 0;
+                while (j < chars.length) {
+                    const w = textWidth(chars[j].ch);
+                    if (used + w > avail && j > i) break;
+                    used += w;
+                    j++;
+                }
+                if (j < chars.length) {
+                    // Prefer breaking after a space inside this row.
+                    const floor = rows.length ? i : lead;
+                    for (let b = j - 1; b > floor; b--) {
+                        if (chars[b].ch === " ") { j = b + 1; break; }
+                    }
+                }
+                const out = [];
+                chars.slice(i, j).forEach(c => {
+                    const last = out[out.length - 1];
+                    if (last && last.k === c.k) last.t += c.ch;
+                    else out.push({ t: c.ch, k: c.k });
+                });
+                rows.push({ segs: out, w: indent + segsWidth(out), indent, num: rows.length ? null : num });
+                i = j;
+                while (i < chars.length && chars[i].ch === " ") i++;
+            }
+            return rows;
+        }
+
+        function paginate(src, maxW, maxRows, linesPerPage) {
+            const pages = [];
+            let cur = [], curLines = 0;
+            const flush = () => { if (cur.length) { pages.push(cur); cur = []; curLines = 0; } };
+
+            src.lines.forEach((segs, idx) => {
+                const forced = src.breaks.has(idx);
+                if (forced) flush();
+                const rows = wrapLine(segs, maxW, idx + 1);
+                if (cur.length && ((linesPerPage && curLines >= linesPerPage) || cur.length + rows.length > maxRows)) flush();
+                // A blank line opening an automatic page only wastes a row.
+                if (!cur.length && pages.length && !forced && !segs.length) return;
+                rows.forEach(row => {
+                    if (cur.length >= maxRows) flush();
+                    cur.push(row);
+                });
+                curLines++;
+            });
+            flush();
+            return pages;
+        }
+
+        /* ---- Layout ---- */
+        function layout() {
+            const fontKey = $("cbi-font").value;
+            const fontSize = Math.min(48, Math.max(8, parseInt($("cbi-fs").value, 10) || 16));
+            const family = FONTS[fontKey].family ? '"' + FONTS[fontKey].family + '", ' : "";
+            const font = fontSize + "px " + family + "ui-monospace, SFMono-Regular, Menlo, Consolas, monospace";
+            setMeasureFont(font);
+
+            const src = parse($("cbi-lang").value);
+            const size = SIZES[$("cbi-size").value];
+            const fixed = !!size.w;
+            const pad = parseInt($("cbi-pad").value, 10);
+            const lineH = Math.round(fontSize * 1.6);
+            const padIn = Math.round(fontSize * 1.25);
+            const chromeH = $("cbi-chrome").checked ? Math.max(36, Math.round(fontSize * 2.4)) : 0;
+            const pnum = $("cbi-pnum").checked;
+            const footH = Math.round(fontSize * 2);
+            const lpp = Math.max(0, parseInt($("cbi-lpp").value, 10) || 0);
+            const nums = $("cbi-nums").checked;
+            const gutter = nums ? textWidth("0".repeat(String(Math.max(1, src.lines.length)).length)) + Math.round(fontSize * 1.25) : 0;
+
+            const d = { font, fontSize, lineH, padIn, pad, chromeH, gutter, nums, fixed, pnum, src, footerH: 0, error: "" };
+
+            if (fixed) {
+                d.W = size.w / 2;
+                d.H = size.h / 2;
+                const winW = d.W - pad * 2;
+                const contentW = winW - padIn * 2 - gutter;
+                const contentH = foot => d.H - pad * 2 - chromeH - foot - padIn * 2;
+                if (contentW < textWidth("M") * 8 || contentH(footH) < lineH * 2) {
+                    d.error = "This font size or padding doesn't leave room for code at this image size.";
+                    d.pages = [[]];
+                    return d;
+                }
+                d.pages = paginate(src, contentW, Math.floor(contentH(0) / lineH), lpp);
+                if (d.pages.length > 1 && pnum) {
+                    d.footerH = footH;
+                    d.pages = paginate(src, contentW, Math.floor(contentH(footH) / lineH), lpp);
+                }
+                d.contentW = contentW;
+                d.contentH = contentH(d.footerH);
+            } else {
+                const cols = Math.max(0, parseInt($("cbi-wrap").value, 10) || 0);
+                const maxW = cols ? Math.max(cols, 8) * textWidth("M") : Infinity;
+                d.pages = paginate(src, maxW, Infinity, lpp);
+                if (d.pages.length > 1 && pnum) d.footerH = footH;
+                let widest = 0, tallest = 1;
+                d.pages.forEach(p => {
+                    tallest = Math.max(tallest, p.length);
+                    p.forEach(r => { widest = Math.max(widest, r.w); });
+                });
+                // Same box for every page, so a carousel doesn't jump around.
+                d.contentW = Math.ceil(Math.max(widest, Math.max(260, fontSize * 20) - gutter));
+                d.contentH = tallest * lineH;
+                d.W = d.contentW + gutter + padIn * 2 + pad * 2;
+                d.H = d.contentH + chromeH + d.footerH + padIn * 2 + pad * 2;
+            }
+            if (!d.pages.length) d.pages = [[]];
+            return d;
+        }
+
+        /* ---- Drawing ---- */
+        function exportScale(d) {
+            return d.fixed ? 2 : parseInt($("cbi-scale").value, 10);
+        }
+
+        function draw(cv, d, index, scale) {
+            const t = THEMES[$("cbi-theme").value];
+            const bgDef = BACKGROUNDS[$("cbi-bg").value];
+            cv.width = Math.round(d.W * scale);
+            cv.height = Math.round(d.H * scale);
+            const ctx = cv.getContext("2d");
+            ctx.setTransform(scale, 0, 0, scale, 0, 0);
+            ctx.clearRect(0, 0, d.W, d.H);
+
+            if (bgDef.stops) {
+                const g = ctx.createLinearGradient(0, 0, d.W, d.H);
+                g.addColorStop(0, bgDef.stops[0]);
+                g.addColorStop(1, bgDef.stops[1]);
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, d.W, d.H);
+            } else if (bgDef.solid || $("cbi-bg").value === "theme") {
+                ctx.fillStyle = bgDef.solid || t.bg;
+                ctx.fillRect(0, 0, d.W, d.H);
+            }
+
+            const winX = d.pad, winY = d.pad, winW = d.W - d.pad * 2, winH = d.H - d.pad * 2;
+            const radius = d.pad ? 12 : 0;
+            ctx.save();
+            if (d.pad) {
+                ctx.shadowColor = "rgba(0, 0, 0, .35)";
+                ctx.shadowBlur = 28;
+                ctx.shadowOffsetY = 10;
+            }
+            ctx.beginPath();
+            ctx.roundRect(winX, winY, winW, winH, radius);
+            ctx.fillStyle = t.bg;
+            ctx.fill();
+            ctx.restore();
+
+            ctx.textBaseline = "middle";
+
+            if (d.chromeH) {
+                const midY = winY + d.chromeH / 2;
+                ["#ff5f56", "#ffbd2e", "#27c93f"].forEach((c, i) => {
+                    ctx.beginPath();
+                    ctx.arc(winX + d.padIn + 6 + i * 20, midY, 6, 0, Math.PI * 2);
+                    ctx.fillStyle = c;
+                    ctx.fill();
+                });
+                const name = $("cbi-file").value.trim();
+                if (name) {
+                    ctx.font = d.font.replace(/^\d+px/, Math.round(Math.min(d.fontSize, 22) * .85) + "px");
+                    ctx.fillStyle = t.muted;
+                    ctx.textAlign = "center";
+                    ctx.save();
+                    ctx.beginPath();
+                    ctx.rect(winX + d.padIn + 66, winY, Math.max(0, winW - (d.padIn + 66) * 2), d.chromeH);
+                    ctx.clip();
+                    ctx.fillText(name, winX + winW / 2, midY);
+                    ctx.restore();
+                }
+            }
+
+            const rows = d.pages[index] || [];
+            const left = winX + d.padIn + d.gutter;
+            const top = winY + d.chromeH + d.padIn;
+            const blockW = rows.reduce((m, r) => Math.max(m, r.w), 0);
+            const blockX = left + (d.contentW - blockW) * align["cbi-ha"];
+            const blockY = top + (d.contentH - rows.length * d.lineH) * align["cbi-va"];
+
+            ctx.save();
+            ctx.beginPath();
+            ctx.rect(winX, top - d.padIn / 2, winW, d.contentH + d.padIn);
+            ctx.clip();
+            rows.forEach((row, i) => {
+                const y = blockY + i * d.lineH + d.lineH / 2;
+                if (d.nums && row.num) {
+                    ctx.font = d.font;
+                    ctx.textAlign = "right";
+                    ctx.fillStyle = t.muted;
+                    ctx.fillText(String(row.num), left - Math.round(d.fontSize * .75), y);
+                }
+                ctx.textAlign = "left";
+                let x = blockX + (blockW - row.w) * align["cbi-ta"] + row.indent;
+                row.segs.forEach(s => {
+                    ctx.font = (s.k === "com" ? "italic " : "") + d.font;
+                    ctx.fillStyle = t[s.k] || t.fg;
+                    ctx.fillText(s.t, x, y);
+                    x += textWidth(s.t);
+                });
+            });
+            ctx.restore();
+
+            if (d.footerH) {
+                ctx.font = d.font.replace(/^\d+px/, Math.round(Math.min(d.fontSize, 22) * .8) + "px");
+                ctx.fillStyle = t.muted;
+                ctx.textAlign = "right";
+                ctx.fillText((index + 1) + " / " + d.pages.length, winX + winW - d.padIn, winY + winH - d.footerH / 2 - d.padIn / 4);
+            }
+        }
+
+        /* ---- UI ---- */
+        function tooLarge(d) {
+            const s = exportScale(d);
+            const w = d.W * s, h = d.H * s;
+            return w > MAX_SIDE || h > MAX_SIDE || w * h > MAX_AREA;
+        }
+
+        function setStatus(text, isError) {
+            $("cbi-status").textContent = text;
+            $("cbi-status").classList.toggle("is-error", !!isError);
+        }
+
+        function render() {
+            ensureFont($("cbi-font").value);
+            const fixed = !!SIZES[$("cbi-size").value].w;
+            $("cbi-wrap-field").hidden = fixed;
+            $("cbi-scale-field").hidden = fixed;
+
+            doc = layout();
+            const total = doc.pages.length;
+            page = Math.min(page, total - 1);
+
+            const empty = !doc.src.lines.length;
+            const big = tooLarge(doc);
+            const blocked = empty || !!doc.error || big;
+            $("cbi-dl").disabled = $("cbi-zip").disabled = $("cbi-copy").disabled = blocked;
+            ["cbi-dl", "cbi-zip", "cbi-copy"].forEach(id => { $(id).style.opacity = blocked ? ".5" : ""; });
+
+            draw(canvas, doc, page, Math.min(2, Math.max(.25, 6000 / Math.max(doc.W, doc.H))));
+
+            $("cbi-nav").hidden = total < 2;
+            $("cbi-page").textContent = "Page " + (page + 1) + " of " + total;
+            $("cbi-prev").disabled = page === 0;
+            $("cbi-next").disabled = page === total - 1;
+            $("cbi-zip").hidden = total < 2;
+            $("cbi-dl-text").textContent = total > 1 ? "Download page " + (page + 1) : "Download image";
+            $("cbi-zip-text").textContent = "Download all " + total + " pages (ZIP)";
+
+            if (doc.error) return setStatus(doc.error, true);
+            if (big) return setStatus("Too large for one image. Set lines per page or lower the resolution.", true);
+            if (empty) return setStatus("Add some code to create an image.");
+            if (notice) return setStatus(notice);
+
+            const lang = $("cbi-lang").value;
+            const s = exportScale(doc);
+            const parts = [Math.round(doc.W * s) + " x " + Math.round(doc.H * s) + " px"];
+            if (doc.src.detected) parts.push("Detected: " + doc.src.detected);
+            if (lang !== "plaintext" && (hljsState === "failed" || failedLangs.has(lang))) {
+                parts.push("Couldn't load syntax colors, so this is plain text");
+            }
+            setStatus(parts.join(" · "));
+        }
+
+        let timer = null;
+        function schedule() {
+            clearTimeout(timer);
+            timer = setTimeout(render, 120);
+        }
+
+        document.querySelectorAll("#cbi-root input, #cbi-root select, #cbi-code").forEach(el => {
+            el.addEventListener("input", schedule);
+        });
+
+        Object.keys(align).forEach(id => {
+            const buttons = $(id).querySelectorAll("button");
+            const press = () => buttons.forEach(b => b.setAttribute("aria-pressed", String(parseFloat(b.dataset.v) === align[id])));
+            press();
+            buttons.forEach(b => b.addEventListener("click", () => {
+                align[id] = parseFloat(b.dataset.v);
+                press();
+                render();
+            }));
+        });
+
+        $("cbi-prev").addEventListener("click", () => { page--; render(); });
+        $("cbi-next").addEventListener("click", () => { page++; render(); });
+
+        code.addEventListener("keydown", e => {
+            if (e.key !== "Tab" || e.shiftKey) return; // Shift+Tab still leaves the editor
+            e.preventDefault();
+            code.setRangeText("    ", code.selectionStart, code.selectionEnd, "end");
+            schedule();
+        });
+
+        $("cbi-break").addEventListener("click", () => {
+            const at = code.selectionStart;
+            const before = code.value.slice(0, at);
+            const after = code.value.slice(code.selectionEnd);
+            const text = (before && !before.endsWith("\n") ? "\n" : "") + BREAK + (after.startsWith("\n") ? "" : "\n");
+            code.setRangeText(text, at, code.selectionEnd, "end");
+            code.focus();
+            render();
+        });
+
+        /* ---- Export ---- */
+        function pageBlob(index) {
+            const cv = document.createElement("canvas");
+            draw(cv, doc, index, exportScale(doc));
+            return new Promise(resolve => cv.toBlob(resolve, "image/png"));
+        }
+
+        function fileBase() {
+            const name = $("cbi-file").value.trim().replace(/\.[^.]+$/, "");
+            return name.replace(/[^\w-]+/g, "-").replace(/^-+|-+$/g, "") || "code";
+        }
+
+        function save(blob, name) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = name;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(url), 10000);
+        }
+
+        function flash(text, isError) {
+            notice = text;
+            setStatus(text, isError);
+            setTimeout(() => { notice = ""; render(); }, 2500);
+        }
+        const EXPORT_FAILED = "Your browser couldn't create an image this large. Try a lower resolution or more pages.";
+
+        const CRC = new Uint32Array(256).map((_, n) => {
+            let c = n;
+            for (let k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+            return c;
+        });
+        function crc32(bytes) {
+            let c = 0xffffffff;
+            for (let i = 0; i < bytes.length; i++) c = CRC[(c ^ bytes[i]) & 255] ^ (c >>> 8);
+            return (c ^ 0xffffffff) >>> 0;
+        }
+
+        // PNGs are already compressed, so the entries are simply stored.
+        function buildZip(files) {
+            const now = new Date();
+            const time = (now.getHours() << 11) | (now.getMinutes() << 5) | (now.getSeconds() >> 1);
+            const date = ((now.getFullYear() - 1980) << 9) | ((now.getMonth() + 1) << 5) | now.getDate();
+            const parts = [], central = [];
+            let offset = 0;
+
+            files.forEach(f => {
+                const name = new TextEncoder().encode(f.name);
+                const crc = crc32(f.data);
+                const shared = v => {
+                    v.setUint16(0, 20, true);
+                    v.setUint16(2, 0x0800, true);
+                    v.setUint16(4, 0, true);
+                    v.setUint16(6, time, true);
+                    v.setUint16(8, date, true);
+                    v.setUint32(10, crc, true);
+                    v.setUint32(14, f.data.length, true);
+                    v.setUint32(18, f.data.length, true);
+                    v.setUint16(22, name.length, true);
+                };
+
+                const local = new DataView(new ArrayBuffer(30));
+                local.setUint32(0, 0x04034b50, true);
+                shared(new DataView(local.buffer, 4));
+                parts.push(local, name, f.data);
+
+                const dir = new DataView(new ArrayBuffer(46));
+                dir.setUint32(0, 0x02014b50, true);
+                dir.setUint16(4, 20, true);
+                shared(new DataView(dir.buffer, 6));
+                dir.setUint32(42, offset, true);
+                central.push(dir, name);
+
+                offset += 30 + name.length + f.data.length;
+            });
+
+            const dirSize = central.reduce((sum, p) => sum + p.byteLength, 0);
+            const end = new DataView(new ArrayBuffer(22));
+            end.setUint32(0, 0x06054b50, true);
+            end.setUint16(8, files.length, true);
+            end.setUint16(10, files.length, true);
+            end.setUint32(12, dirSize, true);
+            end.setUint32(16, offset, true);
+            return new Blob(parts.concat(central, [end]), { type: "application/zip" });
+        }
+
+        $("cbi-dl").addEventListener("click", async () => {
+            const blob = await pageBlob(page);
+            if (!blob) return flash(EXPORT_FAILED, true);
+            save(blob, fileBase() + (doc.pages.length > 1 ? "-page-" + (page + 1) : "") + ".png");
+            flash("Image downloaded");
+        });
+
+        $("cbi-zip").addEventListener("click", async () => {
+            const btn = $("cbi-zip");
+            btn.disabled = true;
+            const files = [];
+            const width = String(doc.pages.length).length;
+            for (let i = 0; i < doc.pages.length; i++) {
+                setStatus("Creating page " + (i + 1) + " of " + doc.pages.length + "...");
+                const blob = await pageBlob(i);
+                if (!blob) {
+                    btn.disabled = false;
+                    return flash(EXPORT_FAILED, true);
+                }
+                files.push({
+                    name: fileBase() + "-page-" + String(i + 1).padStart(width, "0") + ".png",
+                    data: new Uint8Array(await blob.arrayBuffer())
+                });
+            }
+            save(buildZip(files), fileBase() + "-pages.zip");
+            btn.disabled = false;
+            flash(files.length + " pages downloaded");
+        });
+
+        $("cbi-copy").addEventListener("click", async () => {
+            try {
+                // Safari requires the ClipboardItem to be created inside the click.
+                await navigator.clipboard.write([new ClipboardItem({ "image/png": pageBlob(page) })]);
+                flash("Image copied");
+            } catch (e) {
+                flash("Your browser blocked copying. Use Download instead.", true);
+            }
+        });
+
+        render();
+    })();
+    </script>
+</ToolShell>
