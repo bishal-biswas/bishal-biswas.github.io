@@ -1,8 +1,10 @@
 ---
 title: "HTML Images: src, alt and Responsive Images"
 slug: html-images-alt-text-responsive
-metaDescription: Learn how to add images in HTML with src and alt, write useful alt text, avoid layout shift, lazy load images and serve responsive images with srcset.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Images
+metaDescription: Learn how to add images in HTML with src and alt, write useful
+  alt text, avoid layout shift, lazy load images and serve responsive images
+  with srcset.
+image: html-images-alt-text-responsive.webp
 author: Bishal Biswas
 publishDate: 2026-11-03
 isDraft: false
