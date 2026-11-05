@@ -1,8 +1,9 @@
 ---
 title: "HTML Lists: Ordered, Unordered and Description Lists"
 slug: html-lists-ordered-unordered-description
-metaDescription: Learn how to use HTML ordered, unordered and description lists, nest lists correctly, use start and reversed, and style list markers with CSS.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Lists
+metaDescription: Learn how to use HTML ordered, unordered and description lists,
+  nest lists correctly, use start and reversed, and style list markers with CSS.
+image: html-lists-ordered-unordered-description.webp
 author: Bishal Biswas
 publishDate: 2026-11-05
 isDraft: false
