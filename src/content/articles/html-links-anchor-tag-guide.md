@@ -1,8 +1,10 @@
 ---
 title: "HTML Links Explained: How the Anchor Tag Works"
 slug: html-links-anchor-tag-guide
-metaDescription: Learn how HTML links work with the anchor tag, including href, absolute and relative URLs, page jumps, target, rel, email links and download links.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Links
+metaDescription: Learn how HTML links work with the anchor tag, including href,
+  absolute and relative URLs, page jumps, target, rel, email links and download
+  links.
+image: html-links-anchor-tag-guide.webp
 author: Bishal Biswas
 publishDate: 2026-11-01
 isDraft: false
