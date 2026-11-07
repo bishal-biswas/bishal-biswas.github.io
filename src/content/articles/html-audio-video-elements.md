@@ -1,8 +1,10 @@
 ---
-title: "HTML Audio and Video Elements Explained"
+title: HTML Audio and Video Elements Explained
 slug: html-audio-video-elements
-metaDescription: Learn how to add audio and video to a web page with HTML, including controls, autoplay rules, multiple sources, captions with track and poster images.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Media
+metaDescription: Learn how to add audio and video to a web page with HTML,
+  including controls, autoplay rules, multiple sources, captions with track and
+  poster images.
+image: html-audio-video-elements.webp
 author: Bishal Biswas
 publishDate: 2026-11-09
 isDraft: false
@@ -13,7 +15,6 @@ tags:
   - autoplay
   - video captions
 ---
-
 Before HTML5, playing a video on a web page usually meant installing a plugin like Flash. Today, browsers can play audio and video natively with two simple elements: `audio` and `video`.
 
 When I first added a video to a page, I expected it to autoplay with sound. It did not, and I spent a while wondering why. The answer was browser autoplay rules, which I will explain below.
@@ -30,9 +31,9 @@ Here is a basic video:
 </video>
 ```
 
-- `src` points to the video file.
-- `controls` shows the browser's built-in play button, timeline, volume and fullscreen controls.
-- `width` and `height` reserve space for the video, which prevents the page from jumping when it loads.
+* `src` points to the video file.
+* `controls` shows the browser's built-in play button, timeline, volume and fullscreen controls.
+* `width` and `height` reserve space for the video, which prevents the page from jumping when it loads.
 
 The text inside the element is fallback content. Modern browsers all support `video`, so it is rarely shown, but it does not hurt to include it.
 
@@ -55,16 +56,20 @@ With `controls`, the browser shows a small player bar. Without `controls`, the a
 Different browsers support different formats. To be safe, you can offer several files using `source` elements:
 
 ```html
+<audio src="podcast-episode-1.mp3" controls>
+  Your browser does not support the audio element.
+</audio>
+
 <video controls width="640" height="360">
   <source src="intro.webm" type="video/webm">
   <source src="intro.mp4" type="video/mp4">
-  <p>Your browser cannot play this video. <a href="intro.mp4">Download it instead</a>.</p>
+  <p>Your browser cannot play this video.</p>
 </video>
 ```
 
 The browser tries each `source` from top to bottom and plays the first one it supports. The `type` attribute helps the browser skip formats it cannot play without downloading them.
 
-In 2026, MP4 with H.264 video and AAC audio plays in every major browser, so a single MP4 file is often enough. WebM is a good open alternative that also has wide support. For audio, MP3 works everywhere, and AAC and Opus are good options too.
+In 2026, MP4 with H.264 video and AAC audio plays in every major browser,SS so a single MP4 file is often enough. WebM is a good open alternative that also has wide support. For audio, MP3 works everywhere, and AAC and Opus are good options too.
 
 ## Useful Attributes
 
@@ -87,9 +92,9 @@ The `poster` image is shown before the video starts playing. Without it, the bro
 
 `preload` is a hint about how much to download before the user presses play:
 
-- `none`: download nothing until play is pressed.
-- `metadata`: download only basic information like duration and dimensions.
-- `auto`: the browser may download the whole file.
+* `none`: download nothing until play is pressed.
+* `metadata`: download only basic information like duration and dimensions.
+* `auto`: the browser may download the whole file.
 
 I usually use `metadata` or `none` to save data, especially for long videos on mobile.
 
@@ -99,8 +104,8 @@ I usually use `metadata` or `none` to save data, especially for long videos on m
 <video src="background.mp4" loop muted></video>
 ```
 
-- `loop` restarts the media when it ends.
-- `muted` starts the media with the sound off.
+* `loop` restarts the media when it ends.
+* `muted` starts the media with the sound off.
 
 ### `playsinline`
 
@@ -146,10 +151,10 @@ You add captions with the `track` element:
 </video>
 ```
 
-- `kind` describes the track: `captions` include sounds and speaker information, while `subtitles` are translations of the dialogue.
-- `srclang` is the language code.
-- `label` is the name shown in the captions menu.
-- `default` turns that track on automatically.
+* `kind` describes the track: `captions` include sounds and speaker information, while `subtitles` are translations of the dialogue.
+* `srclang` is the language code.
+* `label` is the name shown in the captions menu.
+* `default` turns that track on automatically.
 
 Caption files use the **WebVTT** format. A simple `.vtt` file looks like this:
 
