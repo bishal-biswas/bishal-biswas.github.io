@@ -1,8 +1,10 @@
 ---
-title: "HTML Meta Tags Every Beginner Should Know"
+title: HTML Meta Tags Every Beginner Should Know
 slug: html-meta-tags-seo-basics
-metaDescription: Learn the HTML meta tags that matter in 2026, including charset, viewport, description, robots, canonical, Open Graph and theme-color, with examples.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Meta+Tags
+metaDescription: Learn the HTML meta tags that matter in 2026, including
+  charset, viewport, description, robots, canonical, Open Graph and theme-color,
+  with examples.
+image: html-meta-tags-seo-basics.webp
 author: Bishal Biswas
 publishDate: 2026-11-07
 isDraft: false
