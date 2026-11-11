@@ -1,8 +1,10 @@
 ---
 title: "HTML iframe: How to Embed Other Pages Safely"
 slug: html-iframe-embed-content
-metaDescription: Learn how the HTML iframe element works, how to embed videos and maps, make iframes responsive, and use sandbox, allow and lazy loading safely.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+iframe
+metaDescription: Learn how the HTML iframe element works, how to embed videos
+  and maps, make iframes responsive, and use sandbox, allow and lazy loading
+  safely.
+image: html-iframe-embed-content.webp
 author: Bishal Biswas
 publishDate: 2026-11-11
 isDraft: false
@@ -13,7 +15,6 @@ tags:
   - iframe sandbox
   - iframe security
 ---
-
 An `iframe` lets you show one web page inside another. If you have ever embedded a YouTube video, a Google Map or a CodePen demo, you have used an iframe.
 
 When I first used iframes, I simply pasted the embed code and moved on. Later, while building a small tool to test whether websites can be embedded, I learned a lot more about how iframes work, why some sites refuse to load in them, and how to keep them safe.
@@ -29,9 +30,9 @@ Here is the simplest iframe:
         width="600" height="400"></iframe>
 ```
 
-- `src` is the URL of the page to embed.
-- `title` describes the iframe for screen reader users.
-- `width` and `height` set its size.
+* `src` is the URL of the page to embed.
+* `title` describes the iframe for screen reader users.
+* `width` and `height` set its size.
 
 The embedded page is a completely separate document. It has its own HTML, CSS and JavaScript. Your page's CSS does not style what is inside the iframe.
 
@@ -60,6 +61,10 @@ YouTube gives you embed code that looks something like this:
   allowfullscreen
   loading="lazy"></iframe>
 ```
+
+Here is an example of embedding a YouTube video
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?si=e3tJmHmND6f38J-3" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 
 I prefer the `youtube-nocookie.com` domain because YouTube says it does not store viewing cookies until the user plays the video. I also change the generic title to something more descriptive.
 
@@ -121,11 +126,11 @@ When you add `sandbox` with no value, the embedded page is heavily restricted:
 
 With an empty `sandbox`, the iframe cannot:
 
-- Run JavaScript.
-- Submit forms.
-- Open popups.
-- Navigate your main page.
-- Access cookies or storage as its normal origin.
+* Run JavaScript.
+* Submit forms.
+* Open popups.
+* Navigate your main page.
+* Access cookies or storage as its normal origin.
 
 You can then allow specific features one by one:
 
@@ -138,12 +143,12 @@ You can then allow specific features one by one:
 
 Common values include:
 
-| Value | Allows |
-|---|---|
-| `allow-scripts` | Running JavaScript |
-| `allow-forms` | Submitting forms |
-| `allow-popups` | Opening new windows |
-| `allow-same-origin` | Treating content as its real origin |
+| Value                                     | Allows                                      |
+| ----------------------------------------- | ------------------------------------------- |
+| `allow-scripts`                           | Running JavaScript                          |
+| `allow-forms`                             | Submitting forms                            |
+| `allow-popups`                            | Opening new windows                         |
+| `allow-same-origin`                       | Treating content as its real origin         |
 | `allow-top-navigation-by-user-activation` | Navigating the main page after a user click |
 
 ### A Warning About `allow-same-origin`
@@ -180,8 +185,8 @@ Try embedding a site like a bank or a social network, and you will probably see 
 
 Websites can send response headers that forbid embedding:
 
-- `X-Frame-Options: DENY` or `SAMEORIGIN`
-- `Content-Security-Policy: frame-ancestors 'none'` (or a list of allowed sites)
+* `X-Frame-Options: DENY` or `SAMEORIGIN`
+* `Content-Security-Policy: frame-ancestors 'none'` (or a list of allowed sites)
 
 These headers protect against **clickjacking**, where an attacker hides a real site inside an invisible iframe and tricks users into clicking buttons.
 
