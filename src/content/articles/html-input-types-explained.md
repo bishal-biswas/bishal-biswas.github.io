@@ -1,8 +1,10 @@
 ---
-title: "HTML Input Types Explained With Examples"
+title: HTML Input Types Explained With Examples
 slug: html-input-types-explained
-metaDescription: Learn the most useful HTML input types, from text, email and password to number, date, range, checkbox, radio, color and file, with simple examples.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Inputs
+metaDescription: Learn the most useful HTML input types, from text, email and
+  password to number, date, range, checkbox, radio, color and file, with simple
+  examples.
+image: html-input-types-explained.webp
 author: Bishal Biswas
 publishDate: 2026-11-13
 isDraft: false
