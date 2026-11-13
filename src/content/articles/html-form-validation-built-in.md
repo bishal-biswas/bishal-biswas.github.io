@@ -1,8 +1,10 @@
 ---
-title: "HTML Form Validation Without JavaScript"
+title: HTML Form Validation Without JavaScript
 slug: html-form-validation-built-in
-metaDescription: Learn how to validate HTML forms without JavaScript using required, minlength, pattern, min, max and input types, plus CSS to style valid and invalid fields.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=Form+Validation
+metaDescription: Learn how to validate HTML forms without JavaScript using
+  required, minlength, pattern, min, max and input types, plus CSS to style
+  valid and invalid fields.
+image: html-form-validation-built-in.webp
 author: Bishal Biswas
 publishDate: 2026-11-15
 isDraft: false
@@ -13,7 +15,6 @@ tags:
   - pattern attribute
   - user-invalid
 ---
-
 When I built my first contact form, I wrote a lot of JavaScript to check that the email looked right and the message was not empty. Later, I found out that HTML could already do most of that on its own.
 
 Built-in form validation is fast, works without any scripts, and shows error messages in the user's own language. It is not a replacement for server-side checks, but it gives users quick feedback before they submit.
@@ -66,9 +67,9 @@ Some input types validate automatically:
 <input type="url" name="website">
 ```
 
-- `email` checks that the value looks like an email address.
-- `url` checks that the value is a full URL, including `https://`.
-- `number`, `date` and `range` reject values that are not valid for their type.
+* `email` checks that the value looks like an email address.
+* `url` checks that the value is a full URL, including `https://`.
+* `number`, `date` and `range` reject values that are not valid for their type.
 
 The email check is fairly loose. It accepts `name@domain` without a dot, because that is technically valid. If you need stricter rules, combine it with `pattern`. I cover all the input types in [HTML input types explained](https://bishal-biswas.github.io/articles/html-input-types-explained).
 
@@ -80,8 +81,8 @@ The email check is fairly loose. It accepts `name@domain` without a dot, because
        minlength="3" maxlength="20" required>
 ```
 
-- `minlength` sets the minimum number of characters.
-- `maxlength` sets the maximum. The browser simply stops the user from typing more.
+* `minlength` sets the minimum number of characters.
+* `maxlength` sets the maximum. The browser simply stops the user from typing more.
 
 These also work on `textarea`:
 
@@ -105,8 +106,8 @@ Note: `minlength` is only checked when the user has typed something. An empty fi
 <input type="number" id="price" name="price" min="0" step="0.01">
 ```
 
-- `min` and `max` set the allowed range.
-- `step` controls which values are allowed. The default step for numbers is 1, so `4.5` would be invalid unless you change it.
+* `min` and `max` set the allowed range.
+* `step` controls which values are allowed. The default step for numbers is 1, so `4.5` would be invalid unless you change it.
 
 ## Custom Rules With `pattern`
 
@@ -122,9 +123,9 @@ The `pattern` attribute uses a regular expression to check the value:
 
 A few things to know about `pattern`:
 
-- It must match the **whole** value. You do not need `^` and `$`; the browser adds them for you.
-- It only works on text-like inputs: `text`, `email`, `tel`, `url`, `password` and `search`.
-- The `title` text is often shown as part of the error message, so use it to explain the expected format.
+* It must match the **whole** value. You do not need `^` and `$`; the browser adds them for you.
+* It only works on text-like inputs: `text`, `email`, `tel`, `url`, `password` and `search`.
+* The `title` text is often shown as part of the error message, so use it to explain the expected format.
 
 Modern browsers compile `pattern` with the regular expression `v` flag, so some special characters like `-` inside a character class may need escaping, for example `[A-Za-z0-9\-]`.
 
@@ -221,12 +222,12 @@ Or only for one button:
 
 You do not need JavaScript for basic validation, but the Constraint Validation API lets you customise messages when you want:
 
-```js
+```javascript
 const email = document.querySelector("#email");
 
 email.addEventListener("input", () => {
   if (email.validity.typeMismatch) {
-    email.setCustomValidity("Please enter an email like name@example.com.");
+    email.setCustomValidity("Please enter an email");
   } else {
     email.setCustomValidity("");
   }
