@@ -15,14 +15,14 @@ import { toolsData, toolCategories } from "../../data/site-data/toolsData";
     isLargeWidth={true}
 >
     <div class="flex flex-col gap-10 my-5">
-        <div class="rounded-2xl border border-[#58769135] bg-[#10273c] p-4 sm:p-5 shadow-lg shadow-body-bg-2">
+        <div class="rounded-2xl border border-[#58769135] dark:bg-[#10273c] bg-white p-4 sm:p-5 shadow-lg shadow-body-bg-2">
             <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div class="relative w-full sm:max-w-xl">
                     <input
                         id="tool-search"
                         type="search"
                         placeholder="Search tools..."
-                        class="w-full rounded-xl border border-[#58769135] bg-[#0b1a2a] px-4 py-3 pl-11 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-[#58ded6]"
+                        class="w-full rounded-xl border border-[#58769135] dark:bg-[#0b1a2a] bg-[#183550d7] px-4 py-3 pl-11 text-sm text-white placeholder:text-slate-400 outline-none transition focus:border-[#58ded6]"
                     />
                     <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-[#58ded6]"></i>
                 </div>
@@ -64,7 +64,7 @@ import { toolsData, toolCategories } from "../../data/site-data/toolsData";
             ))
         }
 
-        <section class="rounded-3xl p-6 lg:p-10 bg-[#10273c] border border-[#58769135] leading-relaxed flex flex-col gap-4">
+        <section class="rounded-3xl p-6 lg:p-10 dark:bg-[#10273c] bg-white border border-[#58769135] leading-relaxed flex flex-col gap-4">
             <h2 class="text-2xl font-bold dark:text-white">Free browser-based tools for developers</h2>
             <p>
                 This is a growing toolbox of <strong>free online developer tools</strong> built with plain JavaScript - 
