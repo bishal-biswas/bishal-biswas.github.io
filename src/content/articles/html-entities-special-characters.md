@@ -1,8 +1,10 @@
 ---
-title: "HTML Entities and Special Characters"
+title: HTML Entities and Special Characters
 slug: html-entities-special-characters
-metaDescription: Learn what HTML entities are, why characters like < and & need escaping, and how to use named and numeric entities, nbsp, and UTF-8 in your pages.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=HTML+Entities
+metaDescription: Learn what HTML entities are, why characters like < and & need
+  escaping, and how to use named and numeric entities, nbsp, and UTF-8 in your
+  pages.
+image: html-entities-special-characters-bishal-biswas-github.io.jpg
 author: Bishal Biswas
 publishDate: 2026-11-21
 isDraft: false
