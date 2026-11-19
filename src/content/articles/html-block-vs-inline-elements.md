@@ -1,8 +1,10 @@
 ---
-title: "Block vs Inline Elements in HTML"
+title: Block vs Inline Elements in HTML
 slug: html-block-vs-inline-elements
-metaDescription: Learn the difference between block and inline elements in HTML, how each one behaves in a layout, and how inline-block and CSS display change them.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=Block+vs+Inline
+metaDescription: Learn the difference between block and inline elements in HTML,
+  how each one behaves in a layout, and how inline-block and CSS display change
+  them.
+image: html-block-vs-inline-elements.jpg
 author: Bishal Biswas
 publishDate: 2026-11-19
 isDraft: false
