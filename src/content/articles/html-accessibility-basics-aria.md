@@ -1,8 +1,10 @@
 ---
 title: "HTML Accessibility Basics: Writing Pages Everyone Can Use"
 slug: html-accessibility-basics-aria
-metaDescription: Learn HTML accessibility basics with simple examples, including semantic elements, alt text, labels, keyboard focus, and when to use ARIA attributes.
-image: https://placehold.co/1200x630/00283a/5fb353/png?text=Accessibility
+metaDescription: Learn HTML accessibility basics with simple examples, including
+  semantic elements, alt text, labels, keyboard focus, and when to use ARIA
+  attributes.
+image: html-accessibility-basics-aria-bishal-biswas-github-io.jpg
 author: Bishal Biswas
 publishDate: 2026-11-17
 isDraft: false
