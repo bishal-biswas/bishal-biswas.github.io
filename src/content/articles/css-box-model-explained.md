@@ -1,8 +1,10 @@
 ---
-title: "The CSS Box Model Explained Simply"
+title: The CSS Box Model Explained Simply
 slug: css-box-model-explained
-metaDescription: Learn the CSS box model with simple examples. Understand content, padding, border and margin, box-sizing border-box, and how margin collapsing works.
-image: https://placehold.co/1200x630/02162b/72eb6c/png?text=CSS+Box+Model
+metaDescription: Learn the CSS box model with simple examples. Understand
+  content, padding, border and margin, box-sizing border-box, and how margin
+  collapsing works.
+image: css-box-model-explained.webp
 author: Bishal Biswas
 publishDate: 2026-11-23
 isDraft: false
