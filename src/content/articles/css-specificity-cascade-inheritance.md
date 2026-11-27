@@ -1,8 +1,10 @@
 ---
-title: "CSS Specificity, Cascade and Inheritance Explained"
+title: CSS Specificity, Cascade and Inheritance Explained
 slug: css-specificity-cascade-inheritance
-metaDescription: Learn how the CSS cascade, specificity and inheritance decide which style wins, with simple examples, specificity scores, !important and cascade layers.
-image: https://placehold.co/1200x630/02162b/72eb6c/png?text=CSS+Specificity
+metaDescription: Learn how the CSS cascade, specificity and inheritance decide
+  which style wins, with simple examples, specificity scores, !important and
+  cascade layers.
+image: css-specificity-cascade-inheritance.jpg
 author: Bishal Biswas
 publishDate: 2026-11-29
 isDraft: false
