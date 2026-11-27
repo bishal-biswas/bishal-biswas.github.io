@@ -1,8 +1,10 @@
 ---
 title: "CSS Colors: Hex, RGB, HSL and When I Use Each"
 slug: css-colors-hex-rgb-hsl
-metaDescription: Learn CSS color formats with simple examples, including named colors, hex, RGB, HSL, transparency and modern oklch, plus when I use each one in projects.
-image: https://placehold.co/1200x630/02162b/72eb6c/png?text=CSS+Colors
+metaDescription: Learn CSS color formats with simple examples, including named
+  colors, hex, RGB, HSL, transparency and modern oklch, plus when I use each one
+  in projects.
+image: css-colors-hex-rgb-hsl.jpg
 author: Bishal Biswas
 publishDate: 2026-11-27
 isDraft: false
