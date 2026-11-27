@@ -1,8 +1,10 @@
 ---
 title: "CSS Units Explained: px, em, rem, %, vh and vw"
 slug: css-units-px-em-rem-vh-vw
-metaDescription: Learn the most useful CSS units with simple examples, including px, em, rem, percent, vh, vw and dvh, and which unit I use for fonts, spacing and layout.
-image: https://placehold.co/1200x630/02162b/72eb6c/png?text=CSS+Units
+metaDescription: Learn the most useful CSS units with simple examples, including
+  px, em, rem, percent, vh, vw and dvh, and which unit I use for fonts, spacing
+  and layout.
+image: css-units-px-em-rem-vh-vw.jpg
 author: Bishal Biswas
 publishDate: 2026-11-25
 isDraft: false
